@@ -1,0 +1,19 @@
+{
+  "name": "wgi",
+  "version": "0.1.0",
+  "description": "WebGPU Inspector",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "goutou1994",
+  "license": "ISC",
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@webgpu/types": "^0.1.40",
+    "rollup": "^4.9.6",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.3"
+  }
+}
