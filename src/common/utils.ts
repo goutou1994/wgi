@@ -1,20 +1,36 @@
+import dateFormat from "dateformat";
 
 export class DataStream {
     private buffer: ArrayBuffer;
+    private byteOffset: number = 0;
+    private bufferInternal: boolean = false;
     private _size: number;
     private head: number = 0;
 
     // buffer views
-    private floatView: Float32Array;
-    private uint32View: Uint32Array;
-    private uint16View: Uint16Array;
+    private floatView!: Float32Array;
+    private uint32View!: Uint32Array;
+    private uint16View!: Uint16Array;
     constructor(buffer: ArrayBuffer, byteOffset: number = 0) {
         this.buffer = buffer;
+        this.byteOffset = byteOffset;
         this._size = buffer.byteLength;
+        this.makeBufferViews();
+    }
+    
+    private makeBufferViews() {
+        this.floatView = new Float32Array(this.buffer, this.byteOffset, Math.floor(this._size / DataStream.TypeSize[DataStream.Type.Float]));
+        this.uint32View = new Uint32Array(this.buffer, this.byteOffset, Math.floor(this._size / DataStream.TypeSize[DataStream.Type.UInt32]));
+        this.uint16View = new Uint16Array(this.buffer, this.byteOffset, Math.floor(this._size / DataStream.TypeSize[DataStream.Type.UInt16]));
+    }
 
-        this.floatView = new Float32Array(buffer, byteOffset, Math.floor(this._size / DataStream.TypeSize[DataStream.Type.Float]));
-        this.uint32View = new Uint32Array(buffer, byteOffset, Math.floor(this._size / DataStream.TypeSize[DataStream.Type.UInt32]));
-        this.uint16View = new Uint16Array(buffer, byteOffset, Math.floor(this._size / DataStream.TypeSize[DataStream.Type.UInt16]));
+    static createWithInternalBuffer(): DataStream {
+        const stream = new DataStream(
+            new ArrayBuffer(128 * 1024), // 128KB
+            0
+        );
+        stream.bufferInternal = true;
+        return stream;
     }
 
     get size() { return this._size; }
@@ -22,7 +38,16 @@ export class DataStream {
     private testSufficient(size: number, alignment: number) {
         const misalign = (alignment - this.head % alignment) % alignment;
         if (this.head + misalign + size > this._size) {
-            return -1;
+            if (this.bufferInternal) {
+                // enlarge internal buffer
+                const newBuffer = new ArrayBuffer(this._size * 2);
+                new Uint8Array(newBuffer).set(new Uint8Array(this.buffer));
+                this.buffer = newBuffer;
+                this._size = this.buffer.byteLength;
+                this.makeBufferViews();
+            } else {
+                return -1;
+            }
         }
         return misalign;
     }
@@ -38,6 +63,7 @@ export class DataStream {
         const misalign = this.testSufficientByType(type);
         if (misalign < 0) throw "[DataStream]read buffer out of bound.";
         this.head += misalign;
+        // @ts-ignore
         const view = this[`${DataStream.Type[type].toLowerCase()}View`];
         const align_offset = this.head / DataStream.TypeAlignment[type];
         const elementCount = 1; // 如果有需要再启用
@@ -49,6 +75,7 @@ export class DataStream {
         const misalign = this.testSufficientByType(type);
         if (misalign < 0) throw "[DataStream]write buffer out of bound.";
         this.head += misalign;
+        // @ts-ignore
         const view = this[`${DataStream.Type[type].toLowerCase()}View`];
         const align_offset = this.head / DataStream.TypeAlignment[type];
         view[align_offset] = value;
@@ -62,6 +89,7 @@ export class DataStream {
         const misalign = this.testSufficientByType(type);
         if (misalign < 0) throw "[DataStream]write buffer out of bound.";
         this.head += misalign;
+        // @ts-ignore
         const view = this[`${DataStream.Type[type].toLowerCase()}View`];
         const align_offset = this.head / DataStream.TypeAlignment[type];
         this.head += DataStream.TypeSize[type];
@@ -92,6 +120,10 @@ export class DataStream {
     public pos() {
         return this.head;
     }
+
+    public getClippedBuffer() {
+        return this.buffer.slice(0, this.head);
+    }
 }
 export namespace DataStream {
     export enum Type {
@@ -109,4 +141,18 @@ export namespace DataStream {
         [Type.UInt32]: 4,
         [Type.UInt16]: 2,
     }
+}
+
+export function downloadBinaryFile(buffer: ArrayBuffer) {
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    // @ts-ignore
+    a.style = "display: none";
+    const blob = new Blob([buffer], { type: "octet/binary" });
+    const url = window.URL.createObjectURL(blob);
+    a.href = url;
+    const now = new Date();
+    a.download = `wgi_${dateFormat(now, "yyyy_mm_dd_HH_MM_ss")}`;
+    a.click();
+    window.URL.revokeObjectURL(url);
 }

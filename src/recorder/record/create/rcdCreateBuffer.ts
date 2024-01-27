@@ -1,4 +1,4 @@
-import { RecordKind, RecordType, SingleRecord } from "../base";
+import { RecordKind, RecordType, SingleRecord } from "../rcd";
 import wgi_GPUBuffer from "../../driver/GPUBuffer";
 import { DataStream } from "../../../common/utils";
 

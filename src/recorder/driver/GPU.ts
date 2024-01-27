@@ -1,3 +1,4 @@
+import { DataStream } from "../../common/utils";
 import wgi_GPUAdapter from "./GPUAdapter";
 import wgi_Resource from "./res";
 
@@ -20,6 +21,10 @@ export default class wgi_GPU extends wgi_Resource implements GPU {
     }
     get wgslLanguageFeatures(): WGSLLanguageFeatures {
         return this.next.wgslLanguageFeatures;
+    }
+
+    public serialize(ds: DataStream): void {
+        throw new Error("Method not implemented.");
     }
 
 }

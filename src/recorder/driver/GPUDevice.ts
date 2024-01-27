@@ -1,3 +1,4 @@
+import { DataStream } from "../../common/utils";
 import wgi_GPUAdapter from "./GPUAdapter";
 import wgi_GPUBuffer from "./GPUBuffer";
 import wgi_Resource from "./res";
@@ -70,14 +71,16 @@ export default class wgi_GPUDevice extends wgi_Resource implements GPUDevice {
     createQuerySet(descriptor: GPUQuerySetDescriptor): GPUQuerySet {
         throw new Error("Method not implemented.");
     }
-    lost: Promise<GPUDeviceLostInfo>;
+    get lost(): Promise<GPUDeviceLostInfo> { return this.next.lost; };
     pushErrorScope(filter: GPUErrorFilter): undefined {
         throw new Error("Method not implemented.");
     }
     popErrorScope(): Promise<GPUError | null> {
         throw new Error("Method not implemented.");
     }
-    onuncapturederror: ((this: GPUDevice, ev: GPUUncapturedErrorEvent) => any) | null;
+    get onuncapturederror(): ((this: GPUDevice, ev: GPUUncapturedErrorEvent) => any) | null {
+        return this.next.onuncapturederror;
+    }
     addEventListener(type: string, callback: EventListenerOrEventListenerObject | null, options?: boolean | AddEventListenerOptions | undefined): void {
         throw new Error("Method not implemented.");
     }
@@ -87,5 +90,9 @@ export default class wgi_GPUDevice extends wgi_Resource implements GPUDevice {
     removeEventListener(type: string, callback: EventListenerOrEventListenerObject | null, options?: boolean | EventListenerOptions | undefined): void {
         throw new Error("Method not implemented.");
     }
-    label: string;
+    get label(): string { return this.next.label; };
+
+    public serialize(ds: DataStream): void {
+        throw new Error("Method not implemented.");
+    }
 }
