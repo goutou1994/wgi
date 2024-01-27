@@ -1,3 +1,4 @@
+import { serializeString } from "../../common/serialize";
 import { DataStream } from "../../common/utils";
 import RcdCreateBuffer from "../record/create/rcdCreateBuffer";
 import { globalRecorder } from "../recorder";
@@ -31,9 +32,12 @@ export default class wgi_GPUBuffer extends wgi_Resource implements GPUBuffer {
         throw new Error("Method not implemented.");
     }
     get label(): string { return this.next.label; };
+    set label(v: string) { this.next.label = v; }
 
     public serialize(ds: DataStream): void {
-        throw new Error("Method not implemented.");
+        serializeString(ds, this.label);
+        ds.write(DataStream.Type.UInt32, this.size);
+        ds.write(DataStream.Type.UInt32, this.usage);
     }
 
 }

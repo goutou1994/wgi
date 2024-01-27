@@ -106,6 +106,12 @@ export class DataStream {
         this.head += length;
         return ret;
     }
+
+    public writeChunk(chunk: ArrayBuffer) {
+        this.testSufficient(chunk.byteLength, 1);
+        new Uint8Array(this.buffer, this.head).set(new Uint8Array(chunk));
+        this.head += chunk.byteLength;
+    }
     
     public align(alignment: number): void {
         const misalign = this.testSufficient(0, alignment);

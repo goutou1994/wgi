@@ -1,3 +1,4 @@
+import { serializeString } from "../../common/serialize";
 import { DataStream } from "../../common/utils";
 import wgi_GPU from "./GPU";
 import wgi_GPUDevice from "./GPUDevice";
@@ -28,6 +29,10 @@ export default class wgi_GPUAdapter extends wgi_Resource implements GPUAdapter {
     }
 
     public serialize(ds: DataStream): void {
-        throw new Error("Method not implemented.");
+        const features = this.features;
+        ds.write(DataStream.Type.UInt32, features.size);
+        for (const feature of features) {
+            serializeString(ds, feature);
+        }
     }
 }

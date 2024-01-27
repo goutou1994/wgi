@@ -4,7 +4,7 @@
   "description": "WebGPU Inspector",
   "main": "index.js",
   "scripts": {
-    "build": "rollup -c --bundleConfigAsCjs",
+    "build": "rollup -c --bundleConfigAsCjs && cp ./output/* test/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "goutou1994",

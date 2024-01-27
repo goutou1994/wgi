@@ -91,8 +91,9 @@ export default class wgi_GPUDevice extends wgi_Resource implements GPUDevice {
         throw new Error("Method not implemented.");
     }
     get label(): string { return this.next.label; };
+    set label(v: string) { this.next.label = v; }
 
     public serialize(ds: DataStream): void {
-        throw new Error("Method not implemented.");
+        // TODO: 
     }
 }

@@ -1,3 +1,4 @@
+import { serializeString } from "../../common/serialize";
 import { DataStream } from "../../common/utils";
 import wgi_GPUAdapter from "./GPUAdapter";
 import wgi_Resource from "./res";
@@ -24,7 +25,11 @@ export default class wgi_GPU extends wgi_Resource implements GPU {
     }
 
     public serialize(ds: DataStream): void {
-        throw new Error("Method not implemented.");
+        const features = this.wgslLanguageFeatures;
+        ds.write(DataStream.Type.UInt32, features.size);
+        features.forEach(feature => {
+            serializeString(ds, feature);
+        });
     }
 
 }

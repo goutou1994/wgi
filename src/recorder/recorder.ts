@@ -4,6 +4,7 @@ import { SingleRecord } from "./record/rcd";
 
 enum RecorderState {
     Background,
+    Preparing,
     Snapshot,
     Capturing,
     Saving,
@@ -19,7 +20,14 @@ export default class Recorder {
         this.records.push(rcd);
     }
 
-    public snapshot() { }
+    public capture() {
+        this.state = RecorderState.Preparing;
+    }
+
+    public async snapshot() {
+        // take snapshot of resources
+        this.state = RecorderState.Capturing;
+    }
     public save() {
         const ds = DataStream.createWithInternalBuffer();
         const u16 = DataStream.Type.UInt16;
@@ -51,6 +59,23 @@ export default class Recorder {
         totalLength.write(ds.pos());
 
         downloadBinaryFile(ds.getClippedBuffer());
+        this.state = RecorderState.Expired;
+    }
+
+    public frameStart(time: DOMHighResTimeStamp): [boolean, Promise<void>?] {
+        if (this.state == RecorderState.Preparing) {
+            this.state = RecorderState.Snapshot;
+            return [true, this.snapshot()];
+        } else {
+            return [false, undefined];
+        }
+    }
+
+    public frameEnd() {
+        if (this.state == RecorderState.Capturing) {
+            this.state = RecorderState.Saving;
+            this.save();
+        }
     }
 
     public state: RecorderState;
