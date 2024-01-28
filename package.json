@@ -2,23 +2,32 @@
   "name": "wgi",
   "version": "0.1.0",
   "description": "WebGPU Inspector",
-  "main": "index.js",
   "scripts": {
-    "build": "rollup -c --bundleConfigAsCjs && cp ./output/* test/",
+    "build": "rollup -c --environment entry:main && cp ./output/wgi.mjs test/wgi/",
+    "build-viewer": "rollup -c --environment entry:viewer && cp ./output/viewer.mjs test/viewer/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "goutou1994",
   "license": "ISC",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.5",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/dateformat": "^5.0.2",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
     "@webgpu/types": "^0.1.40",
     "rollup": "^4.9.6",
+    "rollup-plugin-postcss": "^4.0.2",
     "tslib": "^2.6.2",
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "dateformat": "^5.0.3"
+    "antd": "^5.13.3",
+    "dateformat": "^5.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-resizable-panels": "^1.0.10"
   }
 }

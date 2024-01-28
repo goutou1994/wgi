@@ -495,7 +495,6 @@ class wgi_GPUAdapter extends wgi_Resource {
         const features = this.features;
         ds.write(DataStream.Type.UInt32, features.size);
         for (const feature of features) {
-            console.log(feature);
             serializeString(ds, feature);
         }
     }

@@ -1,4 +1,4 @@
-import inject, { testStartCapture } from "./inject.mjs"
+import inject, { testStartCapture } from "./wgi.mjs"
 inject();
 (async function () {
     const adatper = await navigator.gpu.requestAdapter();
