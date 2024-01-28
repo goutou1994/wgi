@@ -10,7 +10,7 @@ export enum brandMap {
     GPUBuffer = 3
 };
 
-export default abstract class wgi_Resource {
+export default abstract class wgi_GPUBase {
     constructor() { this.__id = global_id_counter++; }
 
     abstract readonly __brand: keyof typeof brandMap;

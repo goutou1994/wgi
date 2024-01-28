@@ -2,10 +2,10 @@ import { serializeString } from "../../common/serialize";
 import { DataStream } from "../../common/utils";
 import wgi_GPU from "./GPU";
 import wgi_GPUDevice from "./GPUDevice";
-import wgi_Resource from "./res";
+import wgi_GPUBase from "./base";
 
-export default class wgi_GPUAdapter extends wgi_Resource implements GPUAdapter {
-    constructor(private next: GPUAdapter, private gpu: wgi_GPU) {
+export default class wgi_GPUAdapter extends wgi_GPUBase implements GPUAdapter {
+    constructor(private next: GPUAdapter, public gpu: wgi_GPU) {
         super();
         this.deps.add(gpu);
     }
@@ -29,6 +29,7 @@ export default class wgi_GPUAdapter extends wgi_Resource implements GPUAdapter {
     }
 
     public serialize(ds: DataStream): void {
+        
         const features = this.features;
         ds.write(DataStream.Type.UInt32, features.size);
         for (const feature of features) {

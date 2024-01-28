@@ -16,7 +16,6 @@ export default class RcdCreateBuffer extends SingleRecord {
     readonly __kind: RecordKind = RecordKind.CreateBuffer;
 
     public serialize(ds: DataStream) {
-        ds.write(DataStream.Type.UInt32, this.__kind);
         ds.write(DataStream.Type.UInt32, this.desc.buffer.__id);
         ds.write(DataStream.Type.UInt32, this.desc.desc.size);
         ds.write(DataStream.Type.UInt32, this.desc.desc.usage);

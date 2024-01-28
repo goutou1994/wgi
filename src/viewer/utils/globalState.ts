@@ -1,7 +1,7 @@
 
 interface GlobalState<T> {
     get(): T;
-    set(newState: T | {}): void;
+    set(newState: T): void;
     joinReRender(reRender: Function): void;
     cancelReRender(reRender: Function): void;
 }

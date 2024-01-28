@@ -1,9 +1,9 @@
 import { serializeString } from "../../common/serialize";
 import { DataStream } from "../../common/utils";
 import wgi_GPUAdapter from "./GPUAdapter";
-import wgi_Resource from "./res";
+import wgi_GPUBase from "./base";
 
-export default class wgi_GPU extends wgi_Resource implements GPU {
+export default class wgi_GPU extends wgi_GPUBase implements GPU {
     constructor(private next: GPU) {
         super();
     }
@@ -12,7 +12,7 @@ export default class wgi_GPU extends wgi_Resource implements GPU {
     requestAdapter(options?: GPURequestAdapterOptions | undefined): Promise<GPUAdapter | null> {
         return this.next.requestAdapter(options).then(
             adaptor => {
-                if (adaptor == null) throw "wgi: No adapter available!";
+                if (adaptor == null) throw "No adapter available!";
                 return new wgi_GPUAdapter(adaptor!, this)
             }
         );

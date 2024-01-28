@@ -1,5 +1,5 @@
 import { DataStream, downloadBinaryFile } from "../common/utils";
-import wgi_Resource, { brandMap } from "./driver/res";
+import wgi_GPUBase, { brandMap } from "./driver/base";
 import { SingleRecord } from "./record/rcd";
 
 enum RecorderState {
@@ -40,12 +40,14 @@ export default class Recorder {
 
         ds.write(u32, this.records.length); // records count
         for (let i = 0; i < this.records.length; i++) {
+            const rcd = this.records[i];
             ds.write(u32, 0x646372); // rcd signature
             ds.write(u32, i); // record index
+            ds.write(u32, rcd.__kind);
             this.records[i].serialize(ds);
         }
 
-        const resources: Set<wgi_Resource> = new Set();
+        const resources: Set<wgi_GPUBase> = new Set();
         for (const rcd of this.records) {
             rcd.deps.recursivelySumDependencies(resources);
         }

@@ -3,9 +3,9 @@ import { DataStream } from "../../common/utils";
 import RcdCreateBuffer from "../record/create/rcdCreateBuffer";
 import { globalRecorder } from "../recorder";
 import wgi_GPUDevice from "./GPUDevice";
-import wgi_Resource from "./res";
+import wgi_GPUBase from "./base";
 
-export default class wgi_GPUBuffer extends wgi_Resource implements GPUBuffer {
+export default class wgi_GPUBuffer extends wgi_GPUBase implements GPUBuffer {
     constructor(private next: GPUBuffer, private device: wgi_GPUDevice, private desc: GPUBufferDescriptor) {
         super();
         this.deps.add(device);
@@ -15,7 +15,6 @@ export default class wgi_GPUBuffer extends wgi_Resource implements GPUBuffer {
     }
     readonly __brand: "GPUBuffer" = "GPUBuffer";
 
-    // proxys
     get size(): number { return this.next.size; };
     get usage(): number { return this.next.usage; };
     get mapState(): GPUBufferMapState { return this.next.mapState; }

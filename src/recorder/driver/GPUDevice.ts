@@ -1,10 +1,10 @@
 import { DataStream } from "../../common/utils";
 import wgi_GPUAdapter from "./GPUAdapter";
 import wgi_GPUBuffer from "./GPUBuffer";
-import wgi_Resource from "./res";
+import wgi_GPUBase from "./base";
 
-export default class wgi_GPUDevice extends wgi_Resource implements GPUDevice {
-    constructor(private next: GPUDevice, private adapter: wgi_GPUAdapter, private desc: GPUDeviceDescriptor | undefined) {
+export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
+    constructor(private next: GPUDevice, public adapter: wgi_GPUAdapter, private desc: GPUDeviceDescriptor | undefined) {
         super();
         this.deps.add(adapter);
     }
