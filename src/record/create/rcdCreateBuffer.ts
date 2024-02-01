@@ -14,7 +14,7 @@ export default class RcdCreateBuffer extends RcdBase<TrackedGPUDevice, [GPUBuffe
     readonly __kind: RecordKind = RecordKind.CreateBuffer;
 
     public play(): TrackedGPUBuffer {
-        const buffer = this.caller!.__authentic!.createBuffer({
+        const buffer = this.caller!.getAuthenticNext().createBuffer({
             size: this.args[0].size,
             usage: this.args[0].usage
         }) as wgi_GPUBuffer;
@@ -26,8 +26,8 @@ export default class RcdCreateBuffer extends RcdBase<TrackedGPUDevice, [GPUBuffe
         return this.ret;
     }
 
-    public directPlay(args: [GPUBufferDescriptor], caller: TrackedGPUDevice): GPUBuffer {
-        return caller.__authentic!.createBuffer(args[0]);
+    public directPlay(args: [GPUBufferDescriptor], caller: GPUDevice): GPUBuffer {
+        return caller.createBuffer(args[0]);
     }
 
     public serialize(ds: DataStream) {

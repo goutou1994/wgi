@@ -50,7 +50,12 @@ export default class Recorder {
             ds.write(u32, 0x736572); // res signature
             ds.write(u32, tracked.__id); // res id
             ds.write(u32, tracked.__kind); // res brand
-            tracked.serialize(ds);
+            if (tracked.__temporary) {
+                ds.write(u32, 0x1);
+            } else {
+                ds.write(u32, 0);
+                tracked.serialize(ds);
+            }
         }
 
         totalLength.write(ds.pos());
@@ -87,7 +92,9 @@ export default class Recorder {
             tracked = trackedCtor.prototype.fromAuthentic(obj) as TrackedBase<any>;
             this.trackedMap.set(obj.__id, tracked);
 
-            tracked.takeSnapshot(1);
+            if (!tracked.__temporary) {
+                tracked.takeSnapshot();
+            }
             const deps = tracked.getSnapshotDepIds();
             for (const depId of deps) {
                 let depTracked = this.trackedMap.get(depId);
@@ -120,6 +127,7 @@ export default class Recorder {
                 this.trackedMap.set(ret.__id, ret);
             }
         } else {
+            if (caller.next) caller = caller.next;
             return RcdType.prototype.directPlay(args, caller);
         }
     }

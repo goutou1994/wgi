@@ -27,7 +27,7 @@ export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = voi
     }
 
     public abstract play(): Ret;
-    public abstract directPlay(args: Args, caller?: Caller): Authentic<Ret>;
+    public abstract directPlay(args: Args, caller?: Authentic<Caller>): Authentic<Ret>;
 
     public abstract serialize(ds: DataStream): void;
 

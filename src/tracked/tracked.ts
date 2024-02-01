@@ -79,8 +79,7 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
      * Retrieve content to make a snapshot.
      * Used by capturer and replay.
      */
-    private __snapshot_id = 0;
-    public abstract takeSnapshot(snapshot_id: number): void;
+    public abstract takeSnapshot(): void;
 
     /**
      * Get ids of all dependencies from snapshot.
@@ -90,7 +89,12 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
     protected fastFromAuthentic(authentic: wgi_GPUBase, Ctor: new () => T) {
         const i = new Ctor();
         i.__id = authentic.__id;
+        i.__authentic = authentic;
         i.__restored = true;
         return i;
+    }
+
+    public getAuthenticNext() {
+        return this.__authentic?.next ?? this.__authentic;
     }
 }
