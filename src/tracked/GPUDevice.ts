@@ -1,7 +1,7 @@
 import { DataStream } from "../common/utils";
 import wgi_GPUDevice from "../recorder/driver/GPUDevice";
 import { brandMap } from "../recorder/driver/gpubase";
-import ReplayProfile from "../replay/profile";
+import type ReplayProfile from "../replay/profile";
 import TrackedGPUAdapter from "./GPUAdapter";
 import TrackedBase from "./tracked";
 

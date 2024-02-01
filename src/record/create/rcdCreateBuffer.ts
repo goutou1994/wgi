@@ -3,7 +3,7 @@ import wgi_GPUBuffer from "../../recorder/driver/GPUBuffer";
 import { DataStream } from "../../common/utils";
 import type TrackedGPUDevice from "../../tracked/GPUDevice";
 import TrackedGPUBuffer from "../../tracked/GPUBuffer";
-import ReplayProfile from "../../replay/profile";
+import type ReplayProfile from "../../replay/profile";
 
 export default class RcdCreateBuffer extends RcdBase<TrackedGPUDevice, [GPUBufferDescriptor], TrackedGPUBuffer> {
     

@@ -2,7 +2,7 @@ import { deserializeString, serializeString } from "../common/serialize";
 import { DataStream } from "../common/utils";
 import wgi_GPUBuffer from "../recorder/driver/GPUBuffer";
 import wgi_GPUBase, { brandMap } from "../recorder/driver/gpubase";
-import ReplayProfile from "../replay/profile";
+import type ReplayProfile from "../replay/profile";
 import TrackedGPUDevice from "./GPUDevice";
 import TrackedBase from "./tracked";
 

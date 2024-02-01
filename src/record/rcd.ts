@@ -1,6 +1,6 @@
 import ResourceDependencies from "../common/deps";
 import { DataStream } from "../common/utils";
-import ReplayProfile from "../replay/profile";
+import type ReplayProfile from "../replay/profile";
 
 export enum RecordType {
     Create,

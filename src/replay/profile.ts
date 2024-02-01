@@ -5,9 +5,11 @@ export default class ReplayProfile {
 
     public replayTo(rcdId: number) { }
 
-    public get<T = BaseResource<any>>(resId: UniversalResourceId): T;
+    public get<T = BaseResource<any>>(resId: UniversalResourceId): T {
+        return null as any;
+    }
 
     public async getOrRestore<T = BaseResource<any>>(resId: UniversalResourceId): Promise<T> {
-
+        return null as any;
     }
 }
