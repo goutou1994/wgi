@@ -1,4 +1,4 @@
-import wgi_GPUBase from "../recorder/driver/base";
+import wgi_GPUBase from "../recorder/driver/gpubase";
 
 export default class ResourceDependencies {
     constructor() {}

@@ -1,9 +1,15 @@
 import { serializeString } from "../../common/serialize";
 import { DataStream } from "../../common/utils";
+import TrackedGPU from "../../tracked/GPU";
+import TrackedBase from "../../tracked/tracked";
 import wgi_GPUAdapter from "./GPUAdapter";
-import wgi_GPUBase from "./base";
+import wgi_GPUBase from "./gpubase";
 
 export default class wgi_GPU extends wgi_GPUBase implements GPU {
+    public getTrackedType() {
+        return TrackedGPU;
+    }
+
     constructor(private next: GPU) {
         super();
     }
@@ -23,13 +29,4 @@ export default class wgi_GPU extends wgi_GPUBase implements GPU {
     get wgslLanguageFeatures(): WGSLLanguageFeatures {
         return this.next.wgslLanguageFeatures;
     }
-
-    public serialize(ds: DataStream): void {
-        const features = this.wgslLanguageFeatures;
-        ds.write(DataStream.Type.UInt32, features.size);
-        features.forEach(feature => {
-            serializeString(ds, feature);
-        });
-    }
-
 }

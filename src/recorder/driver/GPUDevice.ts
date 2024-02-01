@@ -1,9 +1,16 @@
 import { DataStream } from "../../common/utils";
+import RcdCreateBuffer from "../../record/create/rcdCreateBuffer";
+import TrackedGPUDevice from "../../tracked/GPUDevice";
+import TrackedBase from "../../tracked/tracked";
+import { globalRecorder } from "../recorder";
 import wgi_GPUAdapter from "./GPUAdapter";
 import wgi_GPUBuffer from "./GPUBuffer";
-import wgi_GPUBase from "./base";
+import wgi_GPUBase from "./gpubase";
 
 export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
+    public getTrackedType(): typeof TrackedBase<any> {
+        return TrackedGPUDevice;
+    }
     constructor(private next: GPUDevice, public adapter: wgi_GPUAdapter, private desc: GPUDeviceDescriptor | undefined) {
         super();
         this.deps.add(adapter);
@@ -23,10 +30,10 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         throw new Error("Method not implemented.");
     }
     createBuffer(descriptor: GPUBufferDescriptor): GPUBuffer {
-        return new wgi_GPUBuffer(
-            this.next.createBuffer(descriptor),
+        return globalRecorder.processRcd(
+            RcdCreateBuffer,
             this,
-            descriptor
+            [descriptor]
         );
     }
     createTexture(descriptor: GPUTextureDescriptor): GPUTexture {
@@ -93,7 +100,4 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
     get label(): string { return this.next.label; };
     set label(v: string) { this.next.label = v; }
 
-    public serialize(ds: DataStream): void {
-        // TODO: 
-    }
 }

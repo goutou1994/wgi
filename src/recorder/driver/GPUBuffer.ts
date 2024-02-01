@@ -1,17 +1,19 @@
 import { serializeString } from "../../common/serialize";
 import { DataStream } from "../../common/utils";
-import RcdCreateBuffer from "../record/create/rcdCreateBuffer";
+import RcdCreateBuffer from "../../record/create/rcdCreateBuffer";
+import TrackedGPUBuffer from "../../tracked/GPUBuffer";
+import TrackedBase from "../../tracked/tracked";
 import { globalRecorder } from "../recorder";
 import wgi_GPUDevice from "./GPUDevice";
-import wgi_GPUBase from "./base";
+import wgi_GPUBase from "./gpubase";
 
 export default class wgi_GPUBuffer extends wgi_GPUBase implements GPUBuffer {
-    constructor(private next: GPUBuffer, private device: wgi_GPUDevice, private desc: GPUBufferDescriptor) {
+    public getTrackedType() {
+        return TrackedGPUBuffer;
+    }
+    constructor(private next: GPUBuffer, public device: wgi_GPUDevice, private desc: GPUBufferDescriptor) {
         super();
         this.deps.add(device);
-
-        // record goes last
-        globalRecorder.record(new RcdCreateBuffer({ buffer: this, desc }));
     }
     readonly __brand: "GPUBuffer" = "GPUBuffer";
 
