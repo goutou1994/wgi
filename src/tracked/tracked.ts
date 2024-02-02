@@ -1,4 +1,4 @@
-import type { DataStream } from "../common/utils";
+import type { DataStream, brandMap } from "../common/utils";
 import type wgi_GPUBase from "../recorder/driver/gpubase";
 import type ReplayProfile from "../replay/profile";
 
@@ -18,7 +18,7 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
     /**
      * @see brandMap from src/recorder/driver/base.ts
      */
-    abstract readonly __kind: number;
+    abstract readonly __kind: brandMap;
 
     /**
      * Authentic gpu resource.

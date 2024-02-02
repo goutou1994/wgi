@@ -11,7 +11,7 @@ interface GPUAdapterSnapshot {
 }
 
 export default class TrackedGPUAdapter extends TrackedBase<TrackedGPUAdapter> {
-    readonly __kind: number = brandMap["GPUAdapter"];
+    readonly __kind: number = brandMap.GPUAdapter;
     __authentic?: GPUAdapter;
     __snapshot?: GPUAdapterSnapshot;
     private gpu?: TrackedGPU;

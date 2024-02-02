@@ -10,10 +10,28 @@ function openResTab(id: number) {
     }
     currentTab.set(id.toString());
 }
+function closeResTab(id: number) {
+    const tabs = [...resInspecting.get()];
+    const tabIndex = tabs.lastIndexOf(id);
+    console.assert(tabIndex !== -1);
+
+    tabs.splice(tabIndex, 1);
+    if (currentTab.get() === id.toString()) {
+        if (tabs.length == 0) {
+            currentTab.set("rcd");
+        } else if (tabIndex >= tabs.length) {
+            currentTab.set(tabs[tabIndex - 1].toString());
+        } else {
+            currentTab.set(tabs[tabIndex].toString());
+        }
+    }
+    resInspecting.set(tabs);
+}
 
 export {
     resInspecting,
     currentTab,
 
-    openResTab
+    openResTab,
+    closeResTab
 };

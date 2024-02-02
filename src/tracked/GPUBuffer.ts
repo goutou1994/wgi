@@ -15,7 +15,7 @@ interface GPUBufferSnapshot {
 };
 
 export default class TrackedGPUBuffer extends TrackedBase<TrackedGPUBuffer> {
-    readonly __kind: number = brandMap["GPUBuffer"];
+    readonly __kind: number = brandMap.GPUBuffer;
     __authentic?: GPUBuffer;
     __snapshot?: GPUBufferSnapshot;
     private device?: TrackedGPUDevice;

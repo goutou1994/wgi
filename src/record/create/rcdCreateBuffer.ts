@@ -14,6 +14,7 @@ export default class RcdCreateBuffer extends RcdBase<TrackedGPUDevice, [GPUBuffe
     readonly __kind: RecordKind = RecordKind.CreateBuffer;
 
     public play(): TrackedGPUBuffer {
+        // There is a problem here, buffer created by real driver does not have its own id.
         const buffer = this.caller!.getAuthenticNext().createBuffer({
             size: this.args[0].size,
             usage: this.args[0].usage

@@ -6,7 +6,7 @@ import ResLink from "../../common/ResLink";
 export default function dCreateBufferView(rcd: RcdCreateBuffer): RcdDetailContent {
     return {
         title: <span>device.CreateBuffer</span>,
-        caller: `GPUDevice#${rcd.caller!.__id}`,
+        caller: <ResLink id={rcd.caller!.__id} />,
         arguments: [
             [
                 {
@@ -19,7 +19,7 @@ export default function dCreateBufferView(rcd: RcdCreateBuffer): RcdDetailConten
                 }
             ]
         ],
-        return: <ResLink id={rcd.ret!.__id} label={`GPUBuffer#${rcd.ret!.__id}`}/>,
+        return: <ResLink id={rcd.ret!.__id} />,
         refLink: "https://developer.mozilla.org/en-US/docs/Web/API/GPUDevice/createBuffer"
     };
 }

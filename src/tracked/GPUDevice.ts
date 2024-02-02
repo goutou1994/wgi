@@ -9,7 +9,7 @@ interface GPUDeviceSnapshot {
 }
 
 export default class TrackedGPUDevice extends TrackedBase<TrackedGPUDevice> {
-    readonly __kind: number = brandMap["GPUDevice"];
+    readonly __kind: number = brandMap.GPUDevice;
     __authentic?: GPUDevice;
     __snapshot?: GPUDeviceSnapshot;
     private adapter?: TrackedGPUAdapter;

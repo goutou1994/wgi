@@ -1,13 +1,17 @@
 import React from "react";
 import styles from "./common.module.css";
 import { openResTab } from "../../model/inspector";
+import { globalProfile } from "../../model/global";
+import { brandMap } from "../../../common/utils";
 
 interface ResLinkProps {
-    label: React.JSX.Element | string;
     id: number;
 };
 
-export default function ResLink({ label, id }: ResLinkProps) {
+export default function ResLink({ id }: ResLinkProps) {
+    const tracked = globalProfile!.get(id);
+    const label = `${brandMap[tracked.__kind]}#${id}`;
+
     const handleClick = () => {
         openResTab(id);
     };

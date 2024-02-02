@@ -4,7 +4,7 @@ import RcdDetail from './inspectors/rcd/RcdDetail';
 import useGlobalState from '../utils/globalState';
 import { globalProfile } from '../model/global';
 import { brandMap } from '../../common/utils';
-import { currentTab, resInspecting } from '../model/inspector';
+import { closeResTab, currentTab, resInspecting } from '../model/inspector';
 import ResDetail from './inspectors/res/ResDetail';
 // import { TabItem, makeWindow } from './window';
 
@@ -60,20 +60,7 @@ export default function InspectorGroup() {
         if (action === 'add') {
             // add();
         } else {
-            remove(Number(targetKey));
-        }
-    };
-
-    const remove = (id: number) => {
-        const tabIndex = resTabIds.lastIndexOf(id);
-        console.assert(tabIndex !== -1);
-
-        resTabIds.splice(tabIndex, 1);
-        setResTabIds(resTabIds);
-        if (tabIndex > 1) {
-            setCurrent((tabIndex - 1).toString());
-        } else {
-            setCurrent("rcd");
+            closeResTab(Number(targetKey))
         }
     };
 

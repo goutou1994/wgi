@@ -6,13 +6,15 @@ import { LinkOutlined } from "@ant-design/icons";
 
 import styles from "./ResDetail.module.css";
 import { Collapse, CollapseProps } from "antd";
+import { brandMap } from "../../../../common/utils";
+import { ResDetailMap } from "./utils";
 
 interface ResDetailProps {
     id: UniversalResourceId
 };
 
 export interface ResDetailContent {
-    title: React.JSX.Element | string;
+    title?: React.JSX.Element | string;
     creator: React.JSX.Element | string | undefined;
     attributes: Array<{
         key: string;
@@ -26,7 +28,9 @@ export default function ResDetail({ id }: ResDetailProps) {
     const [rcdId] = useGlobalState(currentRcdId); //  do not delete this
 
     const tracked = globalProfile!.get(id);
-    const content = dGPUBuffer(tracked);
+    const detailCtor = ResDetailMap[tracked.__kind];
+    if (!detailCtor) return <p>No inspector avaiable for this type of resource.</p>
+    const content = detailCtor(tracked);
     if (!content) return <p>Resource not avaiable (probably not created yet).</p>
 
     const collapseItems: CollapseProps["items"] = [];
@@ -37,7 +41,7 @@ export default function ResDetail({ id }: ResDetailProps) {
             children: content.creator
         });
     }
-    if (content.attributes) {
+    if (content.attributes && content.attributes.length > 0) {
         collapseItems.push({
             key: "attributes",
             label: "Properties",
@@ -58,7 +62,7 @@ export default function ResDetail({ id }: ResDetailProps) {
     return <>
         <p>Inspector: Record</p>
         <h1>
-            {content.title}
+            {content.title ?? `${brandMap[tracked.__kind]}#${tracked.__id}`}
             {content.refLink && <LinkOutlined className={styles.refLink} onClick={handleClickRefLink} />}
            
         </h1>

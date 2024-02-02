@@ -9,7 +9,7 @@ interface GPUSnapshot {
 }
 
 export default class TrackedGPU extends TrackedBase<TrackedGPU> {
-    readonly __kind: number = brandMap["GPU"];
+    readonly __kind: number = brandMap.GPU;
     __authentic?: GPU;
     __snapshot?: GPUSnapshot;
 
