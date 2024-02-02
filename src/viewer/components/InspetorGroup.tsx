@@ -1,59 +1,80 @@
 import React, { useRef, useState } from 'react';
 import { Tabs, TabsProps } from 'antd';
+import RcdDetail from './inspectors/rcd/RcdDetail';
+import useGlobalState from '../utils/globalState';
+import { globalProfile } from '../model/global';
+import { brandMap } from '../../common/utils';
+import { currentTab, resInspecting } from '../model/inspector';
+import ResDetail from './inspectors/res/ResDetail';
 // import { TabItem, makeWindow } from './window';
 
 export type TabItem = Required<TabsProps>["items"][number];
 
 const initialItems: Array<TabItem> = [
-    { label: 'Tab 1', children: 'Content of Tab 1', key: '1' }
+    { label: 'Record', children: <RcdDetail />, key: 'rcd' , closable: false}
 ];
 
+const resTabMap: Map<UniversalResourceId, React.JSX.Element> = new Map();
+
 export default function InspectorGroup() {
-    const [current, setCurrent] = useState("-1");
-    const windowCount = useRef(0);
-    const [items, setItems] = useState(initialItems);
+    const [current, setCurrent] = useGlobalState(currentTab);
+    const [resTabIds, setResTabIds] = useGlobalState(resInspecting);
+    // const [items, setItems] = useState(initialItems);
+
+    const items: Array<TabItem> = [
+        ...initialItems,
+        ...resTabIds.map(id => {
+            let children: React.JSX.Element;
+            const res = globalProfile!.get(id);
+            if (resTabMap.has(id)) {
+                children = resTabMap.get(id)!;
+            } else {
+                children = <ResDetail id={id}></ResDetail>
+                resTabMap.set(id, children);
+            }
+            return {
+                label: `${brandMap[res.__kind]}#${id}`,
+                key: id.toString(),
+                children
+            };
+        })
+    ];
+
 
     const onChange = (newActiveKey: string) => {
         setCurrent(newActiveKey);
     };
 
-    const add = () => {
+    // const add = () => {
         // const newActiveKey = `newTab${windowCount.current++}`;
         // const newPanes = [...items];
         // newPanes.push(makeWindow(newActiveKey));
         // setItems(newPanes);
         // setCurrent(newActiveKey);
-    };
+    // };
 
     const onEdit = (
         targetKey: React.MouseEvent | React.KeyboardEvent | string,
         action: 'add' | 'remove',
     ) => {
         if (action === 'add') {
-            add();
+            // add();
         } else {
-            remove(targetKey);
+            remove(Number(targetKey));
         }
     };
 
-    const remove = (targetKey: React.MouseEvent | React.KeyboardEvent | string) => {
-        let newActiveKey = current;
-        let lastIndex = -1;
-        items.forEach((item, i) => {
-            if (item.key === targetKey) {
-                lastIndex = i - 1;
-            }
-        });
-        const newPanes = items.filter((item) => item.key !== targetKey);
-        if (newPanes.length && newActiveKey === targetKey) {
-            if (lastIndex >= 0) {
-                newActiveKey = newPanes[lastIndex].key;
-            } else {
-                newActiveKey = newPanes[0].key;
-            }
+    const remove = (id: number) => {
+        const tabIndex = resTabIds.lastIndexOf(id);
+        console.assert(tabIndex !== -1);
+
+        resTabIds.splice(tabIndex, 1);
+        setResTabIds(resTabIds);
+        if (tabIndex > 1) {
+            setCurrent((tabIndex - 1).toString());
+        } else {
+            setCurrent("rcd");
         }
-        setItems(newPanes);
-        setCurrent(newActiveKey);
     };
 
     // const onClick: MenuProps['onClick'] = (e) => {
@@ -73,6 +94,7 @@ export default function InspectorGroup() {
     return <>
         <Tabs
             type="editable-card"
+            hideAdd
             onChange={onChange}
             activeKey={current}
             onEdit={onEdit}

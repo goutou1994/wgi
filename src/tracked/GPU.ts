@@ -1,7 +1,6 @@
 import { deserializeString, serializeString } from "../common/serialize";
-import { DataStream } from "../common/utils";
+import { DataStream, brandMap } from "../common/utils";
 import wgi_GPU from "../recorder/driver/GPU";
-import { brandMap } from "../recorder/driver/gpubase";
 import ReplayProfile from "../replay/profile";
 import TrackedBase from "./tracked";
 
@@ -27,19 +26,15 @@ export default class TrackedGPU extends TrackedBase<TrackedGPU> {
         });
     }
 
-    public deserialize(id: number, ds: DataStream): TrackedGPU {
+    public deserialize(ds: DataStream) {
         const size = ds.read<number>(DataStream.Type.UInt32);
         const features = new Set<string>();
         for (let i = 0; i < size; i++) {
             features.add(deserializeString(ds));
         }
-
-        const gpu = new TrackedGPU();
-        gpu.__id = id;
-        gpu.__snapshot = {
+        this.__snapshot = {
             features
         };
-        return gpu;
     }
     
     public async restore(profile: ReplayProfile) {

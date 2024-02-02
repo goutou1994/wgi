@@ -51,6 +51,7 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
     public constructor() { }
 
     /**
+     * @static
      * Construct a resource from wgi driver.
      * Used by capturer only.
      */
@@ -67,7 +68,7 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
      * Deserialize from capture binary file, generate snapshot.
      * Used by replay only.
      */
-    public abstract deserialize(id: number, ds: DataStream): T;
+    public abstract deserialize(ds: DataStream): void;
 
     /**
      * Recreate the actual gpu resource by snapshot.

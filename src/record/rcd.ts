@@ -16,8 +16,8 @@ export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = voi
     abstract readonly __type: RecordType;
     abstract readonly __kind: RecordKind;
 
-    protected args: Args;
-    protected caller?: Caller;
+    public args: Args;
+    public caller?: Caller;
     public ret?: Ret;
 
     constructor(args: Args, caller?: Caller, ret?: Ret) {
@@ -27,6 +27,10 @@ export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = voi
     }
 
     public abstract play(): Ret;
+
+    /**
+     * @static
+     */
     public abstract directPlay(args: Args, caller?: Authentic<Caller>): Authentic<Ret>;
 
     public abstract serialize(ds: DataStream): void;

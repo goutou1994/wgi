@@ -1,5 +1,5 @@
 import { DataStream, downloadBinaryFile } from "../common/utils";
-import wgi_GPUBase, { brandMap, wgiResMap } from "./driver/gpubase";
+import wgi_GPUBase, { wgiResMap } from "./driver/gpubase";
 import RcdBase from "../record/rcd";
 import TrackedBase from "../tracked/tracked";
 
@@ -35,16 +35,6 @@ export default class Recorder {
         ds.write(u16, 1); // minor version
         const totalLength = ds.reserve(u32);
 
-        ds.write(u32, this.records.length); // records count
-        for (let i = 0; i < this.records.length; i++) {
-            const rcd = this.records[i];
-            ds.write(u32, 0x646372); // rcd signature
-            ds.write(u32, i); // record index
-            ds.write(u32, rcd.__kind);
-            this.records[i].serialize(ds);
-        }
-        
-        
         ds.write(u32, this.trackedMap.size); // res count
         for (const [, tracked] of this.trackedMap) {
             ds.write(u32, 0x736572); // res signature
@@ -56,6 +46,15 @@ export default class Recorder {
                 ds.write(u32, 0);
                 tracked.serialize(ds);
             }
+        }
+
+        ds.write(u32, this.records.length); // records count
+        for (let i = 0; i < this.records.length; i++) {
+            const rcd = this.records[i];
+            ds.write(u32, 0x646372); // rcd signature
+            ds.write(u32, i); // record index
+            ds.write(u32, rcd.__kind);
+            this.records[i].serialize(ds);
         }
 
         totalLength.write(ds.pos());

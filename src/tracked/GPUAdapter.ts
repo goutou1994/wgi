@@ -1,7 +1,6 @@
 import { deserializeString, serializeString } from "../common/serialize";
-import { DataStream } from "../common/utils";
+import { DataStream, brandMap } from "../common/utils";
 import wgi_GPUAdapter from "../recorder/driver/GPUAdapter";
-import { brandMap } from "../recorder/driver/gpubase";
 import type ReplayProfile from "../replay/profile";
 import TrackedGPU from "./GPU";
 import TrackedBase from "./tracked";
@@ -28,7 +27,7 @@ export default class TrackedGPUAdapter extends TrackedBase<TrackedGPUAdapter> {
             serializeString(ds, feature);
         }
     }
-    public deserialize(id: number, ds: DataStream): TrackedGPUAdapter {
+    public deserialize(ds: DataStream) {
         const gpu_id = ds.read<number>(DataStream.Type.UInt32);
         const size = ds.read<number>(DataStream.Type.UInt32);
         const features = new Set<string>();
@@ -36,13 +35,10 @@ export default class TrackedGPUAdapter extends TrackedBase<TrackedGPUAdapter> {
             features.add(deserializeString(ds));
         }
 
-        const adapter = new TrackedGPUAdapter();
-        adapter.__id = id;
-        adapter.__snapshot = {
+        this.__snapshot = {
             gpu: gpu_id,
             features
         }
-        return adapter;
     }
     public async restore(profile: ReplayProfile) {
         this.gpu = await profile.getOrRestore(this.__snapshot!.gpu) as TrackedGPU;

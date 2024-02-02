@@ -1,5 +1,5 @@
 import React from "react";
-import { RcdEntries, rcds as globalRcds } from "../model/global";
+import { RcdEntries, rcdEntries, selectRcd } from "../model/global";
 import useGlobalState from "../utils/globalState";
 import { Menu, MenuProps } from "antd";
 
@@ -15,11 +15,15 @@ function makeMenuProps(rcds: RcdEntries): MenuItems {
 }
 
 export default function RcdDisplay() {
-    const [rcds] = useGlobalState(globalRcds);
+    const [rcds] = useGlobalState(rcdEntries);
 
     const menuItems = makeMenuProps(rcds);
 
+    const handleClick: MenuProps['onClick'] = e => {
+        selectRcd(Number(e.key));
+    };
+
     return <div className={styles.container}>
-        <Menu mode="inline" items={menuItems} />
+        <Menu mode="inline" items={menuItems} onClick={handleClick} />
     </div>;
 }

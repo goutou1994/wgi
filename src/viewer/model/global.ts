@@ -1,9 +1,9 @@
-import { NotificationInstance } from "antd/es/notification/interface";
 import ReplayProfile from "../../replay/profile";
 import { createGlobalState } from "../utils/globalState";
-import { logError, logSuccess } from "../utils/message";
+import { logError, logSuccess, logWarning } from "../utils/message";
+import { RecordKind } from "../../record/rcd";
 
-const globalProfile: ReplayProfile | null = null;
+export let globalProfile: ReplayProfile | null = null;
 async function loadCapture(file: File) {
     loading.set(true);
     const reader = file.stream().getReader();
@@ -17,12 +17,22 @@ async function loadCapture(file: File) {
     
     logSuccess("File read successfully.");
 
-    const profile = new ReplayProfile(buffer!);
-    // mock
-    rcds.set([{
-        label: "CreateBuffer",
-        id: 0
-    }]);
+    const profile = new ReplayProfile();
+    profile.setLogger(logSuccess, logWarning, logError);
+
+    try {
+        profile.deserialize(buffer);
+        globalProfile = profile;
+    } catch (e) {
+        logError(e as string);
+        return;
+    }
+
+    const rcds = profile.getRcds();
+    rcdEntries.set(rcds.map((rcd, index) => ({
+        label: RecordKind[rcd.__kind],
+        id: index
+    })));
 
     reader.releaseLock();
     loading.set(false);
@@ -35,9 +45,10 @@ interface RcdEntry {
 
 export type RcdEntries = Array<RcdEntry>;
 const rcdInitial: RcdEntries = [];
-const rcds = createGlobalState(rcdInitial);
+const rcdEntries = createGlobalState(rcdInitial);
+const currentRcdId = createGlobalState<number | null>(null);
 
-function chooseRcd(id: number) {
+export function selectRcd(id: number) {
     if (currentRcdId.get() === id) return;
     if (!globalProfile) {
         logError("No replay profile available.");
@@ -52,13 +63,12 @@ function chooseRcd(id: number) {
 const loading = createGlobalState(false);
 const loaded = createGlobalState(false);
 const replaying = createGlobalState(false);
-const currentRcdId = createGlobalState(-1);
 const count = createGlobalState(0);
 
 export {
     // global states
     loaded,
-    rcds,
+    rcdEntries,
     replaying,
     currentRcdId,
     count,

@@ -1,7 +1,7 @@
 import { deserializeString, serializeString } from "../common/serialize";
-import { DataStream } from "../common/utils";
+import { DataStream, brandMap } from "../common/utils";
 import wgi_GPUBuffer from "../recorder/driver/GPUBuffer";
-import wgi_GPUBase, { brandMap } from "../recorder/driver/gpubase";
+import wgi_GPUBase from "../recorder/driver/gpubase";
 import type ReplayProfile from "../replay/profile";
 import TrackedGPUDevice from "./GPUDevice";
 import TrackedBase from "./tracked";
@@ -30,23 +30,19 @@ export default class TrackedGPUBuffer extends TrackedBase<TrackedGPUBuffer> {
         ds.write(DataStream.Type.UInt32, this.__snapshot!.size);
         ds.write(DataStream.Type.UInt32, this.__snapshot!.usage);
     }
-    public deserialize(id: number, ds: DataStream): TrackedGPUBuffer {
+    public deserialize(ds: DataStream) {
         const device_id = ds.read<number>(DataStream.Type.UInt32);
         const label = deserializeString(ds);
         const size = ds.read<number>(DataStream.Type.UInt32);
         const usage = ds.read<number>(DataStream.Type.UInt32);
         const content = new ArrayBuffer(4);
-        const snapshot: GPUBufferSnapshot = {
+        this.__snapshot = {
             device: device_id,
             label,
             size,
             usage,
             content
         };
-        const tracked = new TrackedGPUBuffer();
-        tracked.__id = id;
-        tracked.__snapshot = snapshot;
-        return tracked;
     }
     public async restore(profile: ReplayProfile): Promise<void> {
         this.device = await profile.getOrRestore(this.__snapshot!.device);
