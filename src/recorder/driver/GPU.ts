@@ -10,7 +10,7 @@ export default class wgi_GPU extends wgi_GPUBase implements GPU {
         return TrackedGPU;
     }
 
-    constructor(private next: GPU) {
+    constructor(public next: GPU) {
         super();
     }
 

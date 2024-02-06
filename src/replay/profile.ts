@@ -1,18 +1,15 @@
-import { DataStream } from "../common/utils";
+import { DataStream, brandMap } from "../common/utils";
 import TrackedBase from "../tracked/tracked";
 import * as version from "../common/version";
 import { trackedCtorMap } from "./utils/trackedCtor";
 import { rcdCtorMap } from "./utils/rcdCtor";
 import RcdBase from "../record/rcd";
+import TrackedGPUDevice from "../tracked/GPUDevice";
 
 type logger = (msg: string) => void;
 
 export default class ReplayProfile {
-    constructor() {
-        // generate all tracked
-
-        // generate all rcd
-    }
+    constructor() { }
 
     public setLogger(success?: logger, warn?: logger, error?: logger) {
         this.logSuccess = success;
@@ -74,14 +71,112 @@ export default class ReplayProfile {
         }
     }
 
-    public replayTo(rcdId: number) { }
+    private initialRestored: boolean = false;
+    public async restore() {
+        // delete snapshots
+        this.trackedMap.forEach(tracked => tracked.__snapshot = undefined);
+        
+        // find GPUDevice
+        let trackedDevice: TrackedGPUDevice | undefined;
+        for (const tracked of this.trackedMap.values()) {
+            if (tracked.__kind === brandMap.GPUDevice) {
+                trackedDevice = tracked;
+                break;
+            }
+        }
+
+        if (!trackedDevice) {
+            this.logWarn?.("No GPUDevice found, cannot restore resources.");
+            return;
+        }
+
+        // destroy GPUDevice, thus should destroy all children resources.
+        trackedDevice.__authentic?.destroy();
+
+        // delete authentics
+        this.trackedMap.forEach(tracked => tracked.__authentic = undefined);
+        
+        // restore device first, to create an encoder for others
+        await trackedDevice.restore(this);
+        const device = trackedDevice.__authentic!;
+        const encoder = device.createCommandEncoder();
+
+        // restore every tracked resource,
+        // existance of authentic indicates it's already restored
+        const tracks: Array<TrackedBase<any>> = [];
+        this.trackedMap.forEach(tracked => tracks.push(tracked));
+        for (const tracked of tracks) {
+            if (!tracked.__authentic && tracked.__initialSnapshot) {
+                await tracked.restore(this, encoder);
+            }
+        }
+
+        // submit and wait for it to be done.
+        const cb = encoder.finish();
+        device.queue.submit([cb]);
+        return device.queue.onSubmittedWorkDone();
+    }
+
+    private currentRcdId: number = -1;
+    public async replayTo(rcdId: number) {
+        rcdId = Math.min(rcdId, this.rcds.length);
+
+        // restore to initial state if necessary
+        if (rcdId !== this.currentRcdId && !this.initialRestored) {
+            await this.restore();
+        }
+
+        // play by order
+        for (let i = 0; i <= rcdId; i++) {
+            const rcd = this.rcds[i];
+            rcd.play();
+        }
+
+        // find GPUDevice
+        let trackedDevice: TrackedGPUDevice | undefined;
+        for (const tracked of this.trackedMap.values()) {
+            if (tracked.__kind === brandMap.GPUDevice) {
+                trackedDevice = tracked;
+                break;
+            }
+        }
+
+        if (!trackedDevice) {
+            this.logWarn?.("No GPUDevice found, cannot take snapshots.");
+            return;
+        }
+
+        // create an encoder for snapshot
+        const device = trackedDevice.__authentic!;
+        const encoder = device.createCommandEncoder();
+
+        const tracks: Array<TrackedBase<any>> = [];
+        this.trackedMap.forEach(tracked => tracks.push(tracked));
+        for (const tracked of tracks) {
+            if (tracked.__authentic) {
+                await tracked.takeSnapshotBeforeSubmit(encoder, this);
+            }
+        }
+        for (const tracked of tracks) {
+            if (tracked.__authentic) {
+                await tracked.takeSnapshotAfterSubmit();
+            }
+        }
+        device.queue.submit([encoder.finish()]);
+        return device.queue.onSubmittedWorkDone();
+    }
 
     public get<T = TrackedBase<any>>(resId: UniversalResourceId): T {
         return this.trackedMap.get(resId) as T;
     }
 
-    public async getOrRestore<T = TrackedBase<any>>(resId: UniversalResourceId): Promise<T> {
-        return null as any;
+    public async getOrRestore<T extends TrackedBase<any>>(resId: UniversalResourceId, encoder: GPUCommandEncoder): Promise<T> {
+        console.assert(this.trackedMap.has(resId));
+        const tracked = this.trackedMap.get(resId) as T;
+        if (!tracked.__authentic) {
+            await tracked.restore(this, encoder);
+        }
+        return tracked;
     }
 
     public getRcds(): ReadonlyArray<RcdBase<any, any, any>> { return this.rcds; }

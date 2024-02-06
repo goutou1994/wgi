@@ -45,7 +45,7 @@ export default function ResDetail({ id }: ResDetailProps) {
         collapseItems.push({
             key: "attributes",
             label: "Properties",
-            children: content.attributes.map((attr, attrIndex) => <p>{attr.key}: {attr.value}</p>)
+            children: content.attributes.map((attr, attrIndex) => <p key={attr.key}>{attr.key}: {attr.value}</p>)
         });
     } else {
         collapseItems.push({

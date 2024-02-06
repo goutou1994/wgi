@@ -8,7 +8,7 @@ export default class wgi_GPUAdapter extends wgi_GPUBase implements GPUAdapter {
     public getTrackedType() {
         return TrackedGPUAdapter;
     }
-    constructor(private next: GPUAdapter, public gpu: wgi_GPU) {
+    constructor(public next: GPUAdapter, public gpu: wgi_GPU) {
         super();
         this.deps.add(gpu);
     }

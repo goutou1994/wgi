@@ -92,7 +92,8 @@ export default class Recorder {
             this.trackedMap.set(obj.__id, tracked);
 
             if (!tracked.__temporary) {
-                tracked.takeSnapshot();
+                // tracked.takeSnapshot();
+                // FIXME: update snapshot
             }
             const deps = tracked.getSnapshotDepIds();
             for (const depId of deps) {
@@ -114,20 +115,21 @@ export default class Recorder {
     public processRcd(
         RcdType: any,
         caller: any,
-        args: Array<any>
+        args: Array<any>,
+        directPlay: () => any
     ) {
         if (this.state === RecorderState.Capturing) {
             caller = this.recursivelyGetTrackedAndTakeSnapshot(caller);
             const rcd = new RcdType(args, caller);
             this.records.push(rcd);
-            const ret = rcd.play();
+            const ret = directPlay();
             if (ret) {
+                rcd.ret = ret.getTrackedType().prototype.fromAuthentic(ret);
                 ret.markAsTemporary();
                 this.trackedMap.set(ret.__id, ret);
             }
         } else {
-            if (caller.next) caller = caller.next;
-            return RcdType.prototype.directPlay(args, caller);
+            return directPlay();
         }
     }
 

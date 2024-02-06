@@ -11,7 +11,7 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
     public getTrackedType(): typeof TrackedBase<any> {
         return TrackedGPUDevice;
     }
-    constructor(private next: GPUDevice, public adapter: wgi_GPUAdapter, private desc: GPUDeviceDescriptor | undefined) {
+    constructor(public next: GPUDevice, public adapter: wgi_GPUAdapter, private desc: GPUDeviceDescriptor | undefined) {
         super();
         this.deps.add(adapter);
     }
@@ -33,7 +33,15 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         return globalRecorder.processRcd(
             RcdCreateBuffer,
             this,
-            [descriptor]
+            [descriptor],
+            () => new wgi_GPUBuffer(
+                this.next.createBuffer({
+                    ...descriptor,
+                    usage: descriptor.usage | GPUBufferUsage.COPY_SRC
+                }),
+                this,
+                descriptor
+            )
         );
     }
     createTexture(descriptor: GPUTextureDescriptor): GPUTexture {

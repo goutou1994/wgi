@@ -12,6 +12,8 @@ export default class TrackedGPU extends TrackedBase<TrackedGPU> {
     readonly __kind: number = brandMap.GPU;
     __authentic?: GPU;
     __snapshot?: GPUSnapshot;
+    __initialSnapshot?: GPUSnapshot;
+    __creator: undefined;
 
     public fromAuthentic(authentic: wgi_GPU): TrackedGPU {
         return this.fastFromAuthentic(authentic, TrackedGPU);
@@ -32,7 +34,7 @@ export default class TrackedGPU extends TrackedBase<TrackedGPU> {
         for (let i = 0; i < size; i++) {
             features.add(deserializeString(ds));
         }
-        this.__snapshot = {
+        this.__initialSnapshot = {
             features
         };
     }
@@ -42,7 +44,7 @@ export default class TrackedGPU extends TrackedBase<TrackedGPU> {
 
         this.__authentic = navigator.gpu;
     }
-    public takeSnapshot(): void {
+    public async takeSnapshotBeforeSubmit(_: any) {
         const features = new Set<string>();
         this.__authentic?.wgslLanguageFeatures.forEach(f => features.add(f));
         this.__snapshot = {
@@ -53,4 +55,10 @@ export default class TrackedGPU extends TrackedBase<TrackedGPU> {
     public getSnapshotDepIds(): number[] {
         return [];
     }
+
+    public override destroyAuthentic(): void {
+        // global gpu cannot be destroyed
+        this.__authentic = undefined;
+    }
+
 }

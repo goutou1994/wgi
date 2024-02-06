@@ -26,12 +26,15 @@ export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = voi
         this.ret = ret;
     }
 
+    /**
+     * Will only be called from replay side.
+     */
     public abstract play(): Ret;
 
-    /**
-     * @static
-     */
-    public abstract directPlay(args: Args, caller?: Authentic<Caller>): Authentic<Ret>;
+    // /**
+    //  * @static
+    //  */
+    // public abstract directPlay(args: Args, caller?: Authentic<Caller>): Authentic<Ret>;
 
     public abstract serialize(ds: DataStream): void;
 

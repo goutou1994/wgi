@@ -28,9 +28,15 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
 
     /**
      * Attributes and content of some resource at a certain timepoint.
-     * Used for serializing/restoring.
+     * Used for serializing/displaying.
      */
     abstract __snapshot?: any;
+
+    /**
+     * Snapshot deserialized from capture file.
+     * Used for restoring.
+     */
+    abstract __initialSnapshot?: typeof this.__snapshot;
 
     /**
      * Each resource should have an id, which is unique among all kinds of resources.
@@ -47,6 +53,12 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
      * Whether it has authentic gpu resource.
      */
     public __restored: boolean = false;
+
+    /**
+     * Contain tracked creator.
+     * Used under replay mode.
+     */
+    abstract __creator?: any;
 
     public constructor() { }
 
@@ -65,7 +77,7 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
     public abstract serialize(ds: DataStream): void;
 
     /**
-     * Deserialize from capture binary file, generate snapshot.
+     * Deserialize from capture binary file, generate initial snapshot.
      * Used by replay only.
      */
     public abstract deserialize(ds: DataStream): void;
@@ -74,18 +86,29 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
      * Recreate the actual gpu resource by snapshot.
      * Used by replay only.
      */
-    public abstract restore(profile: ReplayProfile): Promise<void>;
+    public abstract restore(profile: ReplayProfile, encoder?: GPUCommandEncoder): Promise<void>;
 
     /**
      * Retrieve content to make a snapshot.
      * Used by capturer and replay.
+     * @param profile Provided indicates replay env.
      */
-    public abstract takeSnapshot(): void;
+    public abstract takeSnapshotBeforeSubmit(encoder: GPUCommandEncoder, profile?: ReplayProfile): Promise<void>;
+    public takeSnapshotAfterSubmit(): Promise<void> { return Promise.resolve(); }
 
     /**
      * Get ids of all dependencies from snapshot.
      */
     public abstract getSnapshotDepIds(): Array<number>;
+
+    /**
+     * When ReplayProfile need to go back to initial state,
+     * all Tracked authentics should be destroyed so they can be created again.
+     */
+    public destroyAuthentic(): void {
+        this.__authentic?.destroy();
+        this.__authentic = undefined;
+    }
 
     protected fastFromAuthentic(authentic: wgi_GPUBase, Ctor: new () => T) {
         const i = new Ctor();
@@ -95,7 +118,4 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
         return i;
     }
 
-    public getAuthenticNext() {
-        return this.__authentic?.next ?? this.__authentic;
-    }
 }

@@ -48,14 +48,14 @@ const rcdInitial: RcdEntries = [];
 const rcdEntries = createGlobalState(rcdInitial);
 const currentRcdId = createGlobalState<number | null>(null);
 
-export function selectRcd(id: number) {
+export async function selectRcd(id: number) {
     if (currentRcdId.get() === id) return;
     if (!globalProfile) {
         logError("No replay profile available.");
         return;
     }
     replaying.set(true);
-    globalProfile.replayTo(id);
+    await globalProfile.replayTo(id);
     replaying.set(false);
     currentRcdId.set(id);
 }

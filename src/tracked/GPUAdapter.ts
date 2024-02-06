@@ -14,7 +14,8 @@ export default class TrackedGPUAdapter extends TrackedBase<TrackedGPUAdapter> {
     readonly __kind: number = brandMap.GPUAdapter;
     __authentic?: GPUAdapter;
     __snapshot?: GPUAdapterSnapshot;
-    private gpu?: TrackedGPU;
+    __initialSnapshot?: GPUAdapterSnapshot;
+    __creator?: TrackedGPU;
     public fromAuthentic(authentic: wgi_GPUAdapter): TrackedGPUAdapter {
         return this.fastFromAuthentic(authentic, TrackedGPUAdapter);
     }
@@ -35,25 +36,25 @@ export default class TrackedGPUAdapter extends TrackedBase<TrackedGPUAdapter> {
             features.add(deserializeString(ds));
         }
 
-        this.__snapshot = {
+        this.__initialSnapshot = {
             gpu: gpu_id,
             features
         }
     }
     public async restore(profile: ReplayProfile) {
-        this.gpu = await profile.getOrRestore(this.__snapshot!.gpu) as TrackedGPU;
-        const adapter = await this.gpu.__authentic!.requestAdapter();
+        this.__creator = await profile.getOrRestore(this.__initialSnapshot!.gpu, null as any) as TrackedGPU;
+        const adapter = await this.__creator.__authentic!.requestAdapter();
         if (adapter === null) throw "Restore GPUAdapter failed.";
         
         // TODO: compare features
         this.__authentic = adapter;
     }
-    public takeSnapshot(): void {
-        const wgi_gpu = (this.__authentic as wgi_GPUAdapter).gpu;
+    public async takeSnapshotBeforeSubmit(_: any) {
+        const gpu_id = this.__creator?.__id ?? (this.__authentic as wgi_GPUAdapter).gpu.__id;
         const features = new Set<string>();
         this.__authentic?.features.forEach(f => features.add(f));
         this.__snapshot = {
-            gpu: wgi_gpu.__id,
+            gpu: gpu_id,
             features
         };
     }

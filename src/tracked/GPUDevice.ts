@@ -12,7 +12,8 @@ export default class TrackedGPUDevice extends TrackedBase<TrackedGPUDevice> {
     readonly __kind: number = brandMap.GPUDevice;
     __authentic?: GPUDevice;
     __snapshot?: GPUDeviceSnapshot;
-    private adapter?: TrackedGPUAdapter;
+    __initialSnapshot?: GPUDeviceSnapshot;
+    __creator?: TrackedGPUAdapter;
     public fromAuthentic(authentic: wgi_GPUDevice): TrackedGPUDevice {
         return this.fastFromAuthentic(authentic, TrackedGPUDevice);
     }
@@ -21,23 +22,23 @@ export default class TrackedGPUDevice extends TrackedBase<TrackedGPUDevice> {
     }
     public deserialize(ds: DataStream) {
         const adapter_id = ds.read<number>(DataStream.Type.UInt32);
-
-        this.__snapshot = {
+        this.__initialSnapshot = {
             adapter: adapter_id
         };
     }
     public async restore(profile: ReplayProfile) {
-        this.adapter = await profile.getOrRestore(this.__snapshot!.adapter) as TrackedGPUAdapter;
-        const device = await this.adapter.__authentic!.requestDevice();
+        this.__creator = await profile.getOrRestore(this.__initialSnapshot!.adapter, null as any) as TrackedGPUAdapter;
+        const device = await this.__creator.__authentic!.requestDevice();
         if (!device) throw "Restore GPUDevice failed.";
         this.__authentic = device;
     }
-    public takeSnapshot(): void {
-        const wgi_adapter = (this.__authentic as wgi_GPUDevice).adapter;
+    public async takeSnapshotBeforeSubmit(_: any) {
+        const adapter_id = this.__creator?.__id ?? (this.__authentic as wgi_GPUDevice).adapter.__id;
         this.__snapshot = {
-            adapter: wgi_adapter.__id
+            adapter: adapter_id
         }
     }
+
     public getSnapshotDepIds(): number[] {
         return [this.__snapshot!.adapter];
     }

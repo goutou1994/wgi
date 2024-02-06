@@ -11,14 +11,14 @@ export default class wgi_GPUBuffer extends wgi_GPUBase implements GPUBuffer {
     public getTrackedType() {
         return TrackedGPUBuffer;
     }
-    constructor(private next: GPUBuffer, public device: wgi_GPUDevice, private desc: GPUBufferDescriptor) {
+    constructor(public next: GPUBuffer, public device: wgi_GPUDevice, public desc: GPUBufferDescriptor) {
         super();
         this.deps.add(device);
     }
     readonly __brand: "GPUBuffer" = "GPUBuffer";
 
     get size(): number { return this.next.size; };
-    get usage(): number { return this.next.usage; };
+    get usage(): number { return this.desc.usage; };
     get mapState(): GPUBufferMapState { return this.next.mapState; }
     public mapAsync(mode: number, offset?: number | undefined, size?: number | undefined): Promise<undefined> {
         throw new Error("Method not implemented.");

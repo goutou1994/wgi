@@ -14,22 +14,19 @@ export default class RcdCreateBuffer extends RcdBase<TrackedGPUDevice, [GPUBuffe
     readonly __kind: RecordKind = RecordKind.CreateBuffer;
 
     public play(): TrackedGPUBuffer {
-        // There is a problem here, buffer created by real driver does not have its own id.
-        const buffer = this.caller!.getAuthenticNext().createBuffer({
+        const buffer = this.caller!.__authentic!.createBuffer({
             size: this.args[0].size,
-            usage: this.args[0].usage
-        }) as wgi_GPUBuffer;
-        if (this.ret) {
-            this.ret.__authentic = buffer;
-        } else {
-            this.ret = TrackedGPUBuffer.prototype.fromAuthentic(buffer);
-        }
-        return this.ret;
+            usage: this.args[0].usage | GPUBufferUsage.COPY_SRC
+        });
+        this.ret!.__authentic = buffer;
+        this.ret!.__creator = this.caller!;
+        this.ret!.realUsage = this.args[0].usage;
+        return this.ret!;
     }
 
-    public directPlay(args: [GPUBufferDescriptor], caller: GPUDevice): GPUBuffer {
-        return caller.createBuffer(args[0]);
-    }
+    // public directPlay(args: [GPUBufferDescriptor], caller: GPUDevice): GPUBuffer {
+    //     return caller.createBuffer(args[0]);
+    // }
 
     public serialize(ds: DataStream) {
         ds.write(DataStream.Type.UInt32, this.caller!.__id);
