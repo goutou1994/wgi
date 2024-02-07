@@ -93,13 +93,19 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
      * Used by capturer and replay.
      * @param profile Provided indicates replay env.
      */
-    public abstract takeSnapshotBeforeSubmit(encoder: GPUCommandEncoder, profile?: ReplayProfile): Promise<void>;
+    public abstract takeSnapshotBeforeSubmit(encoder: GPUCommandEncoder, profile?: ReplayProfile): void;
     public takeSnapshotAfterSubmit(): Promise<void> { return Promise.resolve(); }
 
     /**
      * Get ids of all dependencies from snapshot.
      */
-    public abstract getSnapshotDepIds(): Array<number>;
+    // public abstract getSnapshotDepIds(): Array<number>;
+
+    /**
+     * Get ids of all dependencies.
+     * Used by capturer.
+     */
+    public abstract getDeps(): Array<wgi_GPUBase>;
 
     /**
      * When ReplayProfile need to go back to initial state,

@@ -48,4 +48,5 @@ export default class RcdCreateBuffer extends RcdBase<TrackedGPUDevice, [GPUBuffe
             profile.get<TrackedGPUBuffer>(ret_id)
         );
     }
+
 }

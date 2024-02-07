@@ -1,8 +1,9 @@
 import { DataStream } from "../../common/utils";
 import RcdCreateBuffer from "../../record/create/rcdCreateBuffer";
+import RcdDebugRes from "../../record/rcdDebugRes";
 import TrackedGPUDevice from "../../tracked/GPUDevice";
 import TrackedBase from "../../tracked/tracked";
-import { globalRecorder } from "../recorder";
+import { createGlobalRecorder, globalRecorder } from "../recorder";
 import wgi_GPUAdapter from "./GPUAdapter";
 import wgi_GPUBuffer from "./GPUBuffer";
 import wgi_GPUBase from "./gpubase";
@@ -14,6 +15,9 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
     constructor(public next: GPUDevice, public adapter: wgi_GPUAdapter, private desc: GPUDeviceDescriptor | undefined) {
         super();
         this.deps.add(adapter);
+
+        // Just use the first device created to construct global recorder.
+        createGlobalRecorder(this);
     }
 
     readonly __brand: "GPUDevice" = "GPUDevice";
@@ -28,6 +32,14 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
     }
     destroy(): undefined {
         throw new Error("Method not implemented.");
+    }
+    debugRes(res: wgi_GPUBase): void {
+        return globalRecorder.processRcd(
+            RcdDebugRes,
+            undefined,
+            [{res}],
+            () => {}
+        );
     }
     createBuffer(descriptor: GPUBufferDescriptor): GPUBuffer {
         return globalRecorder.processRcd(

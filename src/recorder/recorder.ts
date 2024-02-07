@@ -2,6 +2,7 @@ import { DataStream, downloadBinaryFile } from "../common/utils";
 import wgi_GPUBase, { wgiResMap } from "./driver/gpubase";
 import RcdBase from "../record/rcd";
 import TrackedBase from "../tracked/tracked";
+import wgi_GPUDevice from "./driver/GPUDevice";
 
 enum RecorderState {
     Background,
@@ -12,8 +13,10 @@ enum RecorderState {
     Expired
 }
 
+
+// There a problem, recorder doesn't know how to choose GPUDevcie for snapshot.
 export default class Recorder {
-    constructor() {
+    constructor(public device: wgi_GPUDevice) {
         this.state = RecorderState.Background;
     }
 
@@ -25,7 +28,10 @@ export default class Recorder {
         // take snapshot of resources
         this.state = RecorderState.Capturing;
     }
-    public save() {
+    public async save() {
+        await Promise.all(this.snapshotPromises);
+        this.snapshotPromises = [];
+
         const ds = DataStream.createWithInternalBuffer();
         const u16 = DataStream.Type.UInt16;
         const u32 = DataStream.Type.UInt32;
@@ -83,7 +89,7 @@ export default class Recorder {
         return this.state === RecorderState.Capturing;
     }
 
-    private recursivelyGetTrackedAndTakeSnapshot<T>(obj: T): TrackedBase<any> | T {
+    private recursivelyGetTrackedAndTakeSnapshot<T>(obj: T, encoder: GPUCommandEncoder, newTracks: Array<TrackedBase<any>>): TrackedBase<any> | T {
         if (wgi_GPUBase.is_wgi(obj)) {
             let tracked = this.trackedMap.get(obj.__id);
             if (tracked) return tracked;
@@ -92,26 +98,24 @@ export default class Recorder {
             this.trackedMap.set(obj.__id, tracked);
 
             if (!tracked.__temporary) {
-                // tracked.takeSnapshot();
-                // FIXME: update snapshot
-            }
-            const deps = tracked.getSnapshotDepIds();
-            for (const depId of deps) {
-                let depTracked = this.trackedMap.get(depId);
-                if (!depTracked) {
-                    const dep = wgiResMap.get(depId)?.deref();
-                    if (dep) {
-                        this.recursivelyGetTrackedAndTakeSnapshot(dep);
+                tracked.takeSnapshotBeforeSubmit(encoder);
+                newTracks.push(tracked);
+                const deps = tracked.getDeps();
+                for (const depAuthentic of deps) {
+                    const depTracked = this.trackedMap.get(depAuthentic.__id);
+                    if (!depTracked) {
+                        this.recursivelyGetTrackedAndTakeSnapshot(depAuthentic, encoder, newTracks);
                     }
                 }
             }
-
+            
             return tracked;
         } else {
             return obj;
         }
     }
 
+    private snapshotPromises: Array<Promise<any>> = [];
     public processRcd(
         RcdType: any,
         caller: any,
@@ -119,14 +123,34 @@ export default class Recorder {
         directPlay: () => any
     ) {
         if (this.state === RecorderState.Capturing) {
-            caller = this.recursivelyGetTrackedAndTakeSnapshot(caller);
-            const rcd = new RcdType(args, caller);
+            const newTracks: Array<TrackedBase<any>> = [];
+            const encoder = this.device.next.createCommandEncoder();
+            
+            // collect tracks
+            caller = this.recursivelyGetTrackedAndTakeSnapshot(caller, encoder, newTracks);
+            const rcd = new RcdType(
+                RcdType.prototype.transformArgs(
+                    args,
+                    (obj: wgi_GPUBase) => this.recursivelyGetTrackedAndTakeSnapshot(obj, encoder, newTracks)
+                ),
+                caller
+            );
+
+            this.device.queue.submit([encoder.finish()]);
+            const gpuDone = this.device.queue.onSubmittedWorkDone();
+            for (const newTracked of newTracks) {
+                this.snapshotPromises.push(
+                    gpuDone.then(() => newTracked.takeSnapshotAfterSubmit())
+                );
+            }
+
             this.records.push(rcd);
             const ret = directPlay();
             if (ret) {
-                rcd.ret = ret.getTrackedType().prototype.fromAuthentic(ret);
-                ret.markAsTemporary();
-                this.trackedMap.set(ret.__id, ret);
+                const trackedRet: TrackedBase<any> = ret.getTrackedType().prototype.fromAuthentic(ret);
+                rcd.ret = trackedRet;
+                trackedRet.markAsTemporary();
+                this.trackedMap.set(trackedRet.__id, trackedRet);
             }
         } else {
             return directPlay();
@@ -138,4 +162,8 @@ export default class Recorder {
     private records: Array<RcdBase<any, any, any>> = [];
 }
 
-export const globalRecorder = new Recorder();
+
+export let globalRecorder: Recorder;
+export function createGlobalRecorder(device: wgi_GPUDevice) {
+    globalRecorder = new Recorder(device);
+}

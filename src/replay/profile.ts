@@ -3,7 +3,7 @@ import TrackedBase from "../tracked/tracked";
 import * as version from "../common/version";
 import { trackedCtorMap } from "./utils/trackedCtor";
 import { rcdCtorMap } from "./utils/rcdCtor";
-import RcdBase from "../record/rcd";
+import RcdBase, { RecordKind } from "../record/rcd";
 import TrackedGPUDevice from "../tracked/GPUDevice";
 
 type logger = (msg: string) => void;
@@ -66,6 +66,9 @@ export default class ReplayProfile {
             const index = ds.read<number>(u32); // ignored
             const kind = ds.read<number>(u32);
             const Ctor = rcdCtorMap[kind];
+            if (!Ctor) {
+                throw "Unregistered record kind: " + RecordKind[kind];
+            }
             const rcd = Ctor.prototype.deserialize(ds, this);
             this.rcds.push(rcd);
         }
@@ -154,16 +157,20 @@ export default class ReplayProfile {
         this.trackedMap.forEach(tracked => tracks.push(tracked));
         for (const tracked of tracks) {
             if (tracked.__authentic) {
-                await tracked.takeSnapshotBeforeSubmit(encoder, this);
+                tracked.takeSnapshotBeforeSubmit(encoder, this);
             }
         }
+        
+        device.queue.submit([encoder.finish()]);
+        const gpuDone = device.queue.onSubmittedWorkDone();
+        const p: Array<Promise<any>> = [];
+
         for (const tracked of tracks) {
             if (tracked.__authentic) {
-                await tracked.takeSnapshotAfterSubmit();
+                p.push(gpuDone.then(() => tracked.takeSnapshotAfterSubmit()));
             }
         }
-        device.queue.submit([encoder.finish()]);
-        return device.queue.onSubmittedWorkDone();
+        return Promise.all(p);
     }
 
     public get<T = TrackedBase<any>>(resId: UniversalResourceId): T {

@@ -1,5 +1,6 @@
 import { DataStream, brandMap } from "../common/utils";
 import wgi_GPUDevice from "../recorder/driver/GPUDevice";
+import wgi_GPUBase from "../recorder/driver/gpubase";
 import type ReplayProfile from "../replay/profile";
 import TrackedGPUAdapter from "./GPUAdapter";
 import TrackedBase from "./tracked";
@@ -32,15 +33,15 @@ export default class TrackedGPUDevice extends TrackedBase<TrackedGPUDevice> {
         if (!device) throw "Restore GPUDevice failed.";
         this.__authentic = device;
     }
-    public async takeSnapshotBeforeSubmit(_: any) {
+    public takeSnapshotBeforeSubmit(_: any) {
         const adapter_id = this.__creator?.__id ?? (this.__authentic as wgi_GPUDevice).adapter.__id;
         this.__snapshot = {
             adapter: adapter_id
         }
     }
 
-    public getSnapshotDepIds(): number[] {
-        return [this.__snapshot!.adapter];
+    public getDeps(): wgi_GPUBase[] {
+        return [ (this.__authentic as wgi_GPUDevice).adapter ];
     }
     
 }

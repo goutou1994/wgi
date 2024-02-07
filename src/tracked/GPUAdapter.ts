@@ -1,6 +1,7 @@
 import { deserializeString, serializeString } from "../common/serialize";
 import { DataStream, brandMap } from "../common/utils";
 import wgi_GPUAdapter from "../recorder/driver/GPUAdapter";
+import wgi_GPUBase from "../recorder/driver/gpubase";
 import type ReplayProfile from "../replay/profile";
 import TrackedGPU from "./GPU";
 import TrackedBase from "./tracked";
@@ -49,7 +50,7 @@ export default class TrackedGPUAdapter extends TrackedBase<TrackedGPUAdapter> {
         // TODO: compare features
         this.__authentic = adapter;
     }
-    public async takeSnapshotBeforeSubmit(_: any) {
+    public takeSnapshotBeforeSubmit(_: any) {
         const gpu_id = this.__creator?.__id ?? (this.__authentic as wgi_GPUAdapter).gpu.__id;
         const features = new Set<string>();
         this.__authentic?.features.forEach(f => features.add(f));
@@ -58,8 +59,8 @@ export default class TrackedGPUAdapter extends TrackedBase<TrackedGPUAdapter> {
             features
         };
     }
-    public getSnapshotDepIds(): number[] {
-        return [this.__snapshot!.gpu];
-    }
    
+    public getDeps(): wgi_GPUBase[] {
+        return [ (this.__authentic! as wgi_GPUAdapter).gpu ];
+    }
 }

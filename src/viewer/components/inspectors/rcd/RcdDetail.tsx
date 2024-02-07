@@ -7,6 +7,7 @@ import { LinkOutlined } from "@ant-design/icons";
 import styles from "./RcdDetail.module.css";
 import { currentRcdId, globalProfile } from "../../../model/global";
 import useGlobalState from "../../../utils/globalState";
+import { RcdDetailMap } from "./utils";
 
 export interface RcdDetailContent {
     title: React.JSX.Element | string;
@@ -27,8 +28,12 @@ export default function RcdDetail() {
     }
 
     const rcd = globalProfile!.getRcdAt(rcdId);
+    const dCtor = RcdDetailMap[rcd.__kind];
+    if (!dCtor) {
+        return <p>Unsupported record kind.</p>
+    }
 
-    const content: RcdDetailContent = vCreateBufferView(rcd);
+    const content: RcdDetailContent = dCtor(rcd);
     const collapseItems: CollapseProps["items"] = content.arguments.map((arg, argIndex) => ({
         key: "arg" + argIndex.toString(),
         label: `Argument ${argIndex}`,

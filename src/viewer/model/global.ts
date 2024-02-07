@@ -15,8 +15,6 @@ async function loadCapture(file: File) {
         return;
     }
     
-    logSuccess("File read successfully.");
-
     const profile = new ReplayProfile();
     profile.setLogger(logSuccess, logWarning, logError);
 
@@ -24,6 +22,7 @@ async function loadCapture(file: File) {
         profile.deserialize(buffer);
         globalProfile = profile;
     } catch (e) {
+        console.error(e);
         logError(e as string);
         return;
     }

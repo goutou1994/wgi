@@ -21,13 +21,13 @@ export default class wgi_GPUBuffer extends wgi_GPUBase implements GPUBuffer {
     get usage(): number { return this.desc.usage; };
     get mapState(): GPUBufferMapState { return this.next.mapState; }
     public mapAsync(mode: number, offset?: number | undefined, size?: number | undefined): Promise<undefined> {
-        throw new Error("Method not implemented.");
+        return this.next.mapAsync(mode, offset, size);
     }
     public getMappedRange(offset?: number | undefined, size?: number | undefined): ArrayBuffer {
-        throw new Error("Method not implemented.");
+        return this.next.getMappedRange(offset, size);
     }
     public unmap(): undefined {
-        throw new Error("Method not implemented.");
+        this.next.unmap();
     }
     public destroy(): undefined {
         throw new Error("Method not implemented.");

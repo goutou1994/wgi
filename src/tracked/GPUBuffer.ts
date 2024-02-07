@@ -28,17 +28,19 @@ export default class TrackedGPUBuffer extends TrackedBase<TrackedGPUBuffer> {
     }
     public serialize(ds: DataStream): void {
         console.assert(!!this.__snapshot);
-        ds.write(DataStream.Type.UInt32, this.__snapshot!.device);
-        serializeString(ds, this.__snapshot!.label);
-        ds.write(DataStream.Type.UInt32, this.__snapshot!.size);
-        ds.write(DataStream.Type.UInt32, this.__snapshot!.usage);
+        const s = this.__snapshot!;
+        ds.write(DataStream.Type.UInt32, s.device);
+        serializeString(ds, s.label);
+        ds.write(DataStream.Type.UInt32, s.size);
+        ds.write(DataStream.Type.UInt32, s.usage);
+        ds.writeChunk(s.content);
     }
     public deserialize(ds: DataStream) {
         const device_id = ds.read<number>(DataStream.Type.UInt32);
         const label = deserializeString(ds);
         const size = ds.read<number>(DataStream.Type.UInt32);
         const usage = ds.read<number>(DataStream.Type.UInt32);
-        const content = new ArrayBuffer(4);
+        const content = ds.readChunk(size);
         this.__initialSnapshot = {
             device: device_id,
             label,
@@ -51,9 +53,15 @@ export default class TrackedGPUBuffer extends TrackedBase<TrackedGPUBuffer> {
     public async restore(profile: ReplayProfile, encoder: GPUCommandEncoder): Promise<void> {
         const s = this.__initialSnapshot!;
         this.__creator = await profile.getOrRestore(s.device, encoder);
+
+        // FIXME: the usage of original buffer is tricky,
+        // if it contains MAP_WRITE, then it cannot include COPY_DST as well.
+        // So the best way to do this is upload the content accordingly.
+        // e.g. copyBufferToBuffer for COPY_DST, mapAsync for MAP_WRITE, ...
+        const usage = s.usage & (~GPUBufferUsage.MAP_READ) & ((~GPUBufferUsage.MAP_WRITE));
         this.__authentic = this.__creator.__authentic!.createBuffer({
             size: s.size,
-            usage: s.usage | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC
+            usage: usage | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC
         });
         this.__authentic.label = s.label;
         this.realUsage = s.usage;
@@ -71,22 +79,23 @@ export default class TrackedGPUBuffer extends TrackedBase<TrackedGPUBuffer> {
     }
 
     private stagingBuffer?: GPUBuffer;
-    public async takeSnapshotBeforeSubmit(encoder: GPUCommandEncoder, profile?: ReplayProfile) {
+    public takeSnapshotBeforeSubmit(encoder: GPUCommandEncoder, profile?: ReplayProfile) {
         let device: GPUDevice;
+        let buffer: GPUBuffer;
         if (profile) {
-            // PROBLEM: cannot retrieve device id under replay if no initialSnapshot is available.
             device = this.__creator!.__authentic!;
+            buffer = this.__authentic!;
         } else {
-            // PROBLEM: cannot call createBuffer directly using wgi_device.
             const wgi_device = (this.__authentic as wgi_GPUBuffer).device;
             device = wgi_device.next;
+            buffer = (this.__authentic! as wgi_GPUBuffer).next;
         }
         const stagingBuffer = device.createBuffer({
             size: this.__authentic!.size,
             usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
         });
         encoder.copyBufferToBuffer(
-            this.__authentic!, 0,
+            buffer, 0,
             stagingBuffer, 0,
             this.__authentic!.size
         );
@@ -110,7 +119,7 @@ export default class TrackedGPUBuffer extends TrackedBase<TrackedGPUBuffer> {
         this.stagingBuffer = undefined;
     }
 
-    public getSnapshotDepIds(): number[] {
-        throw new Error("Method not implemented.");
+    public getDeps(): wgi_GPUBase[] {
+        return [ (this.__authentic! as wgi_GPUBuffer).device ];
     }
 }

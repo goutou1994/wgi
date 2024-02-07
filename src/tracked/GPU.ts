@@ -1,6 +1,7 @@
 import { deserializeString, serializeString } from "../common/serialize";
 import { DataStream, brandMap } from "../common/utils";
 import wgi_GPU from "../recorder/driver/GPU";
+import wgi_GPUBase from "../recorder/driver/gpubase";
 import ReplayProfile from "../replay/profile";
 import TrackedBase from "./tracked";
 
@@ -44,7 +45,7 @@ export default class TrackedGPU extends TrackedBase<TrackedGPU> {
 
         this.__authentic = navigator.gpu;
     }
-    public async takeSnapshotBeforeSubmit(_: any) {
+    public takeSnapshotBeforeSubmit(_: any) {
         const features = new Set<string>();
         this.__authentic?.wgslLanguageFeatures.forEach(f => features.add(f));
         this.__snapshot = {
@@ -52,13 +53,13 @@ export default class TrackedGPU extends TrackedBase<TrackedGPU> {
         };
     }
 
-    public getSnapshotDepIds(): number[] {
-        return [];
-    }
-
     public override destroyAuthentic(): void {
         // global gpu cannot be destroyed
         this.__authentic = undefined;
+    }
+    
+    public getDeps(): wgi_GPUBase[] {
+        return [];
     }
 
 }
