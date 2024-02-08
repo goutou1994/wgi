@@ -13,6 +13,14 @@ export enum RecordType {
 export enum RecordKind {
     DebugRes = 1,
     CreateBuffer = 2,
+    createCommandEncoder = 3,
+
+    // Commands
+    CopyBufferToBuffer = 101,
+    Finish = 102,
+
+    // Submit
+    Submit = 201,
 }
 
 export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = void> {
@@ -30,17 +38,18 @@ export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = voi
     }
 
     /**
-     * Will only be called from replay side.
+     * Used by replay.
      */
     public abstract play(): Ret;
 
-    // /**
-    //  * @static
-    //  */
-    // public abstract directPlay(args: Args, caller?: Authentic<Caller>): Authentic<Ret>;
-
+    /**
+     * Used by capturer.
+     */
     public abstract serialize(ds: DataStream): void;
 
+    /**
+     * Used by replay.
+     */
     public abstract deserialize(ds: DataStream, profile: ReplayProfile): RcdBase<Caller, Args, Ret>;
 
     /**
@@ -48,5 +57,5 @@ export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = voi
      * If there's no other resources in your arguments, ignore this method.
      * @static
      */
-    public transformArgs(args: any, transformer: (obj: wgi_GPUBase) => TrackedBase<any>): Args { return args; }
+    public transformArgs(args: any, transformer: (obj: any) => TrackedBase<any>): Args { return args; }
 }

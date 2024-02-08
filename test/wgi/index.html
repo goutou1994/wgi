@@ -1,10 +1,11 @@
 <html>
     <head>
-        <script type="module" src="tests/bufferSnapshot.mjs"></script>
+        <script type="module" src="tests/triangle.mjs"></script>
     </head>
-    <body>
-        <button onclick="testStartCapture()">
+    <body style="overflow: hidden">
+        <div style="position: absolute"><button onclick="testStartCapture()">
             Capture a frame!
-        </button>
+        </button></div>
+        <canvas id="mainCanvas"></canvas>
     </body>
 </html>

@@ -24,10 +24,6 @@ export default class RcdCreateBuffer extends RcdBase<TrackedGPUDevice, [GPUBuffe
         return this.ret!;
     }
 
-    // public directPlay(args: [GPUBufferDescriptor], caller: GPUDevice): GPUBuffer {
-    //     return caller.createBuffer(args[0]);
-    // }
-
     public serialize(ds: DataStream) {
         ds.write(DataStream.Type.UInt32, this.caller!.__id);
         ds.write(DataStream.Type.UInt32, this.args[0].size);

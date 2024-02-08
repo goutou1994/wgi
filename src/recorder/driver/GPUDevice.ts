@@ -1,11 +1,12 @@
-import { DataStream } from "../../common/utils";
 import RcdCreateBuffer from "../../record/create/rcdCreateBuffer";
+import RcdCreateCommandEncoder from "../../record/create/rcdCreateCommandEncoder";
 import RcdDebugRes from "../../record/rcdDebugRes";
 import TrackedGPUDevice from "../../tracked/GPUDevice";
 import TrackedBase from "../../tracked/tracked";
 import { createGlobalRecorder, globalRecorder } from "../recorder";
 import wgi_GPUAdapter from "./GPUAdapter";
 import wgi_GPUBuffer from "./GPUBuffer";
+import wgi_GPUCommandEncoder from "./GPUCommandEncoder";
 import wgi_GPUBase from "./gpubase";
 
 export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
@@ -90,7 +91,16 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         throw new Error("Method not implemented.");
     }
     createCommandEncoder(descriptor?: GPUObjectDescriptorBase | undefined): GPUCommandEncoder {
-        throw new Error("Method not implemented.");
+        return globalRecorder.processRcd(
+            RcdCreateCommandEncoder,
+            this,
+            [descriptor],
+            () => new wgi_GPUCommandEncoder(
+                this.next.createCommandEncoder(descriptor),
+                this,
+                descriptor
+            )
+        );
     }
     createRenderBundleEncoder(descriptor: GPURenderBundleEncoderDescriptor): GPURenderBundleEncoder {
         throw new Error("Method not implemented.");
