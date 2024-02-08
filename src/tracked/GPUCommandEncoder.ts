@@ -33,8 +33,10 @@ export default class TrackedGPUCommandEncoder extends TrackedBase<TrackedGPUComm
         this.__authentic = this.__creator!.__authentic!.createCommandEncoder();
     }
     public takeSnapshotBeforeSubmit(): void {
+        const device_id = this.__creator?.__id ?? (this.__authentic as wgi_GPUCommandEncoder).device.__id;
+
         this.__snapshot = {
-            device: this.__creator!.__id
+            device: device_id
         };
     }
     public getDeps(): wgi_GPUBase[] {

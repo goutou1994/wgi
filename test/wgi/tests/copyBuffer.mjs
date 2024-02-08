@@ -31,7 +31,9 @@ inject();
         const encoder = device.createCommandEncoder();
         encoder.copyBufferToBuffer(stagingBuffer1, 0, buffer, 0, 4);
         encoder.copyBufferToBuffer(stagingBuffer2, 0, buffer, 0, 4);
-        device.queue.submit([encoder.finish()]);
+        const cb = encoder.finish();
+        device.queue.submit([cb]);
+        buffer.destroy();
         requestAnimationFrame(loop);
     }
     console.log("begin loop!");

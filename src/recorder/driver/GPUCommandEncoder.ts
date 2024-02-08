@@ -3,6 +3,7 @@ import RcdFinish from "../../record/create/rcdFinish";
 import TrackedGPUCommandEncoder from "../../tracked/GPUCommandEncoder";
 import TrackedBase from "../../tracked/tracked";
 import { globalRecorder } from "../recorder";
+import wgi_GPUBuffer from "./GPUBuffer";
 import wgi_GPUCommandBuffer from "./GPUComandBuffer";
 import wgi_GPUDevice from "./GPUDevice";
 import wgi_GPUBase from "./gpubase";
@@ -23,12 +24,18 @@ export default class wgi_GPUCommandEncoder extends wgi_GPUBase implements GPUCom
     beginComputePass(descriptor?: GPUComputePassDescriptor | undefined): GPUComputePassEncoder {
         throw new Error("Method not implemented.");
     }
-    copyBufferToBuffer(...args: [source: GPUBuffer, sourceOffset: number, destination: GPUBuffer, destinationOffset: number, size: number]): undefined {
+    copyBufferToBuffer(...args: [source: wgi_GPUBuffer, sourceOffset: number, destination: wgi_GPUBuffer, destinationOffset: number, size: number]): undefined {
         return globalRecorder.processRcd(
             RcdCopyBufferToBuffer,
             this,
             args,
-            () => this.next.copyBufferToBuffer(...args)
+            () => this.next.copyBufferToBuffer(
+                args[0].next,
+                args[1],
+                args[2].next,
+                args[3],
+                args[4]
+            )
         );
     }
     copyBufferToTexture(source: GPUImageCopyBuffer, destination: GPUImageCopyTexture, copySize: GPUExtent3DStrict): undefined {

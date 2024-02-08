@@ -33,7 +33,7 @@ export default class TrackedGPUQueue extends TrackedBase<TrackedGPUQueue> {
     }
     public takeSnapshotBeforeSubmit(encoder: GPUCommandEncoder, profile?: ReplayProfile | undefined): void {
         this.__snapshot = {
-            device: this.__creator!.__id
+            device: this.__creator?.__id ?? (this.__authentic as wgi_GPUQueue).device.__id
         };
     }
     public getDeps(): wgi_GPUBase[] {

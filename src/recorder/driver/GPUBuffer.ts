@@ -30,7 +30,7 @@ export default class wgi_GPUBuffer extends wgi_GPUBase implements GPUBuffer {
         this.next.unmap();
     }
     public destroy(): undefined {
-        throw new Error("Method not implemented.");
+        this.next.destroy();
     }
     get label(): string { return this.next.label; };
     set label(v: string) { this.next.label = v; }

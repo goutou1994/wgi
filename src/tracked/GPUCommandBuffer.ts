@@ -32,8 +32,10 @@ export default class TrackedGPUCommandBuffer extends TrackedBase<TrackedGPUComma
         this.__authentic = this.__creator!.__authentic!.finish();
     }
     public takeSnapshotBeforeSubmit(): void {
+        const encoder_id = this.__creator?.__id ?? (this.__authentic as wgi_GPUCommandBuffer).encoder.__id;
+
         this.__snapshot = {
-            encoder: this.__creator!.__id
+            encoder: encoder_id
         };
     }
     public getDeps(): wgi_GPUBase[] {

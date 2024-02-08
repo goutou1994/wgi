@@ -2,6 +2,7 @@ import RcdSubmit from "../../record/create/rcdSubmit";
 import TrackedGPUQueue from "../../tracked/GPUQueue";
 import TrackedBase from "../../tracked/tracked";
 import { globalRecorder } from "../recorder";
+import wgi_GPUCommandBuffer from "./GPUComandBuffer";
 import wgi_GPUDevice from "./GPUDevice";
 import wgi_GPUBase from "./gpubase";
 
@@ -14,12 +15,18 @@ export default class wgi_GPUQueue extends wgi_GPUBase implements GPUQueue {
         super();
     }
 
-    submit(commandBuffers: Iterable<GPUCommandBuffer>): undefined {
+    submit(commandBuffers: Iterable<wgi_GPUCommandBuffer>): undefined {
         return globalRecorder.processRcd(
             RcdSubmit,
             this,
             [commandBuffers],
-            () => this.next.submit(commandBuffers)
+            () => {
+                const cbs = [];
+                for (const cb of commandBuffers){
+                    cbs.push(cb.next);
+                }
+                this.next.submit(cbs);
+            }
         );
     }
     onSubmittedWorkDone(): Promise<undefined> {

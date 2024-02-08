@@ -136,7 +136,7 @@ export default class Recorder {
                 caller
             );
 
-            this.device.queue.submit([encoder.finish()]);
+            this.device.next.queue.submit([encoder.finish()]);
             const gpuDone = this.device.queue.onSubmittedWorkDone();
             for (const newTracked of newTracks) {
                 this.snapshotPromises.push(
@@ -152,6 +152,7 @@ export default class Recorder {
                 trackedRet.markAsTemporary();
                 this.trackedMap.set(trackedRet.__id, trackedRet);
             }
+            return ret;
         } else {
             return directPlay();
         }

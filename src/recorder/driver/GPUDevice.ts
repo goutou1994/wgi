@@ -7,6 +7,7 @@ import { createGlobalRecorder, globalRecorder } from "../recorder";
 import wgi_GPUAdapter from "./GPUAdapter";
 import wgi_GPUBuffer from "./GPUBuffer";
 import wgi_GPUCommandEncoder from "./GPUCommandEncoder";
+import wgi_GPUQueue from "./GPUQueue";
 import wgi_GPUBase from "./gpubase";
 
 export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
@@ -19,6 +20,9 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
 
         // Just use the first device created to construct global recorder.
         createGlobalRecorder(this);
+
+        // create queue
+        this._queue = new wgi_GPUQueue(this.next.queue, this);
     }
 
     readonly __brand: "GPUDevice" = "GPUDevice";
@@ -28,8 +32,9 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
     get limits(): GPUSupportedLimits {
         return this.next.limits;
     }
-    get queue(): GPUQueue {
-        return this.next.queue;
+    private _queue: wgi_GPUQueue;
+    get queue(): wgi_GPUQueue {
+        return this._queue;
     }
     destroy(): undefined {
         throw new Error("Method not implemented.");
