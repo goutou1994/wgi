@@ -10,19 +10,19 @@ export default function dCopyBufferToBuffer(rcd: RcdCopyBufferToBuffer): RcdDeta
         arguments: [
             [
                 {
-                    key: "src",
+                    key: "source",
                     value: <ResLink id={rcd.args[0].__id} />
                 },
                 {
-                    key: "srcOffset",
+                    key: "sourceOffset",
                     value: rcd.args[1]
                 },
                 {
-                    key: "dst",
+                    key: "destination",
                     value: <ResLink id={rcd.args[2].__id} />
                 },
                 {
-                    key: "dstOffset",
+                    key: "destinationOffset",
                     value: rcd.args[3]
                 },
                 {

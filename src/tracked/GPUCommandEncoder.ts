@@ -32,7 +32,7 @@ export default class TrackedGPUCommandEncoder extends TrackedBase<TrackedGPUComm
         this.__creator = await profile.getOrRestore(this.__initialSnapshot!.device, encoder) as TrackedGPUDevice;
         this.__authentic = this.__creator!.__authentic!.createCommandEncoder();
     }
-    public takeSnapshotBeforeSubmit(): void {
+    public takeSnapshotBeforeSubmit(_: any): void {
         const device_id = this.__creator?.__id ?? (this.__authentic as wgi_GPUCommandEncoder).device.__id;
 
         this.__snapshot = {
