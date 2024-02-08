@@ -6,7 +6,7 @@ import RcdBase, { RecordKind, RecordType } from "../rcd";
 
 export default class RcdCreateCommandEncoder extends RcdBase<TrackedGPUDevice, [GPUCommandEncoderDescriptor?], TrackedGPUCommandEncoder> {
     __type = RecordType.Create;
-    __kind = RecordKind.createCommandEncoder;
+    __kind = RecordKind.CreateCommandEncoder;
     public play(): TrackedGPUCommandEncoder {
         const encoder = this.caller!.__authentic!.createCommandEncoder(...this.args);
         this.ret!.__authentic = encoder;

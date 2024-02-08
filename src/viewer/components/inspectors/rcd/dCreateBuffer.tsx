@@ -5,7 +5,7 @@ import ResLink from "../../common/ResLink";
 
 export default function dCreateBufferView(rcd: RcdCreateBuffer): RcdDetailContent {
     return {
-        title: <span>device.CreateBuffer</span>,
+        title: <span>GPUDevice.createBuffer</span>,
         caller: <ResLink id={rcd.caller!.__id} />,
         arguments: [
             [

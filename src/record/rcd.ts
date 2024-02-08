@@ -13,7 +13,7 @@ export enum RecordType {
 export enum RecordKind {
     DebugRes = 1,
     CreateBuffer = 2,
-    createCommandEncoder = 3,
+    CreateCommandEncoder = 3,
 
     // Commands
     CopyBufferToBuffer = 101,

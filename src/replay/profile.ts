@@ -47,7 +47,7 @@ export default class ReplayProfile {
                 throw "Corrupted capture file.";
             }
             const id = ds.read<UniversalResourceId>(u32);
-            const kind = ds.read<number>(u32);
+            const kind = ds.read<number>(u32) as brandMap;
             const temporary = !!ds.read(u32);
             const Ctor = trackedCtorMap[kind];
             const tracked = new Ctor();
@@ -64,7 +64,7 @@ export default class ReplayProfile {
                 throw "Corrupted capture file.";
             }
             const index = ds.read<number>(u32); // ignored
-            const kind = ds.read<number>(u32);
+            const kind = ds.read<number>(u32) as RecordKind;
             const Ctor = rcdCtorMap[kind];
             if (!Ctor) {
                 throw "Unregistered record kind: " + RecordKind[kind];
