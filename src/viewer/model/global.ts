@@ -2,6 +2,7 @@ import ReplayProfile from "../../replay/profile";
 import { createGlobalState } from "../utils/globalState";
 import { logError, logSuccess, logWarning } from "../utils/message";
 import { RecordKind } from "../../record/rcd";
+import { currentTab } from "./inspector";
 
 export let globalProfile: ReplayProfile | null = null;
 async function loadCapture(file: File) {
@@ -57,6 +58,7 @@ export async function selectRcd(id: number) {
     await globalProfile.replayTo(id);
     replaying.set(false);
     currentRcdId.set(id);
+    currentTab.set("rcd");
 }
 
 const loading = createGlobalState(false);

@@ -1,11 +1,10 @@
 import React from "react";
 import useGlobalState from "../../../utils/globalState";
 import { currentRcdId, globalProfile } from "../../../model/global";
-import dGPUBuffer from "./dGPUBuffer";
 import { LinkOutlined } from "@ant-design/icons";
 
 import styles from "./ResDetail.module.css";
-import { Collapse, CollapseProps } from "antd";
+import { Collapse, CollapseProps, Descriptions, DescriptionsProps } from "antd";
 import { brandMap } from "../../../../common/utils";
 import { ResDetailMap } from "./utils";
 
@@ -42,10 +41,15 @@ export default function ResDetail({ id }: ResDetailProps) {
         });
     }
     if (content.attributes && content.attributes.length > 0) {
+        const attrDescription: DescriptionsProps["items"] = content.attributes.map((attr, attrIndex) => ({
+            key: attrIndex,
+            label: attr.key,
+            children: attr.value
+        }));
         collapseItems.push({
             key: "attributes",
             label: "Properties",
-            children: content.attributes.map((attr, attrIndex) => <p key={attr.key}>{attr.key}: {attr.value}</p>)
+            children: <Descriptions items={attrDescription} bordered></Descriptions>
         });
     } else {
         collapseItems.push({
