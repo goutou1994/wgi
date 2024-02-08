@@ -1,5 +1,5 @@
 import ResourceDependencies from "../../common/deps";
-import type { brandMap } from "../../common/utils";
+import type { brandMap } from "../../common/brand";
 import TrackedBase from "../../tracked/tracked";
 
 let global_id_counter = 1; // 0 is invalid

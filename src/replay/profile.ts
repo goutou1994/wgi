@@ -1,10 +1,11 @@
-import { DataStream, brandMap } from "../common/utils";
+import { DataStream } from "../common/utils";
 import TrackedBase from "../tracked/tracked";
 import * as version from "../common/version";
 import { trackedCtorMap } from "./utils/trackedCtor";
 import { rcdCtorMap } from "./utils/rcdCtor";
 import RcdBase, { RecordKind } from "../record/rcd";
 import TrackedGPUDevice from "../tracked/GPUDevice";
+import { brandMap } from "../common/brand";
 
 type logger = (msg: string) => void;
 

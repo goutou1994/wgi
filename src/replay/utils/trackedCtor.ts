@@ -1,4 +1,4 @@
-import { brandMap } from "../../common/utils";
+import { brandMap } from "../../common/brand";
 import TrackedGPU from "../../tracked/GPU";
 import TrackedGPUAdapter from "../../tracked/GPUAdapter";
 import TrackedGPUBuffer from "../../tracked/GPUBuffer";

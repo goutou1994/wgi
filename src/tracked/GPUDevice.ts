@@ -1,4 +1,5 @@
-import { DataStream, brandMap } from "../common/utils";
+import { brandMap } from "../common/brand";
+import { DataStream } from "../common/utils";
 import wgi_GPUDevice from "../recorder/driver/GPUDevice";
 import wgi_GPUBase from "../recorder/driver/gpubase";
 import type ReplayProfile from "../replay/profile";
