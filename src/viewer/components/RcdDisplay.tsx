@@ -18,6 +18,10 @@ export default function RcdDisplay() {
     const [rcds] = useGlobalState(rcdEntries);
 
     const menuItems = makeMenuProps(rcds);
+    menuItems.unshift({
+        label: "initial",
+        key: "-1"
+    });
 
     const handleClick: MenuProps['onClick'] = e => {
         selectRcd(Number(e.key));

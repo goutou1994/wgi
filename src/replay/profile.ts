@@ -117,10 +117,12 @@ export default class ReplayProfile {
         // submit and wait for it to be done.
         const cb = encoder.finish();
         device.queue.submit([cb]);
-        return device.queue.onSubmittedWorkDone();
+        return device.queue.onSubmittedWorkDone().then(() => {
+            this.initialRestored = true;
+        });
     }
 
-    private currentRcdId: number = -1;
+    private currentRcdId: number | null = null;
     public async replayTo(rcdId: number) {
         rcdId = Math.min(rcdId, this.rcds.length);
 
@@ -128,6 +130,11 @@ export default class ReplayProfile {
         if (rcdId !== this.currentRcdId && !this.initialRestored) {
             await this.restore();
         }
+
+        if (rcdId !== -1) {
+            this.initialRestored = false;
+        }
+        this.currentRcdId = rcdId;
 
         // play by order
         for (let i = 0; i <= rcdId; i++) {

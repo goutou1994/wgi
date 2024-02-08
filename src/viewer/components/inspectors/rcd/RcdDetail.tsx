@@ -8,6 +8,7 @@ import styles from "./RcdDetail.module.css";
 import { currentRcdId, globalProfile } from "../../../model/global";
 import useGlobalState from "../../../utils/globalState";
 import { RcdDetailMap } from "./utils";
+import InitialState from "./InitialState";
 
 export interface RcdDetailContent {
     title: React.JSX.Element | string;
@@ -25,6 +26,10 @@ export default function RcdDetail() {
 
     if (rcdId === null) {
         return <p>No record selected.</p>
+    }
+
+    if (rcdId === -1) {
+        return <InitialState />
     }
 
     const rcd = globalProfile!.getRcdAt(rcdId);
