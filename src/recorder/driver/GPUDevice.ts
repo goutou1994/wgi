@@ -45,8 +45,8 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         return globalRecorder.processRcd(
             RcdDebugRes,
             undefined,
-            [{res}],
-            () => {}
+            [{ res }],
+            () => { }
         );
     }
     createBuffer(descriptor: GPUBufferDescriptor): GPUBuffer {
@@ -69,13 +69,17 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
             RcdCreateTexture,
             this,
             [descriptor],
-            () => new wgi_GPUTexture(
-                this.next.createTexture({
-                    ...descriptor,
-                    usage: descriptor.usage | GPUTextureUsage.COPY_SRC
-                }),
-                this
-            )
+            () => {
+                const tex = new wgi_GPUTexture(
+                    this.next.createTexture({
+                        ...descriptor,
+                        usage: descriptor.usage | GPUTextureUsage.COPY_SRC
+                    }),
+                    this
+                );
+                tex.realUsage = descriptor.usage;
+                return tex;
+            }
         );
     }
     createSampler(descriptor?: GPUSamplerDescriptor | undefined): GPUSampler {
