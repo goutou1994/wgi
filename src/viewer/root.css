@@ -1,5 +1,5 @@
 body {
-    background-color: rgb(230, 230, 230);
+    background-color: rgb(242, 242, 242);
     margin: 0;
     overflow: hidden;
 }
@@ -25,10 +25,14 @@ body {
 .panel-resize {
     width: 5px;
     height: 100%;
-    background-color: black;
+    background-color: rgb(206 226 255);
 }
 
 .ant-tabs-content-holder {
     padding-left: 20px;
     padding-right: 20px;
+}
+
+.ant-tabs-nav-wrap {
+    background-color: #eaefff;
 }

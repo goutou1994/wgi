@@ -6,7 +6,7 @@ import { rcdCtorMap } from "./utils/rcdCtor";
 import RcdBase, { RecordKind } from "../record/rcd";
 import TrackedGPUDevice from "../tracked/GPUDevice";
 import { brandMap } from "../common/brand";
-import { gunzipSync, unzipSync } from "fflate";
+import { gunzipSync } from "fflate";
 
 type logger = (msg: string) => void;
 
