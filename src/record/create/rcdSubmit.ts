@@ -3,13 +3,12 @@ import ReplayProfile from "../../replay/profile";
 import TrackedGPUCommandBuffer from "../../tracked/GPUCommandBuffer";
 import TrackedGPUQueue from "../../tracked/GPUQueue";
 import TrackedBase from "../../tracked/tracked";
-import RcdBase, { RecordKind, RecordType } from "../rcd";
+import RcdBase, { RecordKind } from "../rcd";
 
 type RawRcdSubmitArgs = [Iterable<GPUCommandBuffer>];
 type RcdSubmitArgs = [Array<TrackedGPUCommandBuffer>];
 
 export default class RcdSubmit extends RcdBase<TrackedGPUQueue, RcdSubmitArgs, void> {
-    __type = RecordType.Command;
     __kind = RecordKind.Submit;
     public play(): void {
         this.caller!.__authentic!.submit(this.args[0].map(cb => cb.__authentic!));

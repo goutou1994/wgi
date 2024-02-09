@@ -4,14 +4,13 @@ import ReplayProfile from "../../replay/profile";
 import TrackedGPUBuffer from "../../tracked/GPUBuffer";
 import TrackedGPUCommandEncoder from "../../tracked/GPUCommandEncoder";
 import type TrackedBase from "../../tracked/tracked";
-import RcdBase, { RecordKind, RecordType } from "../rcd";
+import RcdBase, { RecordKind } from "../rcd";
 
 type RawRcdCreateBufferArgs = Parameters<GPUCommandEncoder["copyBufferToBuffer"]>;
 type RcdCreateBufferArgs = [TrackedGPUBuffer, number, TrackedGPUBuffer, number, number];
 
 export default class RcdCopyBufferToBuffer
     extends RcdBase<TrackedGPUCommandEncoder, RcdCreateBufferArgs, void> {
-    __type = RecordType.Command;
     __kind = RecordKind.CopyBufferToBuffer;
     public play(): void {
         this.caller!.__authentic!.copyBufferToBuffer(

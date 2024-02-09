@@ -1,5 +1,6 @@
 import RcdCreateBuffer from "../../record/create/rcdCreateBuffer";
 import RcdCreateCommandEncoder from "../../record/create/rcdCreateCommandEncoder";
+import RcdCreateTexture from "../../record/create/rcdCreateTexture";
 import RcdDebugRes from "../../record/rcdDebugRes";
 import TrackedGPUDevice from "../../tracked/GPUDevice";
 import TrackedBase from "../../tracked/tracked";
@@ -8,6 +9,7 @@ import wgi_GPUAdapter from "./GPUAdapter";
 import wgi_GPUBuffer from "./GPUBuffer";
 import wgi_GPUCommandEncoder from "./GPUCommandEncoder";
 import wgi_GPUQueue from "./GPUQueue";
+import wgi_GPUTexture from "./GPUTexture";
 import wgi_GPUBase from "./gpubase";
 
 export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
@@ -63,7 +65,18 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         );
     }
     createTexture(descriptor: GPUTextureDescriptor): GPUTexture {
-        throw new Error("Method not implemented.");
+        return globalRecorder.processRcd(
+            RcdCreateTexture,
+            this,
+            [descriptor],
+            () => new wgi_GPUTexture(
+                this.next.createTexture({
+                    ...descriptor,
+                    usage: descriptor.usage | GPUTextureUsage.COPY_SRC
+                }),
+                this
+            )
+        );
     }
     createSampler(descriptor?: GPUSamplerDescriptor | undefined): GPUSampler {
         throw new Error("Method not implemented.");

@@ -2,7 +2,7 @@ import { DataStream } from "../common/utils";
 import wgi_GPUBase from "../recorder/driver/gpubase";
 import ReplayProfile from "../replay/profile";
 import type TrackedBase from "../tracked/tracked";
-import RcdBase, { RecordKind, RecordType } from "./rcd";
+import RcdBase, { RecordKind } from "./rcd";
 
 type RawRcdDebugResArgs = Array<{
     res: wgi_GPUBase
@@ -13,7 +13,6 @@ type RcdDebugResArgs = Array<{
 }>;
 
 export default class RcdDebugRes extends RcdBase<void, RcdDebugResArgs, void> {
-    __type = RecordType.Create;
     __kind = RecordKind.DebugRes;
 
     public play(): void { }

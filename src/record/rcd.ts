@@ -4,16 +4,17 @@ import type wgi_GPUBase from "../recorder/driver/gpubase";
 import type ReplayProfile from "../replay/profile";
 import type TrackedBase from "../tracked/tracked";
 
-export enum RecordType {
-    Create,
-    Command,
-    Destroy
-}
+// export enum RecordType {
+//     Create,
+//     Command,
+//     Destroy
+// }
 
 export enum RecordKind {
     DebugRes = 1,
     CreateBuffer = 2,
     CreateCommandEncoder = 3,
+    CreateTexture = 4,
 
     // Commands
     CopyBufferToBuffer = 101,
@@ -24,7 +25,6 @@ export enum RecordKind {
 }
 
 export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = void> {
-    abstract readonly __type: RecordType;
     abstract readonly __kind: RecordKind;
 
     public args: Args;

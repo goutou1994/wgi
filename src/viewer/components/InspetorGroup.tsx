@@ -3,7 +3,7 @@ import { Tabs, TabsProps } from 'antd';
 import RcdDetail from './inspectors/rcd/RcdDetail';
 import useGlobalState from '../utils/globalState';
 import { globalProfile } from '../model/global';
-import { brandMap } from '../../common/utils';
+import { brandMap } from '../../common/brand';
 import { closeResTab, currentTab, resInspecting } from '../model/inspector';
 import ResDetail from './inspectors/res/ResDetail';
 

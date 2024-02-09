@@ -2,10 +2,9 @@ import { DataStream } from "../../common/utils";
 import ReplayProfile from "../../replay/profile";
 import TrackedGPUCommandBuffer from "../../tracked/GPUCommandBuffer";
 import TrackedGPUCommandEncoder from "../../tracked/GPUCommandEncoder";
-import RcdBase, { RecordKind, RecordType } from "../rcd";
+import RcdBase, { RecordKind } from "../rcd";
 
 export default class RcdFinish extends RcdBase<TrackedGPUCommandEncoder, [], TrackedGPUCommandBuffer> {
-    __type = RecordType.Command;
     __kind = RecordKind.Finish;
     public play(): TrackedGPUCommandBuffer {
         const cb = this.caller!.__authentic!.finish();

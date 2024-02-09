@@ -1,4 +1,4 @@
-import { brandMap } from "../../../../common/utils";
+import { brandMap } from "../../../../common/brand";
 import type TrackedBase from "../../../../tracked/tracked";
 import type { ResDetailContent } from "./ResDetail";
 import dGPUAdapter from "./dGPUAdapter";

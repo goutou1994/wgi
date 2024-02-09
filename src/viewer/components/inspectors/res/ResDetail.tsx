@@ -5,7 +5,7 @@ import { LinkOutlined } from "@ant-design/icons";
 
 import styles from "./ResDetail.module.css";
 import { Collapse, CollapseProps, Descriptions, DescriptionsProps } from "antd";
-import { brandMap } from "../../../../common/utils";
+import { brandMap } from "../../../../common/brand";
 import { ResDetailMap } from "./utils";
 
 interface ResDetailProps {

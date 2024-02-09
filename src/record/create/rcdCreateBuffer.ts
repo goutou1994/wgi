@@ -1,4 +1,4 @@
-import RcdBase, { RecordKind, RecordType } from "../rcd";
+import RcdBase, { RecordKind } from "../rcd";
 import wgi_GPUBuffer from "../../recorder/driver/GPUBuffer";
 import { DataStream } from "../../common/utils";
 import type TrackedGPUDevice from "../../tracked/GPUDevice";
@@ -10,7 +10,6 @@ export default class RcdCreateBuffer extends RcdBase<TrackedGPUDevice, [GPUBuffe
     constructor(args: [GPUBufferDescriptor], caller: TrackedGPUDevice, ret?: TrackedGPUBuffer) {
         super(args, caller, ret);
     }
-    readonly __type: RecordType = RecordType.Create;
     readonly __kind: RecordKind = RecordKind.CreateBuffer;
 
     public play(): TrackedGPUBuffer {

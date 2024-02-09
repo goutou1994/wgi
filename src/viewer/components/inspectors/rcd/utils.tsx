@@ -7,7 +7,7 @@ import dDebugRes from "./dDebugRes";
 import dFinish from "./dFinish";
 import dSubmit from "./dSubmit";
 
-export const RcdDetailMap: {[kind in RecordKind]?: (tracked: RcdBase<any, any, any>) => RcdDetailContent } = {
+export const RcdDetailMap: {[kind in RecordKind]?: (rcd: RcdBase<any, any, any>) => RcdDetailContent } = {
     [RecordKind.DebugRes]: dDebugRes,
     [RecordKind.CreateBuffer]: dCreateBufferView,
     [RecordKind.CreateCommandEncoder]: dCreateCommandEncoder,

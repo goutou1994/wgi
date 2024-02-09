@@ -21,7 +21,8 @@ export default class TrackedGPUBuffer extends TrackedBase<TrackedGPUBuffer> {
     __snapshot?: GPUBufferSnapshot;
     __initialSnapshot?: GPUBufferSnapshot;
     __creator?: TrackedGPUDevice;
-
+    
+    public realUsage?: GPUBufferUsageFlags;
     public fromAuthentic(authentic: wgi_GPUBuffer): TrackedGPUBuffer {
         const tracked = this.fastFromAuthentic(authentic, TrackedGPUBuffer);
         tracked.realUsage = authentic.desc.usage;
@@ -50,7 +51,6 @@ export default class TrackedGPUBuffer extends TrackedBase<TrackedGPUBuffer> {
             content
         };
     }
-    public realUsage?: GPUBufferUsageFlags;
     public async restore(profile: ReplayProfile, encoder: GPUCommandEncoder): Promise<void> {
         const s = this.__initialSnapshot!;
         this.__creator = await profile.getOrRestore(s.device, encoder);

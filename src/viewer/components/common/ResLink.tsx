@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./common.module.css";
 import { openResTab } from "../../model/inspector";
 import { globalProfile } from "../../model/global";
-import { brandMap } from "../../../common/utils";
+import { brandMap } from "../../../common/brand";
 
 interface ResLinkProps {
     id: number;

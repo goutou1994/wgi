@@ -1,3 +1,4 @@
+import type wgi_GPUDevice from "./GPUDevice";
 import wgi_GPUTexture from "./GPUTexture";
 
 export default class wgi_GPUCanvasContext implements GPUCanvasContext {
@@ -18,7 +19,7 @@ export default class wgi_GPUCanvasContext implements GPUCanvasContext {
     getCurrentTexture(): wgi_GPUTexture {
         if (this._configuration) {
             const tex = this.next.getCurrentTexture();
-            return new wgi_GPUTexture(tex, this._configuration.device, this.canvasId);
+            return new wgi_GPUTexture(tex, this._configuration.device as wgi_GPUDevice, this.canvasId);
         } else {
             this.next.getCurrentTexture();
             throw "wgi_error: CanvasContext not configured."

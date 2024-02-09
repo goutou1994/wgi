@@ -71,7 +71,7 @@ export class DataStream {
         this.head += DataStream.TypeSize[type];
         return ret as T;
     }
-    public write<T>(type: DataStream.Type, value: T): void {
+    public write<T>(type: DataStream.Type, value: NonNullable<T>): void {
         const misalign = this.testSufficientByType(type);
         if (misalign < 0) throw "[DataStream]write buffer out of bound.";
         this.head += misalign;
