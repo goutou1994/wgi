@@ -153,7 +153,7 @@ export namespace DataStream {
     }
 }
 
-export function downloadBinaryFile(buffer: ArrayBuffer) {
+export function downloadBinaryFile(buffer: Uint8Array) {
     var a = document.createElement("a");
     document.body.appendChild(a);
     // @ts-ignore

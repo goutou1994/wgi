@@ -3,6 +3,7 @@ import wgi_GPUBase, { wgiResMap } from "./driver/gpubase";
 import RcdBase from "../record/rcd";
 import TrackedBase from "../tracked/tracked";
 import wgi_GPUDevice from "./driver/GPUDevice";
+import { gzipSync } from "fflate";
 
 enum RecorderState {
     Background,
@@ -65,7 +66,9 @@ export default class Recorder {
 
         totalLength.write(ds.pos());
 
-        downloadBinaryFile(ds.getClippedBuffer());
+        const clipped = ds.getClippedBuffer();
+        const compressed = gzipSync(new Uint8Array(clipped));
+        downloadBinaryFile(compressed);
         this.state = RecorderState.Expired;
     }
 

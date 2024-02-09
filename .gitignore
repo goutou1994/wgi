@@ -3,3 +3,4 @@ node_modules
 reminder.md
 wgi.mjs
 viewer.mjs
+.DS_Store

@@ -6,6 +6,7 @@ import { rcdCtorMap } from "./utils/rcdCtor";
 import RcdBase, { RecordKind } from "../record/rcd";
 import TrackedGPUDevice from "../tracked/GPUDevice";
 import { brandMap } from "../common/brand";
+import { gunzipSync, unzipSync } from "fflate";
 
 type logger = (msg: string) => void;
 
@@ -18,7 +19,10 @@ export default class ReplayProfile {
         this.logError = error;
     }
 
-    public deserialize(raw: ArrayBuffer) {
+    public deserialize(compressed: ArrayBuffer) {
+        const rawView = gunzipSync(new Uint8Array(compressed));
+        const raw = rawView.buffer.slice(rawView.byteOffset);
+
         const ds = new DataStream(raw);
         const u16 = DataStream.Type.UInt16;
         const u32 = DataStream.Type.UInt32;
