@@ -18,8 +18,8 @@ export default class ReplayProfile {
         this.logError = error;
     }
 
-    public deserialize(raw: Uint8Array) {
-        const ds = new DataStream(raw.buffer);
+    public deserialize(raw: ArrayBuffer) {
+        const ds = new DataStream(raw);
         const u16 = DataStream.Type.UInt16;
         const u32 = DataStream.Type.UInt32;
         const f32 = DataStream.Type.Float;
@@ -76,6 +76,7 @@ export default class ReplayProfile {
     }
 
     private initialRestored: boolean = false;
+    public device?: GPUDevice;
     public async restore() {
         // delete snapshots
         this.trackedMap.forEach(tracked => tracked.__snapshot = undefined);
@@ -93,8 +94,9 @@ export default class ReplayProfile {
             this.logWarn?.("No GPUDevice found, cannot restore resources.");
             return;
         }
-
+        
         // destroy GPUDevice, thus should destroy all children resources.
+        this.device = undefined;
         trackedDevice.__authentic?.destroy();
 
         // delete authentics
@@ -103,6 +105,7 @@ export default class ReplayProfile {
         // restore device first, to create an encoder for others
         await trackedDevice.restore(this);
         const device = trackedDevice.__authentic!;
+        this.device = device;
         const encoder = device.createCommandEncoder();
 
         // restore every tracked resource,

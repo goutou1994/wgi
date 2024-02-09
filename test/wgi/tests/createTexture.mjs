@@ -4,14 +4,25 @@ inject();
     const adatper = await navigator.gpu.requestAdapter();
     const device = await adatper.requestDevice();
 
+    const img = document.createElement("img");
+    img.src = "tests/images/weixin.png"
+    await img.decode();
+    const imageBitmap = await createImageBitmap(img);
+
+    const texture = device.createTexture({
+        size: [imageBitmap.width, imageBitmap.height, 1],
+        format: "rgba8unorm",
+        usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT
+    });
+
+    device.queue.copyExternalImageToTexture(
+        { source: imageBitmap },
+        { texture: texture },
+        [imageBitmap.width, imageBitmap.height]
+    );
+
     function loop(time) {
-        const texture = device.createTexture({
-            size: [64, 64, 1],
-            format: "rgba8unorm",
-            usage: GPUTextureUsage.TEXTURE_BINDING
-        });
         device.debugRes(texture);
-        texture.destroy();
         requestAnimationFrame(loop);
     }
     console.log("begin loop!");

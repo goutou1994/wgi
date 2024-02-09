@@ -40,7 +40,11 @@ export class DataStream {
         if (this.head + misalign + size > this._size) {
             if (this.bufferInternal) {
                 // enlarge internal buffer
-                const newBuffer = new ArrayBuffer(this._size * 2);
+                let newSize = this._size;
+                while (newSize < this.head + misalign + size) {
+                    newSize *= 2;
+                }
+                const newBuffer = new ArrayBuffer(newSize);
                 new Uint8Array(newBuffer).set(new Uint8Array(this.buffer));
                 this.buffer = newBuffer;
                 this._size = this.buffer.byteLength;

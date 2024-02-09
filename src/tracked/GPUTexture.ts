@@ -87,7 +87,7 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
             sampleCount: s.sampleCount,
             dimension: s.dimension,
             format: s.format,
-            usage: s.usage | GPUTextureUsage.COPY_DST | GPUTextureUsage.COPY_SRC
+            usage: s.usage | GPUTextureUsage.COPY_DST | GPUTextureUsage.COPY_SRC | GPUTextureUsage.TEXTURE_BINDING
         });
         this.realUsage = s.usage;
 

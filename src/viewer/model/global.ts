@@ -7,9 +7,8 @@ import { currentTab } from "./inspector";
 export let globalProfile: ReplayProfile | null = null;
 async function loadCapture(file: File) {
     loading.set(true);
-    const reader = file.stream().getReader();
-    const result = await reader.read();
-    const buffer = result.value;
+    // const reader = file.stream().getReader();
+    const buffer = await file.arrayBuffer();
 
     if (!buffer) {
         logError("Read file failed.");
@@ -34,7 +33,7 @@ async function loadCapture(file: File) {
         id: index
     })));
 
-    reader.releaseLock();
+    // reader.releaseLock();
     loading.set(false);
 }
 

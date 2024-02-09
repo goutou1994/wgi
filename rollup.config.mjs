@@ -4,6 +4,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
 import postcss from 'rollup-plugin-postcss';
+import { string } from 'rollup-plugin-string';
 
 const configs = {
     main: {
@@ -26,6 +27,9 @@ const configs = {
         plugins: [
             nodeResolve(),
             commonjs(),
+            string({
+                include: "**/*.wgsl"
+            }),
             typescript(),
             postcss(),
             replace({

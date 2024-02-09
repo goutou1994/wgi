@@ -4,6 +4,7 @@ import TrackedBase from "../../tracked/tracked";
 import { globalRecorder } from "../recorder";
 import wgi_GPUCommandBuffer from "./GPUComandBuffer";
 import wgi_GPUDevice from "./GPUDevice";
+import type wgi_GPUTexture from "./GPUTexture";
 import wgi_GPUBase from "./gpubase";
 
 export default class wgi_GPUQueue extends wgi_GPUBase implements GPUQueue {
@@ -39,7 +40,15 @@ export default class wgi_GPUQueue extends wgi_GPUBase implements GPUQueue {
         throw new Error("Method not implemented.");
     }
     copyExternalImageToTexture(source: GPUImageCopyExternalImage, destination: GPUImageCopyTextureTagged, copySize: GPUExtent3DStrict): undefined {
-        throw new Error("Method not implemented.");
+        const dst: GPUImageCopyTextureTagged = {
+            ...destination,
+            texture: (destination.texture as wgi_GPUTexture).next
+        };
+        this.next.copyExternalImageToTexture(
+            source,
+            dst,
+            copySize
+        );
     }
     get label(): string { return this.next.label; }
 }

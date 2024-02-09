@@ -19,6 +19,7 @@ export interface ResDetailContent {
         key: string;
         value: React.JSX.Element | string | number;
     }>;
+    preview?: React.JSX.Element | string | undefined;
     refLink?: string;
 }
 
@@ -56,6 +57,13 @@ export default function ResDetail({ id }: ResDetailProps) {
             key: "attributes",
             label: "Properties",
             children: <p>No properties.</p>
+        });
+    }
+    if (content.preview) {
+        collapseItems.push({
+            key: "preview",
+            label: "Preview",
+            children: content.preview
         });
     }
 

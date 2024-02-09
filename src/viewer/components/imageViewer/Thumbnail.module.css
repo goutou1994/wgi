@@ -1,0 +1,7 @@
+.notAvailable {
+    background-color: #f0f0f0;
+    border: solid #d4d4d4;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}

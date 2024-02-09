@@ -1,14 +1,6 @@
 import inject, { testStartCapture } from "../wgi.mjs"
 // inject();
 
-const vertices = new Float32Array([
-    //   X,    Y,
-    -0.8, -0.8,
-    0.8, -0.8,
-    0.8, 0.8,
-    -0.8, 0.8,
-]);
-
 const vs = `
 @vertex
 fn vertexMain(@location(0) pos: vec2f) -> @builtin(position) vec4f {
