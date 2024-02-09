@@ -68,7 +68,11 @@ export default function Thumbnail(props: ThumbnailProps) {
                     binding: 0,
                     resource: device.createSampler({
                         magFilter: "nearest",
-                        minFilter: "linear"
+                        minFilter: "linear",
+                        addressModeU: "clamp-to-edge",
+                        addressModeV: "clamp-to-edge",
+                        addressModeW: "clamp-to-edge",
+                        mipmapFilter: "nearest"
                     })
                 },
                 {

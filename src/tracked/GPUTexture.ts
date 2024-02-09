@@ -18,6 +18,7 @@ interface GPUTextureSnapshot {
     format: GPUTextureFormat;
     usage: GPUTextureUsageFlags;
     content: ArrayBuffer;
+    bytesPerRow: number;
 };
 
 const pixelSizeMap = {
@@ -53,6 +54,7 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
         ds.write(DataStream.Type.UInt32, s.usage);
         ds.write(DataStream.Type.UInt32, s.content.byteLength);
         ds.writeChunk(s.content);
+        ds.write(DataStream.Type.UInt32, s.bytesPerRow);
     }
     public deserialize(ds: DataStream): void {
         const device_id = ds.read<number>(DataStream.Type.UInt32);
@@ -66,6 +68,7 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
         const usage = ds.read<number>(DataStream.Type.UInt32);
         const contentLength = ds.read<number>(DataStream.Type.UInt32);
         const content = ds.readChunk(contentLength);
+        const bytesPerRow = ds.read<number>(DataStream.Type.UInt32);
 
         this.__initialSnapshot = {
             device: device_id,
@@ -74,7 +77,8 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
             dimension: dimension as GPUTextureDimension,
             format: format as GPUTextureFormat,
             usage,
-            content
+            content,
+            bytesPerRow
         };
     }
     public async restore(profile: ReplayProfile, encoder: GPUCommandEncoder) {
@@ -102,19 +106,21 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
 
         encoder.copyBufferToTexture(
             {
-                buffer: stagingBuffer
+                buffer: stagingBuffer,
+                bytesPerRow: s.bytesPerRow
             },
             {
                 texture: this.__authentic
             },
             {
                 width: s.width,
-                // height: s.height,
-                // depthOrArrayLayers: s.depthOrArrayLayers
+                height: s.height,
+                depthOrArrayLayers: s.depthOrArrayLayers
             }
         );
     }
     private stagingBuffer?: GPUBuffer;
+    private bytesPerRow?: number;
     public takeSnapshotBeforeSubmit(encoder: GPUCommandEncoder, profile?: ReplayProfile | undefined): void {
         let device: GPUDevice;
         let texture: GPUTexture;
@@ -130,7 +136,9 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
         const pixelSize = (pixelSizeMap as any)[texture.format] as number;
         if (!pixelSize) return; // unsupported format
 
-        const bufferSize = pixelSize * texture.width * texture.height * texture.depthOrArrayLayers;
+        const columns = texture.width;
+        const bytesPerRow = Math.ceil(columns * pixelSize / 256) * 256;
+        const bufferSize = bytesPerRow * texture.height * texture.depthOrArrayLayers;
 
         const stagingBuffer = device.createBuffer({
             size: bufferSize,
@@ -141,15 +149,17 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
                 texture: texture
             },
             {
-                buffer: stagingBuffer
+                buffer: stagingBuffer,
+                bytesPerRow: bytesPerRow
             },
             {
                 width: texture.width,
-                // height: texture.height,
-                // depthOrArrayLayers: texture.depthOrArrayLayers
+                height: texture.height,
+                depthOrArrayLayers: texture.depthOrArrayLayers
             }
         );
         this.stagingBuffer = stagingBuffer;
+        this.bytesPerRow = bytesPerRow;
     }
 
     public async takeSnapshotAfterSubmit() {
@@ -168,7 +178,8 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
             dimension: this.__authentic!.dimension,
             format: this.__authentic!.format,
             usage: this.realUsage ?? this.__authentic!.usage,
-            content: ab.slice(0)
+            content: ab.slice(0),
+            bytesPerRow: this.bytesPerRow!
         };
 
         this.stagingBuffer!.unmap();

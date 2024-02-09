@@ -16,6 +16,6 @@ struct VertexOutput {
 fn vertexMain(@builtin(vertex_index) VertexIndex : u32) -> VertexOutput {
     var output : VertexOutput;
     output.Position = vec4<f32>(pos[VertexIndex], 0.0, 1.0);
-    output.uv = pos[VertexIndex] * 0.5f + 0.5f;
+    output.uv = pos[VertexIndex] * vec2(0.5f, -0.5f) + 0.5f;
     return output;
 }

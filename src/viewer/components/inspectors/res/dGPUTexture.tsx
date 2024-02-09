@@ -30,7 +30,7 @@ export default function dGPUTexture(texture: TrackedGPUTexture): ResDetailConten
     let preview: React.JSX.Element;
     if (snapshot.content.byteLength > 0) {
         preview = <div>
-            <Thumbnail texture={texture.__id} width={100} height={100 * snapshot.height / snapshot.width}></Thumbnail>
+            <Thumbnail texture={texture.__id} width={200 * snapshot.width / snapshot.height} height={200}></Thumbnail>
         </div>;
     } else {
         preview = <p>Preview not available.</p>;
