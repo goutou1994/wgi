@@ -19,6 +19,7 @@ export default class RcdCreateTexture extends RcdBase<TrackedGPUDevice, [GPUText
     }
     public serialize(ds: DataStream): void {
         const a = this.args[0];
+        serializeString(ds, a.label);
         ds.write(DataStream.Type.UInt32, this.caller!.__id);
         const sizes = [];
         if ("width" in a.size) {
@@ -39,6 +40,7 @@ export default class RcdCreateTexture extends RcdBase<TrackedGPUDevice, [GPUText
         ds.write(DataStream.Type.UInt32, this.ret!.__id);
     }
     public deserialize(ds: DataStream, profile: ReplayProfile): RcdBase<TrackedGPUDevice, [GPUTextureDescriptor], TrackedGPUTexture> {
+        const label = deserializeString(ds);
         const device_id = ds.read<number>(DataStream.Type.UInt32);
         const width = ds.read<number>(DataStream.Type.UInt32);
         const height = ds.read<number>(DataStream.Type.UInt32);
@@ -54,6 +56,7 @@ export default class RcdCreateTexture extends RcdBase<TrackedGPUDevice, [GPUText
         tracked.__id = ret_id;
         return new RcdCreateTexture(
             [{
+                label,
                 size: [width, height, depthOrArrayLayers],
                 mipLevelCount, sampleCount,
                 dimension, format, usage

@@ -4,6 +4,7 @@ import { DataStream } from "../../common/utils";
 import type TrackedGPUDevice from "../../tracked/GPUDevice";
 import TrackedGPUBuffer from "../../tracked/GPUBuffer";
 import type ReplayProfile from "../../replay/profile";
+import { deserializeString, serializeString } from "../../common/serialize";
 
 export default class RcdCreateBuffer extends RcdBase<TrackedGPUDevice, [GPUBufferDescriptor], TrackedGPUBuffer> {
     
@@ -24,6 +25,7 @@ export default class RcdCreateBuffer extends RcdBase<TrackedGPUDevice, [GPUBuffe
     }
 
     public serialize(ds: DataStream) {
+        serializeString(ds, this.args[0].label);
         ds.write(DataStream.Type.UInt32, this.caller!.__id);
         ds.write(DataStream.Type.UInt32, this.args[0].size);
         ds.write(DataStream.Type.UInt32, this.args[0].usage);
@@ -31,6 +33,7 @@ export default class RcdCreateBuffer extends RcdBase<TrackedGPUDevice, [GPUBuffe
     }
 
     public deserialize(ds: DataStream, profile: ReplayProfile): RcdCreateBuffer {
+        const label = deserializeString(ds);
         const device_id = ds.read<number>(DataStream.Type.UInt32);
         const size = ds.read<number>(DataStream.Type.UInt32);
         const usage = ds.read<number>(DataStream.Type.UInt32);
@@ -38,7 +41,7 @@ export default class RcdCreateBuffer extends RcdBase<TrackedGPUDevice, [GPUBuffe
         const tracked = new TrackedGPUBuffer();
         tracked.__id = ret_id;
         return new RcdCreateBuffer(
-            [{ size, usage }],
+            [{ label, size, usage }],
             profile.get<TrackedGPUDevice>(device_id),
             profile.get<TrackedGPUBuffer>(ret_id)
         );

@@ -16,16 +16,19 @@ export default class RcdCreateShaderModule extends RcdBase<TrackedGPUDevice, [GP
     }
     public serialize(ds: DataStream): void {
         const a = this.args[0];
+        serializeString(ds, a.label);
         ds.write(DataStream.Type.UInt32, this.caller!.__id);
         serializeString(ds, a.code);
         ds.write(DataStream.Type.UInt32, this.ret!.__id);
     }
     public deserialize(ds: DataStream, profile: ReplayProfile): RcdBase<TrackedGPUDevice, [GPUShaderModuleDescriptor], TrackedGPUShaderModule> {
+        const label = deserializeString(ds);
         const device_id = ds.read<number>(DataStream.Type.UInt32);
         const code = deserializeString(ds);
         const ret_id = ds.read<number>(DataStream.Type.UInt32);
         return new RcdCreateShaderModule(
             [{
+                label,
                 code
             }],
             profile.get<TrackedGPUDevice>(device_id),
