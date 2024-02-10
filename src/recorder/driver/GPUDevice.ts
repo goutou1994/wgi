@@ -1,5 +1,6 @@
 import RcdCreateBuffer from "../../record/create/rcdCreateBuffer";
 import RcdCreateCommandEncoder from "../../record/create/rcdCreateCommandEncoder";
+import RcdCreateRenderPipeline from "../../record/create/rcdCreateRenderPipeline";
 import RcdCreateShaderModule from "../../record/create/rcdCreateShaderModule";
 import RcdCreateTexture from "../../record/create/rcdCreateTexture";
 import RcdDebugRes from "../../record/rcdDebugRes";
@@ -10,6 +11,7 @@ import wgi_GPUAdapter from "./GPUAdapter";
 import wgi_GPUBuffer from "./GPUBuffer";
 import wgi_GPUCommandEncoder from "./GPUCommandEncoder";
 import wgi_GPUQueue from "./GPUQueue";
+import wgi_GPURenderPipeline from "./GPURenderPipeline";
 import wgi_GPUShaderModule from "./GPUShaderModule";
 import wgi_GPUTexture from "./GPUTexture";
 import wgi_GPUBase from "./gpubase";
@@ -115,7 +117,29 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         throw new Error("Method not implemented.");
     }
     createRenderPipeline(descriptor: GPURenderPipelineDescriptor): GPURenderPipeline {
-        throw new Error("Method not implemented.");
+        return globalRecorder.processRcd(
+            RcdCreateRenderPipeline,
+            this,
+            [descriptor],
+            () => {
+                const descClone = {
+                    ...descriptor,
+                    vertex: {
+                        ...descriptor.vertex,
+                        module: (descriptor.vertex.module as wgi_GPUShaderModule).next
+                    },
+                    fragment: descriptor.fragment ? {
+                        ...descriptor.fragment,
+                        module: (descriptor.fragment.module as wgi_GPUShaderModule).next
+                    } : undefined
+                }
+                return new wgi_GPURenderPipeline(
+                    this.next.createRenderPipeline(descClone),
+                    this,
+                    descriptor
+                )
+            }
+        );
     }
     createComputePipelineAsync(descriptor: GPUComputePipelineDescriptor): Promise<GPUComputePipeline> {
         throw new Error("Method not implemented.");
