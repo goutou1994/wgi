@@ -70,11 +70,11 @@ export default class RcdCreateRenderPipeline extends RcdBase<TrackedGPUDevice, R
             ...args[0],
             vertex: {
                 ...args[0].vertex,
-                module: transformer((args[0].vertex.module as wgi_GPUShaderModule).__id)
+                module: transformer(args[0].vertex.module)
             },
             fragment: args[0].fragment ? {
                 ...args[0].fragment,
-                module: transformer((args[0].fragment.module as wgi_GPUShaderModule).__id)
+                module: transformer(args[0].fragment.module)
             } : undefined
         }
         return [desc as any];

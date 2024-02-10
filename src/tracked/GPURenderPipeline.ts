@@ -63,7 +63,7 @@ interface GPURenderPipelineSnapshot {
     depthBiasSlopeScale: number;
     depthCompare: GPUCompareFunction;
     depthWriteEnabled: boolean;
-    depthStencilFormat: GPUTextureFormat; // depthStencil texture format this pipeline will be compatible with
+    depthStencilFormat?: GPUTextureFormat; // depthStencil texture format this pipeline will be compatible with
     stencilBack: GPURenderPipelineSnapshotStencil;
     stencilFront: GPURenderPipelineSnapshotStencil;
     stencilReadMask: number;
@@ -115,7 +115,7 @@ export default class TrackedGPURenderPipeline extends TrackedBase<TrackedGPURend
                 constants: s.fsConstants,
                 targets: s.targets
             } : undefined,
-            depthStencil: {
+            depthStencil: s.depthStencilFormat ? {
                 depthBias: s.depthBias,
                 depthBiasClamp: s.depthBiasClamp,
                 depthBiasSlopeScale: s.depthBiasSlopeScale,
@@ -126,7 +126,7 @@ export default class TrackedGPURenderPipeline extends TrackedBase<TrackedGPURend
                 stencilFront: s.stencilFront,
                 stencilReadMask: s.stencilReadMask,
                 stencilWriteMask: s.stencilWriteMask
-            },
+            } : undefined,
             primitive: {
                 topology: s.topology,
                 cullMode: s.cullMode,
@@ -227,7 +227,7 @@ export default class TrackedGPURenderPipeline extends TrackedBase<TrackedGPURend
             depthWriteEnabled: false,
             depthCompare: "always",
             stencilReadMask: 0xFFFFFFFF,
-            stencilWriteMask: 0xFFFFFFFF
+            stencilWriteMask: 0xFFFFFFFF,
         };
         if (desc.depthStencil) {
             const ds = desc.depthStencil;
