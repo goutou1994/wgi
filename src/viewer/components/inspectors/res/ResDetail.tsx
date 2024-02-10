@@ -19,7 +19,10 @@ export interface ResDetailContent {
         key: string;
         value: React.JSX.Element | string | number;
     }>;
-    preview?: React.JSX.Element | string | undefined;
+    customs?: Array<{
+        title: string;
+        content: React.JSX.Element | string | undefined;
+    }>
     refLink?: string;
 }
 
@@ -59,25 +62,27 @@ export default function ResDetail({ id }: ResDetailProps) {
             children: <p>No properties.</p>
         });
     }
-    if (content.preview) {
-        collapseItems.push({
-            key: "preview",
-            label: "Preview",
-            children: content.preview
-        });
+    if (content.customs) {
+        for (let custom of content.customs) {
+            collapseItems.push({
+                key: custom.title,
+                label: custom.title,
+                children: custom.content
+            });
+        }
     }
 
     const handleClickRefLink = () => {
         window.open(content.refLink);
     };
 
-    return <>
-        <p>Inspector: Record</p>
+    return <div style={{overflowY: "scroll"}}>
+        <p>Inspector: Resource</p>
         <h1>
             {content.title ?? `${brandMap[tracked.__kind]}#${tracked.label}`}
             {content.refLink && <LinkOutlined className={styles.refLink} onClick={handleClickRefLink} />}
            
         </h1>
         <Collapse items={collapseItems} defaultActiveKey={['attributes']}></Collapse>
-    </>;
+    </div>;
 }

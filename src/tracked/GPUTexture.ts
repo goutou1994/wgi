@@ -35,6 +35,7 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
     __snapshot?: GPUTextureSnapshot;
     __initialSnapshot?: GPUTextureSnapshot;
     __creator?: TrackedGPUDevice;
+    __creatorRcd?: void;
 
     public realUsage?: GPUTextureUsageFlags;
     public fromAuthentic(authentic: wgi_GPUTexture): TrackedGPUTexture {
@@ -90,6 +91,7 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
         this.__creator = await profile.getOrRestore(s.device, encoder);
 
         this.__authentic = this.__creator.__authentic!.createTexture({
+            label: s.label,
             size: [ s.width, s.height, s.depthOrArrayLayers ],
             mipLevelCount: s.mipLevelCount,
             sampleCount: s.sampleCount,
@@ -97,7 +99,6 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
             format: s.format,
             usage: s.usage | GPUTextureUsage.COPY_DST | GPUTextureUsage.COPY_SRC | GPUTextureUsage.TEXTURE_BINDING
         });
-        this.__authentic.label = this.__initialSnapshot!.label;
         this.realUsage = s.usage;
 
         const stagingBuffer = this.__creator.__authentic!.createBuffer({

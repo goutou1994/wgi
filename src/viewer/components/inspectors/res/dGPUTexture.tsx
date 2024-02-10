@@ -72,7 +72,10 @@ export default function dGPUTexture(texture: TrackedGPUTexture): ResDetailConten
                 value: <Tooltip title={`flags value: ${snapshot.usage}`}>{usageToLabel(snapshot.usage)}</Tooltip>
             }
         ],
-        preview,
+        customs: [{
+            title: "Preview",
+            content: preview
+        }],
         refLink: "https://developer.mozilla.org/en-US/docs/Web/API/GPUTexture"
     };
 }

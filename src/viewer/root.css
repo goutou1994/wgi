@@ -11,6 +11,10 @@ body {
     flex-direction: column;
 }
 
+p {
+    white-space: pre-line;
+}
+
 .wgi-header {
     height: 2em;
     width: 100%;
@@ -35,4 +39,12 @@ body {
 
 .ant-tabs-nav-wrap {
     background-color: #eaefff;
+}
+
+.ant-tabs {
+    height: 100%;
+}
+
+.ant-tabs-content-holder {
+    overflow-y: scroll;
 }

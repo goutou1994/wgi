@@ -18,6 +18,7 @@ export default class TrackedGPUDevice extends TrackedBase<TrackedGPUDevice> {
     __snapshot?: GPUDeviceSnapshot;
     __initialSnapshot?: GPUDeviceSnapshot;
     __creator?: TrackedGPUAdapter;
+    __creatorRcd?: void;
     public fromAuthentic(authentic: wgi_GPUDevice): TrackedGPUDevice {
         return this.fastFromAuthentic(authentic, TrackedGPUDevice);
     }
@@ -35,10 +36,11 @@ export default class TrackedGPUDevice extends TrackedBase<TrackedGPUDevice> {
     }
     public async restore(profile: ReplayProfile) {
         this.__creator = await profile.getOrRestore(this.__initialSnapshot!.adapter, null as any) as TrackedGPUAdapter;
-        const device = await this.__creator.__authentic!.requestDevice();
+        const device = await this.__creator.__authentic!.requestDevice({
+            label: this.__initialSnapshot!.label
+        });
         if (!device) throw "Restore GPUDevice failed.";
         this.__authentic = device;
-        this.__authentic.label = this.__initialSnapshot!.label;
     }
     public takeSnapshotBeforeSubmit(_: any) {
         const adapter_id = this.__creator?.__id ?? (this.__authentic as wgi_GPUDevice).adapter.__id;

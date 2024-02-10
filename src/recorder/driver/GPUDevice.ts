@@ -1,5 +1,6 @@
 import RcdCreateBuffer from "../../record/create/rcdCreateBuffer";
 import RcdCreateCommandEncoder from "../../record/create/rcdCreateCommandEncoder";
+import RcdCreateShaderModule from "../../record/create/rcdCreateShaderModule";
 import RcdCreateTexture from "../../record/create/rcdCreateTexture";
 import RcdDebugRes from "../../record/rcdDebugRes";
 import TrackedGPUDevice from "../../tracked/GPUDevice";
@@ -9,6 +10,7 @@ import wgi_GPUAdapter from "./GPUAdapter";
 import wgi_GPUBuffer from "./GPUBuffer";
 import wgi_GPUCommandEncoder from "./GPUCommandEncoder";
 import wgi_GPUQueue from "./GPUQueue";
+import wgi_GPUShaderModule from "./GPUShaderModule";
 import wgi_GPUTexture from "./GPUTexture";
 import wgi_GPUBase from "./gpubase";
 
@@ -98,7 +100,16 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         throw new Error("Method not implemented.");
     }
     createShaderModule(descriptor: GPUShaderModuleDescriptor): GPUShaderModule {
-        throw new Error("Method not implemented.");
+        return globalRecorder.processRcd(
+            RcdCreateShaderModule,
+            this,
+            [descriptor],
+            () => new wgi_GPUShaderModule(
+                this.next.createShaderModule(descriptor),
+                this,
+                descriptor
+            )
+        );
     }
     createComputePipeline(descriptor: GPUComputePipelineDescriptor): GPUComputePipeline {
         throw new Error("Method not implemented.");

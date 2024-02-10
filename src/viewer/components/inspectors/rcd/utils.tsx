@@ -3,6 +3,7 @@ import { RcdDetailContent } from "./RcdDetail";
 import dCopyBufferToBuffer from "./dCopyBufferToBuffer";
 import dCreateBufferView from "./dCreateBuffer";
 import dCreateCommandEncoder from "./dCreateCommandEncoder";
+import dCreateShaderModule from "./dCreateShaderModule";
 import dDebugRes from "./dDebugRes";
 import dFinish from "./dFinish";
 import dSubmit from "./dSubmit";
@@ -11,6 +12,7 @@ export const RcdDetailMap: {[kind in RecordKind]?: (rcd: RcdBase<any, any, any>)
     [RecordKind.DebugRes]: dDebugRes,
     [RecordKind.CreateBuffer]: dCreateBufferView,
     [RecordKind.CreateCommandEncoder]: dCreateCommandEncoder,
+    [RecordKind.CreateShaderModule]: dCreateShaderModule,
     
     // Commands
     [RecordKind.CopyBufferToBuffer]: dCopyBufferToBuffer,

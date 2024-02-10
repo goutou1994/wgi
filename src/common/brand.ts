@@ -7,4 +7,5 @@ export enum brandMap {
     GPUCommandBuffer = 5,
     GPUQueue = 6,
     GPUTexture = 7,
+    GPUShaderModule = 8,
 };

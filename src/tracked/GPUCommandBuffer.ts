@@ -1,6 +1,7 @@
 import { brandMap } from "../common/brand";
 import { deserializeString, serializeString } from "../common/serialize";
 import { DataStream } from "../common/utils";
+import RcdFinish from "../record/create/rcdFinish";
 import wgi_GPUCommandBuffer from "../recorder/driver/GPUComandBuffer";
 import wgi_GPUBase from "../recorder/driver/gpubase";
 import ReplayProfile from "../replay/profile";
@@ -18,6 +19,7 @@ export default class TrackedGPUCommandBuffer extends TrackedBase<TrackedGPUComma
     __snapshot?: GPUCommandBufferSnapshot;
     __initialSnapshot?: GPUCommandBufferSnapshot;
     __creator?: TrackedGPUCommandEncoder;
+    __creatorRcd?: RcdFinish;
     public fromAuthentic(authentic: wgi_GPUBase): TrackedGPUCommandBuffer {
         return this.fastFromAuthentic(authentic, TrackedGPUCommandBuffer);
     }
@@ -35,8 +37,9 @@ export default class TrackedGPUCommandBuffer extends TrackedBase<TrackedGPUComma
     }
     public async restore(profile: ReplayProfile, encoder: GPUCommandEncoder) {
         this.__creator = await profile.getOrRestore(this.__initialSnapshot!.encoder, encoder) as TrackedGPUCommandEncoder;
-        this.__authentic = this.__creator!.__authentic!.finish();
-        this.__authentic.label = this.__initialSnapshot!.label;
+        this.__authentic = this.__creator!.__authentic!.finish({
+            label: this.__initialSnapshot!.label
+        });
     }
     public takeSnapshotBeforeSubmit(): void {
         const encoder_id = this.__creator?.__id ?? (this.__authentic as wgi_GPUCommandBuffer).encoder.__id;

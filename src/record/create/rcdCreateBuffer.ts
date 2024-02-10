@@ -14,7 +14,7 @@ export default class RcdCreateBuffer extends RcdBase<TrackedGPUDevice, [GPUBuffe
 
     public play(): TrackedGPUBuffer {
         const buffer = this.caller!.__authentic!.createBuffer({
-            size: this.args[0].size,
+            ...this.args[0],
             usage: this.args[0].usage | GPUBufferUsage.COPY_SRC
         });
         this.ret!.__authentic = buffer;

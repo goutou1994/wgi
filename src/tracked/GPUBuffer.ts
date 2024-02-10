@@ -1,6 +1,7 @@
 import { brandMap } from "../common/brand";
 import { deserializeString, serializeString } from "../common/serialize";
 import { DataStream } from "../common/utils";
+import RcdCreateBuffer from "../record/create/rcdCreateBuffer";
 import wgi_GPUBuffer from "../recorder/driver/GPUBuffer";
 import wgi_GPUBase from "../recorder/driver/gpubase";
 import type ReplayProfile from "../replay/profile";
@@ -21,6 +22,7 @@ export default class TrackedGPUBuffer extends TrackedBase<TrackedGPUBuffer> {
     __snapshot?: GPUBufferSnapshot;
     __initialSnapshot?: GPUBufferSnapshot;
     __creator?: TrackedGPUDevice;
+    __creatorRcd?: RcdCreateBuffer;
     
     public realUsage?: GPUBufferUsageFlags;
     public fromAuthentic(authentic: wgi_GPUBuffer): TrackedGPUBuffer {
@@ -61,10 +63,10 @@ export default class TrackedGPUBuffer extends TrackedBase<TrackedGPUBuffer> {
         // e.g. copyBufferToBuffer for COPY_DST, mapAsync for MAP_WRITE, ...
         const usage = s.usage & (~GPUBufferUsage.MAP_READ) & ((~GPUBufferUsage.MAP_WRITE));
         this.__authentic = this.__creator.__authentic!.createBuffer({
+            label: s.label,
             size: s.size,
             usage: usage | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC
         });
-        this.__authentic.label = s.label;
         this.realUsage = s.usage;
 
         const stagingBuffer = this.__creator.__authentic!.createBuffer({

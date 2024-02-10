@@ -18,6 +18,7 @@ export default class TrackedGPUQueue extends TrackedBase<TrackedGPUQueue> {
     __snapshot?: GPUQueueSnapshot;
     __initialSnapshot?: GPUQueueSnapshot;
     __creator?: TrackedGPUDevice;
+    __creatorRcd?: void;
     public fromAuthentic(authentic: wgi_GPUBase): TrackedGPUQueue {
         return this.fastFromAuthentic(authentic, TrackedGPUQueue);
     }

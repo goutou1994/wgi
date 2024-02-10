@@ -35,7 +35,10 @@ export default function dGPUBuffer(buffer: TrackedGPUBuffer): ResDetailContent |
                 value: usageToLabel(snapshot.usage)
             }
         ],
-        preview: <p>{new Uint8Array(snapshot.content).toString()}</p>,
+        customs: [{
+            title: "Preview",
+            content: <p>{new Uint8Array(snapshot.content).toString()}</p>,
+        }],
         refLink: "https://developer.mozilla.org/en-US/docs/Web/API/GPUBuffer"
     };
 }

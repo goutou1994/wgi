@@ -5,6 +5,7 @@ import dGPUAdapter from "./dGPUAdapter";
 import dGPUBuffer from "./dGPUBuffer";
 import dGPUCommandEncoder from "./dGPUCommandEncoder";
 import dGPUDevice from "./dGPUDevice";
+import dGPUShaderModule from "./dGPUShaderModule";
 import dGPUTexture from "./dGPUTexture";
 
 export const ResDetailMap: {[kind in brandMap]?: (tracked: TrackedBase<any>) => ResDetailContent | undefined} = {
@@ -13,4 +14,5 @@ export const ResDetailMap: {[kind in brandMap]?: (tracked: TrackedBase<any>) => 
     [brandMap.GPUBuffer]:           dGPUBuffer,
     [brandMap.GPUCommandEncoder]:   dGPUCommandEncoder,
     [brandMap.GPUTexture]:          dGPUTexture,
+    [brandMap.GPUShaderModule]:     dGPUShaderModule
 };

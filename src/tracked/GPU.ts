@@ -16,6 +16,7 @@ export default class TrackedGPU extends TrackedBase<TrackedGPU> {
     __snapshot?: GPUSnapshot;
     __initialSnapshot?: GPUSnapshot;
     __creator: undefined;
+    __creatorRcd?: void;
 
     public fromAuthentic(authentic: wgi_GPU): TrackedGPU {
         return this.fastFromAuthentic(authentic, TrackedGPU);

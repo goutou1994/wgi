@@ -61,6 +61,12 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
      */
     abstract __creator?: any;
 
+    /**
+     * Contain the rcd used to create this resource.
+     * Used under replay mode.
+     */
+    abstract __creatorRcd?: any;
+
     public constructor() { }
 
     /**
@@ -114,6 +120,10 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
      * Used by capturer.
      */
     public abstract getDeps(): Array<wgi_GPUBase>;
+
+    protected isReplayMode() {
+        return !!this.__creator;
+    }
 
     /**
      * When ReplayProfile need to go back to initial state,

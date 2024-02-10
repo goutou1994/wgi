@@ -1,6 +1,7 @@
 import RcdCopyBufferToBuffer from "../../record/create/rcdCopyBufferToBuffer";
 import RcdCreateBuffer from "../../record/create/rcdCreateBuffer";
 import RcdCreateCommandEncoder from "../../record/create/rcdCreateCommandEncoder";
+import RcdCreateShaderModule from "../../record/create/rcdCreateShaderModule";
 import RcdCreateTexture from "../../record/create/rcdCreateTexture";
 import RcdFinish from "../../record/create/rcdFinish";
 import RcdSubmit from "../../record/create/rcdSubmit";
@@ -12,6 +13,7 @@ export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> }
     [RecordKind.CreateBuffer]: RcdCreateBuffer,
     [RecordKind.CreateCommandEncoder]: RcdCreateCommandEncoder,
     [RecordKind.CreateTexture]: RcdCreateTexture,
+    [RecordKind.CreateShaderModule]: RcdCreateShaderModule,
 
     // Commands
     [RecordKind.CopyBufferToBuffer]: RcdCopyBufferToBuffer,
