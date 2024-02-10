@@ -8,8 +8,8 @@ import TrackedGPUDevice from "./GPUDevice";
 import TrackedBase from "./tracked";
 
 interface GPUBufferSnapshot {
-    device: number;
     label: string;
+    device: number;
     size: number;
     usage: number;
     content: ArrayBuffer;
@@ -31,21 +31,21 @@ export default class TrackedGPUBuffer extends TrackedBase<TrackedGPUBuffer> {
     public serialize(ds: DataStream): void {
         console.assert(!!this.__snapshot);
         const s = this.__snapshot!;
-        ds.write(DataStream.Type.UInt32, s.device);
         serializeString(ds, s.label);
+        ds.write(DataStream.Type.UInt32, s.device);
         ds.write(DataStream.Type.UInt32, s.size);
         ds.write(DataStream.Type.UInt32, s.usage);
         ds.writeChunk(s.content);
     }
     public deserialize(ds: DataStream) {
-        const device_id = ds.read<number>(DataStream.Type.UInt32);
         const label = deserializeString(ds);
+        const device_id = ds.read<number>(DataStream.Type.UInt32);
         const size = ds.read<number>(DataStream.Type.UInt32);
         const usage = ds.read<number>(DataStream.Type.UInt32);
         const content = ds.readChunk(size);
         this.__initialSnapshot = {
-            device: device_id,
             label,
+            device: device_id,
             size,
             usage,
             content
@@ -109,8 +109,8 @@ export default class TrackedGPUBuffer extends TrackedBase<TrackedGPUBuffer> {
         let creator_id = this.__creator?.__id ?? (this.__authentic as wgi_GPUBuffer).device.__id;
 
         this.__snapshot = {
-            device: creator_id,
             label: this.__authentic!.label,
+            device: creator_id,
             size: this.__authentic!.size,
             usage: this.realUsage ?? this.__authentic!.usage,
             content: ab.slice(0)

@@ -31,7 +31,7 @@ export default function InspectorGroup() {
                 resTabMap.set(id, children);
             }
             return {
-                label: `${brandMap[res.__kind]}#${id}`,
+                label: `${brandMap[res.__kind]}#${res.label}`,
                 key: id.toString(),
                 children
             };

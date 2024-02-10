@@ -10,7 +10,7 @@ interface ResLinkProps {
 
 export default function ResLink({ id }: ResLinkProps) {
     const tracked = globalProfile!.get(id);
-    const label = `${brandMap[tracked.__kind]}#${id}`;
+    const label = `${brandMap[tracked.__kind]}#${tracked.label}`;
 
     const handleClick = () => {
         openResTab(id);

@@ -97,6 +97,13 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
     public abstract takeSnapshotBeforeSubmit(encoder: GPUCommandEncoder, profile?: ReplayProfile): void;
     public takeSnapshotAfterSubmit(): Promise<void> { return Promise.resolve(); }
 
+    public get label(): string {
+        if (this.__authentic?.label?.length > 0) return this.__authentic.label;
+        if (this.__initialSnapshot?.label?.length > 0) return this.__initialSnapshot.label;
+        if (this.__snapshot?.label?.length > 0) return this.__snapshot.label;
+        return this.__id.toString();
+    }
+
     /**
      * Get ids of all dependencies from snapshot.
      */

@@ -10,6 +10,7 @@ inject();
     const imageBitmap = await createImageBitmap(img);
 
     const texture = device.createTexture({
+        label: "WeixinLogo",
         size: [imageBitmap.width, imageBitmap.height, 1],
         format: "rgba8unorm",
         usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT

@@ -8,6 +8,7 @@ import TrackedGPUDevice from "./GPUDevice";
 import TrackedBase from "./tracked";
 
 interface GPUTextureSnapshot {
+    label: string;
     device: UniversalResourceId;
     width: number;
     height: number;
@@ -43,6 +44,7 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
     }
     public serialize(ds: DataStream): void {
         const s = this.__snapshot!;
+        serializeString(ds, s.label);
         ds.write(DataStream.Type.UInt32, s.device);
         ds.write(DataStream.Type.UInt32, s.width);
         ds.write(DataStream.Type.UInt32, s.height);
@@ -57,6 +59,7 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
         ds.write(DataStream.Type.UInt32, s.bytesPerRow);
     }
     public deserialize(ds: DataStream): void {
+        const label = deserializeString(ds);
         const device_id = ds.read<number>(DataStream.Type.UInt32);
         const width = ds.read<number>(DataStream.Type.UInt32);
         const height = ds.read<number>(DataStream.Type.UInt32);
@@ -71,6 +74,7 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
         const bytesPerRow = ds.read<number>(DataStream.Type.UInt32);
 
         this.__initialSnapshot = {
+            label,
             device: device_id,
             width, height, depthOrArrayLayers,
             mipLevelCount, sampleCount,
@@ -93,6 +97,7 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
             format: s.format,
             usage: s.usage | GPUTextureUsage.COPY_DST | GPUTextureUsage.COPY_SRC | GPUTextureUsage.TEXTURE_BINDING
         });
+        this.__authentic.label = this.__initialSnapshot!.label;
         this.realUsage = s.usage;
 
         const stagingBuffer = this.__creator.__authentic!.createBuffer({
@@ -169,6 +174,7 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
         let creator_id = this.__creator?.__id ?? (this.__authentic as wgi_GPUTexture).device.__id;
 
         this.__snapshot = {
+            label: this.__authentic!.label,
             device: creator_id,
             width: this.__authentic!.width,
             height: this.__authentic!.height,

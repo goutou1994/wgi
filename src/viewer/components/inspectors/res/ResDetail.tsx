@@ -74,7 +74,7 @@ export default function ResDetail({ id }: ResDetailProps) {
     return <>
         <p>Inspector: Record</p>
         <h1>
-            {content.title ?? `${brandMap[tracked.__kind]}#${tracked.__id}`}
+            {content.title ?? `${brandMap[tracked.__kind]}#${tracked.label}`}
             {content.refLink && <LinkOutlined className={styles.refLink} onClick={handleClickRefLink} />}
            
         </h1>
