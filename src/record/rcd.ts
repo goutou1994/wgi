@@ -16,6 +16,7 @@ export enum RecordKind {
     CreateCommandEncoder = 3,
     CreateTexture = 4,
     CreateShaderModule = 5,
+    CreateRenderPipeline = 6,
 
     // Commands
     CopyBufferToBuffer = 101,

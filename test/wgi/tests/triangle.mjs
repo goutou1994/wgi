@@ -1,6 +1,14 @@
 import inject, { testStartCapture } from "../wgi.mjs"
 // inject();
 
+const vertices = new Float32Array([
+    //   X,    Y,
+    -0.8, -0.8,
+    0.8, -0.8,
+    0.8, 0.8,
+    -0.8, 0.8,
+]);
+
 const vs = `
 @vertex
 fn vertexMain(@location(0) pos: vec2f) -> @builtin(position) vec4f {
@@ -33,7 +41,7 @@ fn fragmentMain() -> @location(0) vec4f {
     });
 
     const vertexBuffer = device.createBuffer({
-        label: "Cell vertices",
+        label: "triangle",
         size: vertices.byteLength,
         usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
     });
@@ -57,7 +65,7 @@ fn fragmentMain() -> @location(0) vec4f {
     });
 
     const cellPipeline = device.createRenderPipeline({
-        label: "Cell pipeline",
+        label: "triangle",
         layout: "auto",
         vertex: {
             module: vsModule,
@@ -72,6 +80,7 @@ fn fragmentMain() -> @location(0) vec4f {
             }]
         }
     });
+    console.log(cellPipeline);
 
 
     function loop(time) {

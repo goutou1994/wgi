@@ -1,4 +1,4 @@
-import { deserializeObject, deserializeString, serializeObject, serializeString } from "../../common/serialize";
+import { deserializeObject, serializeObject } from "../../common/serialize";
 import { DataStream } from "../../common/utils";
 import ReplayProfile from "../../replay/profile";
 import TrackedGPUCommandEncoder from "../../tracked/GPUCommandEncoder";

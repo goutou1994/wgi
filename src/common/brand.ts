@@ -8,4 +8,5 @@ export enum brandMap {
     GPUQueue = 6,
     GPUTexture = 7,
     GPUShaderModule = 8,
+    GPURenderPipeline = 9,
 };

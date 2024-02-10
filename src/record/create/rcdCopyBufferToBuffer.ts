@@ -1,5 +1,4 @@
 import { DataStream } from "../../common/utils";
-import type wgi_GPUBase from "../../recorder/driver/gpubase";
 import ReplayProfile from "../../replay/profile";
 import TrackedGPUBuffer from "../../tracked/GPUBuffer";
 import TrackedGPUCommandEncoder from "../../tracked/GPUCommandEncoder";

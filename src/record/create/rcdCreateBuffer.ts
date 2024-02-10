@@ -1,10 +1,9 @@
 import RcdBase, { RecordKind } from "../rcd";
-import wgi_GPUBuffer from "../../recorder/driver/GPUBuffer";
 import { DataStream } from "../../common/utils";
 import type TrackedGPUDevice from "../../tracked/GPUDevice";
 import TrackedGPUBuffer from "../../tracked/GPUBuffer";
 import type ReplayProfile from "../../replay/profile";
-import { deserializeObject, deserializeString, serializeObject, serializeString } from "../../common/serialize";
+import { deserializeObject, serializeObject } from "../../common/serialize";
 
 export default class RcdCreateBuffer extends RcdBase<TrackedGPUDevice, [GPUBufferDescriptor], TrackedGPUBuffer> {
     
