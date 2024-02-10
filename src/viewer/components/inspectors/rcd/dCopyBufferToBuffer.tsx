@@ -34,7 +34,6 @@ export default function dCopyBufferToBuffer(rcd: RcdCopyBufferToBuffer): RcdDeta
                 type: ArgumentType.Value,
                 value: rcd.args[4]
             }
-
         ],
         refLink: "https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToBuffer"
     };

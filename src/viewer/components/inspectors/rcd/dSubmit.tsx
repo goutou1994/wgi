@@ -11,8 +11,8 @@ export default function dSubmit(rcd: RcdSubmit): RcdDetailContent {
         arguments: [
             {
                 argName: "commandBuffers",
-                type: ArgumentType.Array,
-                value: rcd.args[0].map((cb, index) => <ResLink id={cb.__id} />)
+                type: ArgumentType.Json,
+                value: rcd.args[0].map((cb, index) => `$wgiResource_${cb.__id}`)
             }
         ],
         refLink: "https://developer.mozilla.org/en-US/docs/Web/API/GPUQueue/submit"

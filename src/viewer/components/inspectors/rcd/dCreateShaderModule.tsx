@@ -12,13 +12,14 @@ export default function dCreateShaderModule(rcd: RcdCreateShaderModule): RcdDeta
         arguments: [
             {
                 argName: "descriptor",
-                type: ArgumentType.Object,
-                value: [
-                    {
-                        key: "code",
-                        value: <TextArea value={rcd.args[0].code} readOnly></TextArea>
-                    }
-                ]
+                type: ArgumentType.Json,
+                value: rcd.args[0]
+                // [
+                //     {
+                //         key: "code",
+                //         value: <TextArea value={rcd.args[0].code} readOnly></TextArea>
+                //     }
+                // ]
             }
         ],
         return: <ResLink id={rcd.ret!.__id} />,

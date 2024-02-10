@@ -26,9 +26,10 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.0",
+    "@uiw/react-json-view": "^2.0.0-alpha.12",
     "antd": "5.13.3",
     "dateformat": "^5.0.3",
-    "fflate": "^0.8.2",
+    "fflate": "0.8.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-resizable-panels": "^1.0.10"

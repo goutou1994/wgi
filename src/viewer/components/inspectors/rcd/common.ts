@@ -1,5 +1,4 @@
 export enum ArgumentType {
     Value,
-    Array,
-    Object
+    Json
 };

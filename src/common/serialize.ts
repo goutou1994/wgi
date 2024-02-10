@@ -21,3 +21,13 @@ export function deserializeString(ds: DataStream): string {
         return decoder.decode(chunk);
     }
 }
+
+export function serializeObject(ds: DataStream, obj?: Object) {
+    const str = obj ? JSON.stringify(obj) : "";
+    serializeString(ds, str);
+}
+
+export function deserializeObject(ds: DataStream): Object | undefined {
+    const str = deserializeString(ds);
+    return str.length > 0 ? JSON.parse(str) : undefined;
+}

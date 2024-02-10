@@ -11,17 +11,8 @@ export default function dCreateBufferView(rcd: RcdCreateBuffer): RcdDetailConten
         arguments: [
             {
                 argName: "descriptor",
-                type: ArgumentType.Object,
-                value: [
-                    {
-                        key: "size",
-                        value: rcd.args[0].size
-                    },
-                    {
-                        key: "usage",
-                        value: rcd.args[0].usage
-                    }
-                ]
+                type: ArgumentType.Json,
+                value: rcd.args[0]
             }
         ],
         return: <ResLink id={rcd.ret!.__id} />,

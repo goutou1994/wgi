@@ -42,12 +42,12 @@ export default function dGPUShaderModule(sm: TrackedGPUShaderModule): ResDetailC
         },
         {
             key: "type",
-            title: "MessageType",
+            title: "Type",
             dataIndex: "status"
         },
         {
             key: "content",
-            title: "MessageContent",
+            title: "Content",
             dataIndex: "message"
         }
     ];

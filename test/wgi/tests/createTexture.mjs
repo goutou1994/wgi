@@ -23,7 +23,14 @@ inject();
     );
 
     function loop(time) {
+        const texture2 = device.createTexture({
+            label: "blank",
+            size: [64, 64, 1],
+            format: "rgba8unorm",
+            usage: GPUTextureUsage.TEXTURE_BINDING
+        });
         device.debugRes(texture);
+        texture2.destroy();
         requestAnimationFrame(loop);
     }
     console.log("begin loop!");

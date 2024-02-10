@@ -8,19 +8,22 @@ import useGlobalState from "../../../utils/globalState";
 import { RcdDetailMap } from "./utils";
 import InitialState from "./InitialState";
 import { ArgumentType } from "./common";
+import JsonView from "@uiw/react-json-view";
+import ResLink from "../../common/ResLink";
 
 type ArgumentValue = React.JSX.Element | string | number;
-type ArgumentObj = Array<{
-    key: string;
-    value: ArgumentValue;
-}>;
 export interface RcdDetailContent {
     title: React.JSX.Element | string;
     caller?: React.JSX.Element | string;
+    // arguments: Array<{
+    //     argName: string;
+    //     type: ArgumentType;
+    //     value: ArgumentObj | Array<ArgumentValue> | ArgumentValue
+    // }>;
     arguments: Array<{
         argName: string;
         type: ArgumentType;
-        value: ArgumentObj | Array<ArgumentValue> | ArgumentValue
+        value: any;
     }>;
     return?: React.JSX.Element | string;
     refLink?: string;
@@ -48,20 +51,19 @@ export default function RcdDetail() {
         let children: any;
         if (arg.type === ArgumentType.Value) {
             children = arg.value
-        } else if (arg.type === ArgumentType.Array) {
-            const descItems: DescriptionsProps["items"] = (arg.value as Array<ArgumentValue>).map((item, itemIndex) => ({
-                key: itemIndex,
-                label: `#${itemIndex}`,
-                children: item
-            }));
-            children = <Descriptions items={descItems} bordered column={1}></Descriptions>
-        } else {
-            const descItems: DescriptionsProps["items"] = (arg.value as ArgumentObj).map(entry => ({
-                key: entry.key,
-                label: entry.key,
-                children: entry.value
-            }));
-            children = <Descriptions items={descItems} bordered></Descriptions>
+        } else if (arg.type === ArgumentType.Json) {
+            children = <JsonView value={arg.value}>
+                <JsonView.String render={({ children, ...reset }, { type, value, keyName }) => {
+                    const isResource = /^\$wgiResource_[0-9]+$/i.test(value as string);
+                    if (type === 'type' && isResource) {
+                        return <span style={{marginRight: "3px", color: "#8888ff"}}>res</span>
+                    }
+                    if (type === 'value' && isResource) {
+                        const id = Number((value as string).substring(13));
+                        return <ResLink id={id}/>
+                    }
+                }} />
+            </JsonView>;
         }
         return {
             key: "arg" + argIndex.toString(),
