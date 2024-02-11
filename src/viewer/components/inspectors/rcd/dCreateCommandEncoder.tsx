@@ -1,7 +1,7 @@
 import React from "react";
 import type { RcdDetailContent } from "./RcdDetail";
 import ResLink from "../../common/ResLink";
-import RcdCreateCommandEncoder from "../../../../record/create/rcdCreateCommandEncoder";
+import RcdCreateCommandEncoder from "../../../../record/device/rcdCreateCommandEncoder";
 
 export default function dCreateCommandEncoder(rcd: RcdCreateCommandEncoder): RcdDetailContent {
     return {

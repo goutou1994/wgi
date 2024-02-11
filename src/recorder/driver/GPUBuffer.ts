@@ -1,6 +1,6 @@
 import { serializeString } from "../../common/serialize";
 import { DataStream } from "../../common/utils";
-import RcdCreateBuffer from "../../record/create/rcdCreateBuffer";
+import RcdCreateBuffer from "../../record/device/rcdCreateBuffer";
 import TrackedGPUBuffer from "../../tracked/GPUBuffer";
 import TrackedBase from "../../tracked/tracked";
 import { globalRecorder } from "../recorder";

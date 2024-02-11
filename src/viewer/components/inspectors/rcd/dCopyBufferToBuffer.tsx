@@ -1,7 +1,7 @@
 import React from "react";
 import { type RcdDetailContent } from "./RcdDetail";
 import ResLink from "../../common/ResLink";
-import RcdCopyBufferToBuffer from "../../../../record/create/rcdCopyBufferToBuffer";
+import RcdCopyBufferToBuffer from "../../../../record/device/rcdCopyBufferToBuffer";
 import { ArgumentType } from "./common";
 
 export default function dCopyBufferToBuffer(rcd: RcdCopyBufferToBuffer): RcdDetailContent {

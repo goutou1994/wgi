@@ -2,7 +2,7 @@ import React from "react";
 import { type RcdDetailContent } from "./RcdDetail";
 import ResLink from "../../common/ResLink";
 import { ArgumentType } from "./common";
-import RcdCreateTexture from "../../../../record/create/rcdCreateTexture";
+import RcdCreateTexture from "../../../../record/device/rcdCreateTexture";
 
 export default function dCreateTexture(rcd: RcdCreateTexture): RcdDetailContent {
     return {

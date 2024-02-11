@@ -1,11 +1,11 @@
-import RcdCopyBufferToBuffer from "../../record/create/rcdCopyBufferToBuffer";
-import RcdCreateBuffer from "../../record/create/rcdCreateBuffer";
-import RcdCreateCommandEncoder from "../../record/create/rcdCreateCommandEncoder";
-import RcdCreateRenderPipeline from "../../record/create/rcdCreateRenderPipeline";
-import RcdCreateShaderModule from "../../record/create/rcdCreateShaderModule";
-import RcdCreateTexture from "../../record/create/rcdCreateTexture";
-import RcdFinish from "../../record/create/rcdFinish";
-import RcdSubmit from "../../record/create/rcdSubmit";
+import RcdCopyBufferToBuffer from "../../record/device/rcdCopyBufferToBuffer";
+import RcdCreateBuffer from "../../record/device/rcdCreateBuffer";
+import RcdCreateCommandEncoder from "../../record/device/rcdCreateCommandEncoder";
+import RcdCreateRenderPipeline from "../../record/device/rcdCreateRenderPipeline";
+import RcdCreateShaderModule from "../../record/device/rcdCreateShaderModule";
+import RcdCreateTexture from "../../record/device/rcdCreateTexture";
+import RcdFinish from "../../record/device/rcdFinish";
+import RcdSubmit from "../../record/device/rcdSubmit";
 import RcdBase, { RecordKind } from "../../record/rcd";
 import RcdDebugRes from "../../record/rcdDebugRes";
 

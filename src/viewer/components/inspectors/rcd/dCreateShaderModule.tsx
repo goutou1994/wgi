@@ -2,7 +2,7 @@ import React from "react";
 import { type RcdDetailContent } from "./RcdDetail";
 import ResLink from "../../common/ResLink";
 import { ArgumentType } from "./common";
-import RcdCreateShaderModule from "../../../../record/create/rcdCreateShaderModule";
+import RcdCreateShaderModule from "../../../../record/device/rcdCreateShaderModule";
 import TextArea from "antd/es/input/TextArea";
 
 export default function dCreateShaderModule(rcd: RcdCreateShaderModule): RcdDetailContent {

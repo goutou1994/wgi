@@ -2,7 +2,7 @@ import React from "react";
 import { type RcdDetailContent } from "./RcdDetail";
 import ResLink from "../../common/ResLink";
 import { ArgumentType } from "./common";
-import RcdCreateRenderPipeline from "../../../../record/create/rcdCreateRenderPipeline";
+import RcdCreateRenderPipeline from "../../../../record/device/rcdCreateRenderPipeline";
 
 export default function dCreateRenderPipeline(rcd: RcdCreateRenderPipeline): RcdDetailContent {
     const args = {

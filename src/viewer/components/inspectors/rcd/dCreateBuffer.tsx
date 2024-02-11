@@ -1,5 +1,5 @@
 import React from "react";
-import RcdCreateBuffer from "../../../../record/create/rcdCreateBuffer";
+import RcdCreateBuffer from "../../../../record/device/rcdCreateBuffer";
 import { type RcdDetailContent } from "./RcdDetail";
 import ResLink from "../../common/ResLink";
 import { ArgumentType } from "./common";

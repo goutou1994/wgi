@@ -1,7 +1,7 @@
 import { brandMap } from "../common/brand";
 import { deserializeObject, serializeObject } from "../common/serialize";
 import { DataStream } from "../common/utils";
-import RcdCreateRenderPipeline from "../record/create/rcdCreateRenderPipeline";
+import RcdCreateRenderPipeline from "../record/device/rcdCreateRenderPipeline";
 import wgi_GPURenderPipeline from "../recorder/driver/GPURenderPipeline";
 import wgi_GPUShaderModule from "../recorder/driver/GPUShaderModule";
 import wgi_GPUBase from "../recorder/driver/gpubase";

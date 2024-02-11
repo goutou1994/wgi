@@ -1,7 +1,7 @@
 import { brandMap } from "../common/brand";
 import { deserializeString, serializeString } from "../common/serialize";
 import { DataStream } from "../common/utils";
-import RcdCreateShaderModule from "../record/create/rcdCreateShaderModule";
+import RcdCreateShaderModule from "../record/device/rcdCreateShaderModule";
 import wgi_GPUShaderModule from "../recorder/driver/GPUShaderModule";
 import wgi_GPUBase from "../recorder/driver/gpubase";
 import ReplayProfile from "../replay/profile";
