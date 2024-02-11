@@ -1,7 +1,7 @@
 import { brandMap } from "../common/brand";
 import { deserializeString, serializeString } from "../common/serialize";
 import { DataStream } from "../common/utils";
-import RcdFinish from "../record/device/rcdFinish";
+import RcdFinish from "../record/encoder/rcdFinish";
 import wgi_GPUCommandBuffer from "../recorder/driver/GPUComandBuffer";
 import wgi_GPUBase from "../recorder/driver/gpubase";
 import ReplayProfile from "../replay/profile";

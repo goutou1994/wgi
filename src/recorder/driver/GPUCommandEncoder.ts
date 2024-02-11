@@ -1,5 +1,5 @@
-import RcdCopyBufferToBuffer from "../../record/device/rcdCopyBufferToBuffer";
-import RcdFinish from "../../record/device/rcdFinish";
+import RcdCopyBufferToBuffer from "../../record/encoder/rcdCopyBufferToBuffer";
+import RcdFinish from "../../record/encoder/rcdFinish";
 import TrackedGPUCommandEncoder from "../../tracked/GPUCommandEncoder";
 import TrackedBase from "../../tracked/tracked";
 import { globalRecorder } from "../recorder";

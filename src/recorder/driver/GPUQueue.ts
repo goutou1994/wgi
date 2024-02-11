@@ -1,4 +1,4 @@
-import RcdSubmit from "../../record/device/rcdSubmit";
+import RcdSubmit from "../../record/queue/rcdSubmit";
 import TrackedGPUQueue from "../../tracked/GPUQueue";
 import TrackedBase from "../../tracked/tracked";
 import { globalRecorder } from "../recorder";

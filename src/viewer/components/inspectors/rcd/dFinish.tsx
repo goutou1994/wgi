@@ -1,5 +1,5 @@
 import React from "react";
-import RcdFinish from "../../../../record/device/rcdFinish";
+import RcdFinish from "../../../../record/encoder/rcdFinish";
 import ResLink from "../../common/ResLink";
 import type { RcdDetailContent } from "./RcdDetail";
 
