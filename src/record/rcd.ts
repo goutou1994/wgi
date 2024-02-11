@@ -34,6 +34,7 @@ export enum RecordKind {
     // pass
     End = 401,
     SetPipeline = 402,
+    SetVertexBuffer = 403,
 }
 
 export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = void> {

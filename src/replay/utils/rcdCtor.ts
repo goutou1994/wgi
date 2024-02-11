@@ -12,6 +12,7 @@ import RcdCreateView from "../../record/texture/rcdCreateView";
 import RcdBeginRenderPass from "../../record/encoder/rcdBeginRenderPass";
 import RcdEnd from "../../record/pass/RcdEnd";
 import RcdSetPipeline from "../../record/pass/RcdSetPipeline";
+import RcdSetVertexBuffer from "../../record/pass/RcdSetVertexBuffer";
 
 export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> } = {
     [RecordKind.DebugRes]: RcdDebugRes,
@@ -37,6 +38,7 @@ export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> }
     // pass
     [RecordKind.End]: RcdEnd,
     [RecordKind.SetPipeline]: RcdSetPipeline,
+    [RecordKind.SetVertexBuffer]: RcdSetVertexBuffer,
     
 
 }

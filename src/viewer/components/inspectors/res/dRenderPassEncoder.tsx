@@ -2,14 +2,14 @@ import React from "react";
 import ResLink from "../../common/ResLink";
 import type { ResDetailContent } from "./ResDetail";
 import TrackedGPURenderPassEncoder from "../../../../tracked/GPURenderPassEncoder";
-import { Descriptions } from "antd";
+import { Card, Descriptions } from "antd";
 
 export default function dGPURenderPassEncoder(pass: TrackedGPURenderPassEncoder): ResDetailContent | undefined {
     if (!pass.__snapshot) return undefined;
     const snapshot = pass.__snapshot;
     const ds = snapshot.depthStencilAttachment;
     return {
-        creator: <ResLink id={snapshot.encoder}/>,
+        creator: <ResLink id={snapshot.encoder} />,
         attributes: [
             {
                 key: "maxDrawCount",
@@ -20,19 +20,19 @@ export default function dGPURenderPassEncoder(pass: TrackedGPURenderPassEncoder)
             {
                 title: "Color Attachments",
                 content: <Descriptions bordered column={1} items={
-                    snapshot.colorAttachments.map((att, attIndex) =>({
+                    snapshot.colorAttachments.map((att, attIndex) => ({
                         key: "color attachment" + attIndex,
                         label: "Attachment#" + attIndex,
                         children: <Descriptions bordered column={2} className="inner-no-margin" items={[
                             {
                                 key: "view",
                                 label: "View",
-                                children: <ResLink id={att.view}/>
+                                children: <ResLink id={att.view} />
                             },
                             {
                                 key: "resolveTarget",
                                 label: "Resolve Target",
-                                children: att.resolveTarget ? <ResLink id={att.view}/> : "Not Specified"
+                                children: att.resolveTarget ? <ResLink id={att.view} /> : "Not Specified"
                             },
                             {
                                 key: "loadOp",
@@ -54,9 +54,9 @@ export default function dGPURenderPassEncoder(pass: TrackedGPURenderPassEncoder)
                                 label: "Depth Slice",
                                 children: att.depthSlice ?? "Not Specified"
                             }
-                        ]}/>
+                        ]} />
                     }))
-                }/>
+                } />
             },
             ...ds ? [{
                 title: "DepthStencil Attachment",
@@ -64,7 +64,7 @@ export default function dGPURenderPassEncoder(pass: TrackedGPURenderPassEncoder)
                     {
                         key: "view",
                         label: "View",
-                        children: <ResLink id={ds.view}/>
+                        children: <ResLink id={ds.view} />
                     },
                     {
                         key: "depthLoadOp",
@@ -106,7 +106,7 @@ export default function dGPURenderPassEncoder(pass: TrackedGPURenderPassEncoder)
                         label: "Stencil Readonly",
                         children: ds.stencilReadOnly ? "true" : "false"
                     }
-                ]}/>
+                ]} />
             }] : [],
             {
                 title: "Runtime",
@@ -114,7 +114,21 @@ export default function dGPURenderPassEncoder(pass: TrackedGPURenderPassEncoder)
                     {
                         key: "pipeline",
                         label: "Pipeline",
-                        children: pass.__runtime!.pipeline ? <ResLink id={pass.__runtime!.pipeline.__id}/> : "unset"
+                        children: pass.__runtime!.pipeline ? <ResLink id={pass.__runtime!.pipeline.__id} /> : "unset"
+                    },
+                    {
+                        key: "vbs",
+                        label: "Vertex Buffers",
+                        children: Object.keys(pass.__runtime!.vbs).length > 0 ? <div style={{ padding: "6px 9px", display: "flex", flexWrap: "wrap" }}>
+                            {Object.keys(pass.__runtime!.vbs).map(key => {
+                                const vb = pass.__runtime!.vbs[Number(key)];
+                                return <Card size="small" title={"Vertex Buffer@" + key} className="description-cards">
+                                    <p>buffer: <ResLink id={vb.buffer.__id} /></p>
+                                    <p>offset: {vb.offset}</p>
+                                    <p>size: {vb.size}</p>
+                                </Card>;
+                            })}
+                        </div> : "unset"
                     }
                 ]} />
             }

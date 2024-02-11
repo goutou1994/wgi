@@ -31,3 +31,21 @@ export function deserializeObject(ds: DataStream): Object | undefined {
     const str = deserializeString(ds);
     return str.length > 0 ? JSON.parse(str) : undefined;
 }
+
+export function seralizeOptionalUint32(ds: DataStream, value?: number | null) {
+    if (value !== undefined && value !== null) {
+        ds.write(DataStream.Type.UInt32, 1);
+        ds.write(DataStream.Type.UInt32, value);
+    } else {
+        ds.write(DataStream.Type.UInt32, 0);
+    }
+}
+
+export function deseralizeOptionalUint32(ds: DataStream): number | undefined {
+    const flag = ds.read<number>(DataStream.Type.UInt32);
+    if (flag === 0) {
+        return undefined;
+    } else {
+        return ds.read<number>(DataStream.Type.UInt32);
+    }
+}

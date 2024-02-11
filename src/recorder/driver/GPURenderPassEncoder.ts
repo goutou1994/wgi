@@ -1,8 +1,10 @@
 import RcdEnd from "../../record/pass/RcdEnd";
 import RcdSetPipeline from "../../record/pass/RcdSetPipeline";
+import RcdSetVertexBuffer from "../../record/pass/RcdSetVertexBuffer";
 import TrackedGPURenderPassEncoder from "../../tracked/GPURenderPassEncoder";
 import TrackedBase from "../../tracked/tracked";
 import { globalRecorder } from "../recorder";
+import wgi_GPUBuffer from "./GPUBuffer";
 import wgi_GPUCommandEncoder from "./GPUCommandEncoder";
 import wgi_GPURenderPipeline from "./GPURenderPipeline";
 import wgi_GPUBase from "./gpubase";
@@ -68,8 +70,12 @@ export default class wgi_GPURenderPassEncoder extends wgi_GPUBase implements GPU
     setIndexBuffer(buffer: GPUBuffer, indexFormat: GPUIndexFormat, offset?: number | undefined, size?: number | undefined): undefined {
         throw new Error("Method not implemented.");
     }
-    setVertexBuffer(slot: number, buffer: GPUBuffer | null, offset?: number | undefined, size?: number | undefined): undefined {
-        throw new Error("Method not implemented.");
+    setVertexBuffer(slot: number, buffer: wgi_GPUBuffer | null, offset?: number | undefined, size?: number | undefined): undefined {
+        globalRecorder.processRcd(
+            RcdSetVertexBuffer, this,
+            [slot, buffer, offset, size],
+            () => this.next.setVertexBuffer(slot, buffer ? buffer.next : null, offset, size)
+        );
     }
     draw(vertexCount: number, instanceCount?: number | undefined, firstVertex?: number | undefined, firstInstance?: number | undefined): undefined {
         throw new Error("Method not implemented.");

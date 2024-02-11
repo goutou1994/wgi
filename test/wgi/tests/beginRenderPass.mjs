@@ -40,11 +40,11 @@ fn fragmentMain() -> @location(0) vec4f {
         format: canvasFormat,
     });
 
-    // const vertexBuffer = device.createBuffer({
-    //     label: "triangle",
-    //     size: vertices.byteLength,
-    //     usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-    // });
+    const vertexBuffer = device.createBuffer({
+        label: "triangle",
+        size: vertices.byteLength,
+        usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+    });
     // device.queue.writeBuffer(vertexBuffer, /*bufferOffset=*/0, vertices);
     const vertexBufferLayout = {
         arrayStride: 8,
@@ -92,7 +92,7 @@ fn fragmentMain() -> @location(0) vec4f {
         });
 
         pass.setPipeline(cellPipeline);
-        // pass.setVertexBuffer(0, vertexBuffer);
+        pass.setVertexBuffer(0, vertexBuffer);
         // pass.draw(vertices.length / 2); // 6 vertices
         pass.end();
 

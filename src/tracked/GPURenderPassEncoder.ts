@@ -6,6 +6,7 @@ import type wgi_GPURenderPassEncoder from "../recorder/driver/GPURenderPassEncod
 import type wgi_GPUTextureView from "../recorder/driver/GPUTextureView";
 import wgi_GPUBase from "../recorder/driver/gpubase";
 import ReplayProfile from "../replay/profile";
+import type TrackedGPUBuffer from "./GPUBuffer";
 import TrackedGPUCommandEncoder from "./GPUCommandEncoder";
 import TrackedGPURenderPipeline from "./GPURenderPipeline";
 import TrackedBase from "./tracked";
@@ -32,7 +33,11 @@ interface GPURenderPassEncoderSnapshot {
  */
 interface GPURenderPassEncoderRuntime {
     pipeline?: TrackedGPURenderPipeline;
-    vbs: { [binding: number]: UniversalResourceId };
+    vbs: { [binding: number]: {
+        buffer: TrackedGPUBuffer;
+        offset: number;
+        size: number;
+    } };
 }
 
 export default class TrackedGPURenderPassEncoder extends TrackedBase<TrackedGPURenderPassEncoder> {
