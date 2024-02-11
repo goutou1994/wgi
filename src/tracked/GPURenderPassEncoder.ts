@@ -23,7 +23,7 @@ interface GPURenderPassEncoderSnapshot {
     };
     occlusionQuerySet: undefined; // not supported
     timestampWrites: undefined; // not supported
-    maxDrawCount?: number;
+    maxDrawCount: number;
     
     // runtime
     pass?: UniversalResourceId;
@@ -94,10 +94,16 @@ export default class TrackedGPURenderPassEncoder extends TrackedBase<TrackedGPUR
             [desc],
             (tracked: TrackedBase<any>) => tracked.__id
         )[0];
+
+        for (const att of desc.colorAttachments) {
+            att.clearValue = att.clearValue ?? [0, 0, 0, 0];
+        }
+
         this.__snapshot = {
+            ...desc,
             label: this.__authentic!.label,
             encoder: encoder_id,
-            ...desc
+            maxDrawCount: desc.maxDrawCount ?? 50000000
         };
     }
     public getDeps(): wgi_GPUBase[] {

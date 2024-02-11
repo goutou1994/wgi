@@ -2,12 +2,18 @@ import React from "react";
 import ResLink from "../../common/ResLink";
 import type { ResDetailContent } from "./ResDetail";
 import TrackedGPUTextureView from "../../../../tracked/GPUTextureView";
+import { globalProfile } from "../../../model/global";
+import type TrackedGPUTexture from "../../../../tracked/GPUTexture";
+import { Tag } from "antd";
 
-export default function dGPUTextureView(device: TrackedGPUTextureView): ResDetailContent | undefined {
-    if (!device.__snapshot) return undefined;
-    const snapshot = device.__snapshot;
+export default function dGPUTextureView(view: TrackedGPUTextureView): ResDetailContent | undefined {
+    if (!view.__snapshot) return undefined;
+    const snapshot = view.__snapshot;
+    const texture = globalProfile!.get<TrackedGPUTexture>(snapshot.texture);
+    const isCanvas = texture.__snapshot!.isCanvas;
     return {
         creator: <ResLink id={snapshot.texture}/>,
+        title: <span>{`GPUTextureView#${view.label}`}{isCanvas ? <Tag color="volcano" style={{fontSize: "large"}}>canvas</Tag> : undefined}</span>,
         attributes: [
             {
                 key: "Aspect", 
