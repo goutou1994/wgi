@@ -12,18 +12,24 @@ import type TrackedBase from "../tracked/tracked";
 
 export enum RecordKind {
     DebugRes = 1,
+
+    // device
     CreateBuffer = 2,
     CreateCommandEncoder = 3,
     CreateTexture = 4,
     CreateShaderModule = 5,
     CreateRenderPipeline = 6,
 
-    // Commands
+    // encoder
     CopyBufferToBuffer = 101,
     Finish = 102,
+    // BeginRenderPass = 103,
 
-    // Submit
+    // queue
     Submit = 201,
+
+    // texture
+    CreateView = 301,
 }
 
 export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = void> {

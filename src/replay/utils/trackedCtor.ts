@@ -9,6 +9,7 @@ import TrackedGPUQueue from "../../tracked/GPUQueue";
 import TrackedGPURenderPipeline from "../../tracked/GPURenderPipeline";
 import TrackedGPUShaderModule from "../../tracked/GPUShaderModule";
 import TrackedGPUTexture from "../../tracked/GPUTexture";
+import TrackedGPUTextureView from "../../tracked/GPUTextureView";
 import TrackedBase from "../../tracked/tracked";
 
 
@@ -22,5 +23,6 @@ export const trackedCtorMap: {  [brand in brandMap]: new() => TrackedBase<any> }
     [brandMap.GPUQueue]: TrackedGPUQueue,
     [brandMap.GPUTexture]: TrackedGPUTexture,
     [brandMap.GPUShaderModule]: TrackedGPUShaderModule,
-    [brandMap.GPURenderPipeline]: TrackedGPURenderPipeline
+    [brandMap.GPURenderPipeline]: TrackedGPURenderPipeline,
+    [brandMap.GPUTextureView]: TrackedGPUTextureView
 };

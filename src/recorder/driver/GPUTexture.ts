@@ -1,6 +1,9 @@
+import RcdCreateView from "../../record/texture/rcdCreateView";
 import TrackedGPUTexture from "../../tracked/GPUTexture";
 import TrackedBase from "../../tracked/tracked";
+import { globalRecorder } from "../recorder";
 import wgi_GPUDevice from "./GPUDevice";
+import wgi_GPUTextureView from "./GPUTextureView";
 import wgi_GPUBase from "./gpubase";
 
 export default class wgi_GPUTexture extends wgi_GPUBase implements GPUTexture {
@@ -18,8 +21,17 @@ export default class wgi_GPUTexture extends wgi_GPUBase implements GPUTexture {
     get isCanvas() { return this.canvasId !== undefined; }
     public realUsage: GPUTextureUsageFlags = 0;
 
-    createView(descriptor?: GPUTextureViewDescriptor | undefined): GPUTextureView {
-        throw new Error("Method not implemented.");
+    createView(descriptor?: GPUTextureViewDescriptor): GPUTextureView {
+        return globalRecorder.processRcd(
+            RcdCreateView,
+            this,
+            [descriptor],
+            () => new wgi_GPUTextureView(
+                this.next.createView(descriptor),
+                this,
+                descriptor
+            )
+        );
     }
     destroy(): undefined {
         this.next.destroy();

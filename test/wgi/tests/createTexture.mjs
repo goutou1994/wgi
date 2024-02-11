@@ -29,6 +29,7 @@ inject();
             format: "rgba8unorm",
             usage: GPUTextureUsage.TEXTURE_BINDING
         });
+        const texture2View = texture2.createView();
         device.debugRes(texture);
         texture2.destroy();
         requestAnimationFrame(loop);
