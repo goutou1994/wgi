@@ -18,8 +18,9 @@ interface GPUTextureSnapshot {
     dimension: GPUTextureDimension;
     format: GPUTextureFormat;
     usage: GPUTextureUsageFlags;
-    content: ArrayBuffer;
+    content?: ArrayBuffer;
     bytesPerRow: number;
+    isCanvas: boolean;
 };
 
 const pixelSizeMap = {
@@ -55,9 +56,14 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
         serializeString(ds, s.dimension);
         serializeString(ds, s.format);
         ds.write(DataStream.Type.UInt32, s.usage);
-        ds.write(DataStream.Type.UInt32, s.content.byteLength);
-        ds.writeChunk(s.content);
+        if (s.content) {
+            ds.write(DataStream.Type.UInt32, s.content.byteLength);
+            ds.writeChunk(s.content);
+        } else {
+            ds.write(DataStream.Type.UInt32, 0);
+        }
         ds.write(DataStream.Type.UInt32, s.bytesPerRow);
+        ds.write(DataStream.Type.UInt32, s.isCanvas);
     }
     public deserialize(ds: DataStream): void {
         const label = deserializeString(ds);
@@ -71,8 +77,9 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
         const format = deserializeString(ds);
         const usage = ds.read<number>(DataStream.Type.UInt32);
         const contentLength = ds.read<number>(DataStream.Type.UInt32);
-        const content = ds.readChunk(contentLength);
+        const content = contentLength > 0 ? ds.readChunk(contentLength) : undefined;
         const bytesPerRow = ds.read<number>(DataStream.Type.UInt32);
+        const isCanvas = !!ds.read<number>(DataStream.Type.UInt32);
 
         this.__initialSnapshot = {
             label,
@@ -83,7 +90,8 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
             format: format as GPUTextureFormat,
             usage,
             content,
-            bytesPerRow
+            bytesPerRow,
+            isCanvas
         };
     }
     public async restore(profile: ReplayProfile, encoder: GPUCommandEncoder) {
@@ -101,29 +109,31 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
         });
         this.realUsage = s.usage;
 
-        const stagingBuffer = this.__creator.__authentic!.createBuffer({
-            size: s.content.byteLength,
-            usage: GPUBufferUsage.MAP_WRITE | GPUBufferUsage.COPY_SRC
-        })
-        await stagingBuffer.mapAsync(GPUMapMode.WRITE);
-        const ab = stagingBuffer.getMappedRange();
-        new Uint8Array(ab).set(new Uint8Array(s.content));
-        stagingBuffer.unmap();
+        if (s.content) {
+            const stagingBuffer = this.__creator.__authentic!.createBuffer({
+                size: s.content.byteLength,
+                usage: GPUBufferUsage.MAP_WRITE | GPUBufferUsage.COPY_SRC
+            })
+            await stagingBuffer.mapAsync(GPUMapMode.WRITE);
+            const ab = stagingBuffer.getMappedRange();
+            new Uint8Array(ab).set(new Uint8Array(s.content));
+            stagingBuffer.unmap();
 
-        encoder.copyBufferToTexture(
-            {
-                buffer: stagingBuffer,
-                bytesPerRow: s.bytesPerRow
-            },
-            {
-                texture: this.__authentic
-            },
-            {
-                width: s.width,
-                height: s.height,
-                depthOrArrayLayers: s.depthOrArrayLayers
-            }
-        );
+            encoder.copyBufferToTexture(
+                {
+                    buffer: stagingBuffer,
+                    bytesPerRow: s.bytesPerRow
+                },
+                {
+                    texture: this.__authentic
+                },
+                {
+                    width: s.width,
+                    height: s.height,
+                    depthOrArrayLayers: s.depthOrArrayLayers
+                }
+            );
+        }
     }
     private stagingBuffer?: GPUBuffer;
     private bytesPerRow?: number;
@@ -169,10 +179,19 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
     }
 
     public async takeSnapshotAfterSubmit() {
-        await this.stagingBuffer!.mapAsync(GPUMapMode.READ);
-        const ab = this.stagingBuffer!.getMappedRange();
+        let ab = undefined;
+        if (this.stagingBuffer) {
+            await this.stagingBuffer!.mapAsync(GPUMapMode.READ);
+            ab = this.stagingBuffer!.getMappedRange().slice(0);
+        }
 
         let creator_id = this.__creator?.__id ?? (this.__authentic as wgi_GPUTexture).device.__id;
+        let isCanvas = false;
+        if (this.__initialSnapshot) {
+            isCanvas = this.__initialSnapshot.isCanvas;
+        } else if (!this.isReplayMode()) {
+            isCanvas = (this.__authentic as wgi_GPUTexture).isCanvas;
+        }
 
         this.__snapshot = {
             label: this.__authentic!.label,
@@ -185,12 +204,15 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
             dimension: this.__authentic!.dimension,
             format: this.__authentic!.format,
             usage: this.realUsage ?? this.__authentic!.usage,
-            content: ab.slice(0),
-            bytesPerRow: this.bytesPerRow!
+            content: ab,
+            bytesPerRow: this.bytesPerRow!,
+            isCanvas
         };
 
-        this.stagingBuffer!.unmap();
-        this.stagingBuffer = undefined;
+        if (this.stagingBuffer) {
+            this.stagingBuffer!.unmap();
+            this.stagingBuffer = undefined;
+        }
     }
 
     public getDeps(): wgi_GPUBase[] {

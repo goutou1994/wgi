@@ -10,7 +10,10 @@ export default class wgi_GPUCanvasContext implements GPUCanvasContext {
     private _configuration?: GPUCanvasConfiguration;
     configure(configuration: GPUCanvasConfiguration): undefined {
         this._configuration = configuration;
-        this.next.configure(configuration);
+        this.next.configure({
+            ...configuration,
+            device: (configuration.device as wgi_GPUDevice).next
+        });
     }
     unconfigure(): undefined {
         this._configuration = undefined;

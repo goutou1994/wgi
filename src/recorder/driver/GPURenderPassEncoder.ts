@@ -1,13 +1,15 @@
+import TrackedGPURenderPassEncoder from "../../tracked/GPURenderPassEncoder";
 import TrackedBase from "../../tracked/tracked";
+import wgi_GPUCommandEncoder from "./GPUCommandEncoder";
 import wgi_GPUBase from "./gpubase";
 
 export default class wgi_GPURenderPassEncoder extends wgi_GPUBase implements GPURenderPassEncoder {
     __brand: "GPURenderPassEncoder" = "GPURenderPassEncoder";
     public getTrackedType(): (abstract new () => TrackedBase<any>) & { prototype: TrackedBase<any>; } {
-        throw new Error("Method not implemented.");
+        return TrackedGPURenderPassEncoder;
     }
 
-    constructor(public next: GPURenderPassEncoder, public encoder: GPUCommandEncoder, public desc: GPURenderPassDescriptor) {
+    constructor(public next: GPURenderPassEncoder, public encoder: wgi_GPUCommandEncoder, public desc: GPURenderPassDescriptor) {
         super();
     }
 
@@ -33,7 +35,7 @@ export default class wgi_GPURenderPassEncoder extends wgi_GPUBase implements GPU
         throw new Error("Method not implemented.");
     }
     end(): undefined {
-        throw new Error("Method not implemented.");
+        this.next.end();
     }
     get label(): string { return this.next.label; }
     pushDebugGroup(groupLabel: string): undefined {

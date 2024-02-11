@@ -1,9 +1,8 @@
 import React from "react";
-import TrackedGPUBuffer from "../../../../tracked/GPUBuffer";
 import ResLink from "../../common/ResLink";
 import type { ResDetailContent } from "./ResDetail";
 import TrackedGPUTexture from "../../../../tracked/GPUTexture";
-import { Tooltip } from "antd";
+import { Tag, Tooltip } from "antd";
 import Thumbnail from "../../imageViewer/Thumbnail";
 
 function usageToLabel(usage: GPUTextureUsageFlags): string {
@@ -28,7 +27,7 @@ export default function dGPUTexture(texture: TrackedGPUTexture): ResDetailConten
     const snapshot = texture.__snapshot;
 
     let preview: React.JSX.Element;
-    if (snapshot.content.byteLength > 0) {
+    if (snapshot.content && snapshot.content.byteLength > 0) {
         preview = <div>
             <Thumbnail texture={texture.__id} width={200 * snapshot.width / snapshot.height} height={200}></Thumbnail>
         </div>;
@@ -38,6 +37,7 @@ export default function dGPUTexture(texture: TrackedGPUTexture): ResDetailConten
 
     return {
         creator: <ResLink id={snapshot.device}/>,
+        title: <span>{`GPUTexture#${texture.label}`}{snapshot.isCanvas ? <Tag color="volcano" style={{fontSize: "large"}}>canvas</Tag> : undefined}</span>,
         attributes: [
             {
                 key: "Width",

@@ -23,7 +23,7 @@ export enum RecordKind {
     // encoder
     CopyBufferToBuffer = 101,
     Finish = 102,
-    // BeginRenderPass = 103,
+    BeginRenderPass = 103,
 
     // queue
     Submit = 201,
@@ -65,5 +65,5 @@ export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = voi
      * If there's no other resources in your arguments, ignore this method.
      * @static
      */
-    public transformArgs(args: any, transformer: (obj: any) => TrackedBase<any>): Args { return args; }
+    public transformArgs(args: any, transformer: (obj: any) => any): any { return args; }
 }

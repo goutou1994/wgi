@@ -1,5 +1,5 @@
 import inject, { testStartCapture } from "../wgi.mjs"
-// inject();
+inject();
 
 const vertices = new Float32Array([
     //   X,    Y,
@@ -40,12 +40,12 @@ fn fragmentMain() -> @location(0) vec4f {
         format: canvasFormat,
     });
 
-    const vertexBuffer = device.createBuffer({
-        label: "triangle",
-        size: vertices.byteLength,
-        usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-    });
-    device.queue.writeBuffer(vertexBuffer, /*bufferOffset=*/0, vertices);
+    // const vertexBuffer = device.createBuffer({
+    //     label: "triangle",
+    //     size: vertices.byteLength,
+    //     usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+    // });
+    // device.queue.writeBuffer(vertexBuffer, /*bufferOffset=*/0, vertices);
     const vertexBufferLayout = {
         arrayStride: 8,
         attributes: [{
@@ -93,9 +93,9 @@ fn fragmentMain() -> @location(0) vec4f {
             }]
         });
 
-        pass.setPipeline(cellPipeline);
-        pass.setVertexBuffer(0, vertexBuffer);
-        pass.draw(vertices.length / 2); // 6 vertices
+        // pass.setPipeline(cellPipeline);
+        // pass.setVertexBuffer(0, vertexBuffer);
+        // pass.draw(vertices.length / 2); // 6 vertices
         pass.end();
 
         device.queue.submit([encoder.finish()]);

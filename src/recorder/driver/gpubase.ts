@@ -15,6 +15,7 @@ export default abstract class wgi_GPUBase {
     public __wgi: true = true; // mark as wgi driver
     abstract readonly __brand: keyof typeof brandMap;
     public __id: UniversalResourceId;
+    declare next: any;
     public deps = new ResourceDependencies();
 
     public static is_wgi(obj: any): obj is wgi_GPUBase {

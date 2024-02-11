@@ -5,7 +5,8 @@
   "scripts": {
     "build": "rollup -c --environment entry:main && cp ./output/wgi.mjs test/wgi/",
     "build-viewer": "rollup -c --environment entry:viewer && cp ./output/viewer.mjs test/viewer/",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "static-server ./test/wgi --port=9080",
+    "test-viewer": "static-server ./test/viewer --port=8888"
   },
   "author": "goutou1994",
   "license": "ISC",
@@ -21,6 +22,7 @@
     "rollup": "^4.9.6",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-string": "^3.0.0",
+    "static-server": "^2.2.1",
     "tslib": "^2.6.2",
     "typescript": "^5.3.3"
   },

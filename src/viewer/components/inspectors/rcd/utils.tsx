@@ -1,5 +1,6 @@
 import RcdBase, { RecordKind } from "../../../../record/rcd";
 import { RcdDetailContent } from "./RcdDetail";
+import dBeginRenderPass from "./dBeginRenderPass";
 import dCopyBufferToBuffer from "./dCopyBufferToBuffer";
 import dCreateBufferView from "./dCreateBuffer";
 import dCreateCommandEncoder from "./dCreateCommandEncoder";
@@ -24,6 +25,7 @@ export const RcdDetailMap: {[kind in RecordKind]?: (rcd: RcdBase<any, any, any>)
     // encoder
     [RecordKind.CopyBufferToBuffer]: dCopyBufferToBuffer,
     [RecordKind.Finish]: dFinish,
+    [RecordKind.BeginRenderPass]: dBeginRenderPass,
     
     // queue
     [RecordKind.Submit]: dSubmit,

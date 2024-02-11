@@ -1,3 +1,4 @@
+import RcdBeginRenderPass from "../../record/encoder/rcdBeginRenderPass";
 import RcdCopyBufferToBuffer from "../../record/encoder/rcdCopyBufferToBuffer";
 import RcdFinish from "../../record/encoder/rcdFinish";
 import TrackedGPUCommandEncoder from "../../tracked/GPUCommandEncoder";
@@ -6,6 +7,7 @@ import { globalRecorder } from "../recorder";
 import wgi_GPUBuffer from "./GPUBuffer";
 import wgi_GPUCommandBuffer from "./GPUComandBuffer";
 import wgi_GPUDevice from "./GPUDevice";
+import wgi_GPURenderPassEncoder from "./GPURenderPassEncoder";
 import wgi_GPUBase from "./gpubase";
 
 export default class wgi_GPUCommandEncoder extends wgi_GPUBase implements GPUCommandEncoder {
@@ -19,7 +21,18 @@ export default class wgi_GPUCommandEncoder extends wgi_GPUBase implements GPUCom
     }
 
     beginRenderPass(descriptor: GPURenderPassDescriptor): GPURenderPassEncoder {
-        throw new Error("Method not implemented.");
+        return globalRecorder.processRcd(
+            RcdBeginRenderPass,
+            this,
+            [descriptor],
+            () => new wgi_GPURenderPassEncoder(
+                this.next.beginRenderPass(
+                    RcdBeginRenderPass.prototype.transformArgs([descriptor], (wgi: wgi_GPUBase) => wgi.next)[0]
+                ),
+                this,
+                descriptor
+            )
+        );
     }
     beginComputePass(descriptor?: GPUComputePassDescriptor | undefined): GPUComputePassEncoder {
         throw new Error("Method not implemented.");

@@ -9,6 +9,7 @@ import RcdSubmit from "../../record/queue/rcdSubmit";
 import RcdBase, { RecordKind } from "../../record/rcd";
 import RcdDebugRes from "../../record/rcdDebugRes";
 import RcdCreateView from "../../record/texture/rcdCreateView";
+import RcdBeginRenderPass from "../../record/encoder/rcdBeginRenderPass";
 
 export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> } = {
     [RecordKind.DebugRes]: RcdDebugRes,
@@ -23,6 +24,7 @@ export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> }
     // encoder
     [RecordKind.CopyBufferToBuffer]: RcdCopyBufferToBuffer,
     [RecordKind.Finish]: RcdFinish,
+    [RecordKind.BeginRenderPass]: RcdBeginRenderPass,
 
     // queue
     [RecordKind.Submit]: RcdSubmit,

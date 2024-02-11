@@ -32,9 +32,9 @@ export default function ResDetail({ id }: ResDetailProps) {
 
     const tracked = globalProfile!.get(id);
     const detailCtor = ResDetailMap[tracked.__kind];
-    if (!detailCtor) return <p>No inspector avaiable for this type of resource.</p>
+    if (!detailCtor) return <p>No inspector available for this type of resource.</p>
     const content = detailCtor(tracked);
-    if (!content) return <p>Resource not avaiable (probably not created yet).</p>
+    if (!content) return <p>Resource not available (probably not created yet).</p>
 
     const collapseItems: CollapseProps["items"] = [];
     if (content.creator) {
