@@ -56,11 +56,11 @@ export default function dGPUShaderModule(sm: TrackedGPUShaderModule): ResDetailC
         creator: <ResLink id={snapshot.device}/>,
         attributes: [
             {
-                key: "status",
+                key: "Status",
                 value: tag
             },
             {
-                key: "msgCount",
+                key: "Message Count",
                 value: snapshot.messages.length
             }
         ],

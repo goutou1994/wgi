@@ -40,35 +40,35 @@ export default function dGPUTexture(texture: TrackedGPUTexture): ResDetailConten
         creator: <ResLink id={snapshot.device}/>,
         attributes: [
             {
-                key: "width",
+                key: "Width",
                 value: snapshot.width
             },
             {
-                key: "height",
+                key: "Height",
                 value: snapshot.height
             },
             {
-                key: "depthOrArrayLayers",
+                key: "DepthOrArrayLayers",
                 value: snapshot.depthOrArrayLayers
             },
             {
-                key: "mipLevelCount",
+                key: "MipLevelCount",
                 value: snapshot.mipLevelCount
             },
             {
-                key: "sampleCount",
+                key: "SampleCount",
                 value: snapshot.sampleCount
             },
             {
-                key: "dimension",
+                key: "Dimension",
                 value: snapshot.dimension
             },
             {
-                key: "format",
+                key: "Format",
                 value: snapshot.format
             },
             {
-                key: "usage",
+                key: "Usage",
                 value: <Tooltip title={`flags value: ${snapshot.usage}`}>{usageToLabel(snapshot.usage)}</Tooltip>
             }
         ],

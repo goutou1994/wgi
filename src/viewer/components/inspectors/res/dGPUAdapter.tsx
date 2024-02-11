@@ -10,7 +10,7 @@ export default function dGPUAdapter(adapter: TrackedGPUAdapter): ResDetailConten
         creator: <ResLink id={snapshot.gpu}/>,
         attributes: [
             {
-                key: "features",
+                key: "Features",
                 value: <>{Array.from(snapshot.features).map((feature, index) => <span key={index.toString()}>{feature}</span>)}</>
             }
         ],

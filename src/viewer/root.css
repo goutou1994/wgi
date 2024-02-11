@@ -48,3 +48,25 @@ p {
 .ant-tabs-content-holder {
     overflow-y: scroll;
 }
+
+.inner-no-margin {
+    margin: -16px -24px;
+}
+
+.ant-descriptions-view {
+    .ant-descriptions-view {
+        border-radius: 0;
+    }
+}
+
+.description-cards {
+    margin: 6px 9px;
+    width: 300;
+    p {
+        margin: 5px;
+    }
+    p + p {
+        border-top: solid 1px #eeeeee;
+    }
+
+}

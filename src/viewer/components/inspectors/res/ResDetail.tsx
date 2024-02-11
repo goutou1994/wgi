@@ -59,7 +59,7 @@ export default function ResDetail({ id }: ResDetailProps) {
         collapseItems.push({
             key: "attributes",
             label: "Properties",
-            children: <p>No properties.</p>
+            children: <p>No Base Properties.</p>
         });
     }
     if (content.customs) {

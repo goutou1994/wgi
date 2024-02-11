@@ -27,11 +27,11 @@ export default function dGPUBuffer(buffer: TrackedGPUBuffer): ResDetailContent |
         creator: <ResLink id={snapshot.device}/>,
         attributes: [
             {
-                key: "size",
+                key: "Size",
                 value: snapshot.size
             },
             {
-                key: "usage",
+                key: "Usage",
                 value: usageToLabel(snapshot.usage)
             }
         ],
