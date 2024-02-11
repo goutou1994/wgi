@@ -107,7 +107,17 @@ export default function dGPURenderPassEncoder(pass: TrackedGPURenderPassEncoder)
                         children: ds.stencilReadOnly ? "true" : "false"
                     }
                 ]}/>
-            }] : []
+            }] : [],
+            {
+                title: "Runtime",
+                content: <Descriptions bordered column={3} items={[
+                    {
+                        key: "pipeline",
+                        label: "Pipeline",
+                        children: pass.__runtime!.pipeline ? <ResLink id={pass.__runtime!.pipeline.__id}/> : "unset"
+                    }
+                ]} />
+            }
         ],
         refLink: "https://developer.mozilla.org/en-US/docs/Web/API/GPURenderPassEncoder"
     };

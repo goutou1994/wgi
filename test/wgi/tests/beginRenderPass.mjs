@@ -80,8 +80,6 @@ fn fragmentMain() -> @location(0) vec4f {
             }]
         }
     });
-    console.log(cellPipeline);
-
 
     function loop(time) {
         const encoder = device.createCommandEncoder();
@@ -93,7 +91,7 @@ fn fragmentMain() -> @location(0) vec4f {
             }]
         });
 
-        // pass.setPipeline(cellPipeline);
+        pass.setPipeline(cellPipeline);
         // pass.setVertexBuffer(0, vertexBuffer);
         // pass.draw(vertices.length / 2); // 6 vertices
         pass.end();

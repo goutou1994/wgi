@@ -233,6 +233,7 @@ export default function dGPURenderPipeline(pipeline: TrackedGPURenderPipeline): 
                 title: "Multisample",
                 content: multisampleContent
             },
-        ]
+        ],
+        refLink: "https://developer.mozilla.org/en-US/docs/Web/API/GPURenderPipeline"
     };
 }

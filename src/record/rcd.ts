@@ -30,6 +30,10 @@ export enum RecordKind {
 
     // texture
     CreateView = 301,
+
+    // pass
+    End = 401,
+    SetPipeline = 402,
 }
 
 export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = void> {

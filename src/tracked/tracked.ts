@@ -33,6 +33,8 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
      */
     abstract __snapshot?: any;
 
+    declare __runtime?: any;
+
     /**
      * Snapshot deserialized from capture file.
      * Used for restoring.
@@ -132,6 +134,10 @@ export default abstract class TrackedBase<T extends TrackedBase<T>> {
     public destroyAuthentic(): void {
         this.__authentic?.destroy();
         this.__authentic = undefined;
+    }
+
+    public deleteSnapshot(): void {
+        this.__snapshot = undefined;
     }
 
     protected fastFromAuthentic(authentic: wgi_GPUBase, Ctor: new () => T) {

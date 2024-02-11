@@ -1,6 +1,10 @@
+import RcdEnd from "../../record/pass/RcdEnd";
+import RcdSetPipeline from "../../record/pass/RcdSetPipeline";
 import TrackedGPURenderPassEncoder from "../../tracked/GPURenderPassEncoder";
 import TrackedBase from "../../tracked/tracked";
+import { globalRecorder } from "../recorder";
 import wgi_GPUCommandEncoder from "./GPUCommandEncoder";
+import wgi_GPURenderPipeline from "./GPURenderPipeline";
 import wgi_GPUBase from "./gpubase";
 
 export default class wgi_GPURenderPassEncoder extends wgi_GPUBase implements GPURenderPassEncoder {
@@ -35,7 +39,10 @@ export default class wgi_GPURenderPassEncoder extends wgi_GPUBase implements GPU
         throw new Error("Method not implemented.");
     }
     end(): undefined {
-        this.next.end();
+        globalRecorder.processRcd(
+            RcdEnd, this, [],
+            () => this.next.end()
+        );
     }
     get label(): string { return this.next.label; }
     pushDebugGroup(groupLabel: string): undefined {
@@ -52,8 +59,11 @@ export default class wgi_GPURenderPassEncoder extends wgi_GPUBase implements GPU
     setBindGroup(index: unknown, bindGroup: unknown, dynamicOffsetsData?: unknown, dynamicOffsetsDataStart?: unknown, dynamicOffsetsDataLength?: unknown): undefined {
         throw new Error("Method not implemented.");
     }
-    setPipeline(pipeline: GPURenderPipeline): undefined {
-        throw new Error("Method not implemented.");
+    setPipeline(pipeline: wgi_GPURenderPipeline): undefined {
+        globalRecorder.processRcd(
+            RcdSetPipeline, this, [pipeline],
+            () => this.next.setPipeline(pipeline.next)
+        );
     }
     setIndexBuffer(buffer: GPUBuffer, indexFormat: GPUIndexFormat, offset?: number | undefined, size?: number | undefined): undefined {
         throw new Error("Method not implemented.");

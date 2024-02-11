@@ -9,7 +9,9 @@ import dCreateShaderModule from "./dCreateShaderModule";
 import dCreateTexture from "./dCreateTexture";
 import dCreateView from "./dCreateView";
 import dDebugRes from "./dDebugRes";
+import dEnd from "./dEnd";
 import dFinish from "./dFinish";
+import dSetPipeline from "./dSetPipeline";
 import dSubmit from "./dSubmit";
 
 export const RcdDetailMap: {[kind in RecordKind]?: (rcd: RcdBase<any, any, any>) => RcdDetailContent } = {
@@ -32,5 +34,9 @@ export const RcdDetailMap: {[kind in RecordKind]?: (rcd: RcdBase<any, any, any>)
     
     // texture
     [RecordKind.CreateView]: dCreateView,
+    
+    // pass
+    [RecordKind.End]: dEnd,
+    [RecordKind.SetPipeline]: dSetPipeline,
 
 };

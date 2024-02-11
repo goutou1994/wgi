@@ -83,7 +83,9 @@ export default class ReplayProfile {
     public device?: GPUDevice;
     public async restore() {
         // delete snapshots
-        this.trackedMap.forEach(tracked => tracked.__snapshot = undefined);
+        this.trackedMap.forEach(tracked => {
+            tracked.deleteSnapshot();
+        });
         
         // find GPUDevice
         let trackedDevice: TrackedGPUDevice | undefined;

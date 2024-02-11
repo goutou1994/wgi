@@ -7,6 +7,7 @@ import type wgi_GPUTextureView from "../recorder/driver/GPUTextureView";
 import wgi_GPUBase from "../recorder/driver/gpubase";
 import ReplayProfile from "../replay/profile";
 import TrackedGPUCommandEncoder from "./GPUCommandEncoder";
+import TrackedGPURenderPipeline from "./GPURenderPipeline";
 import TrackedBase from "./tracked";
 
 interface GPURenderPassEncoderSnapshot {
@@ -24,9 +25,13 @@ interface GPURenderPassEncoderSnapshot {
     occlusionQuerySet: undefined; // not supported
     timestampWrites: undefined; // not supported
     maxDrawCount: number;
-    
-    // runtime
-    pass?: UniversalResourceId;
+}
+
+/**
+ * Used by replay.
+ */
+interface GPURenderPassEncoderRuntime {
+    pipeline?: TrackedGPURenderPipeline;
     vbs: { [binding: number]: UniversalResourceId };
 }
 
@@ -37,6 +42,7 @@ export default class TrackedGPURenderPassEncoder extends TrackedBase<TrackedGPUR
     __initialSnapshot?: GPURenderPassEncoderSnapshot;
     __creator?: TrackedGPUCommandEncoder;
     __creatorRcd?: RcdBeginRenderPass;
+    __runtime?: GPURenderPassEncoderRuntime;
     public fromAuthentic(authentic: wgi_GPUBase): TrackedGPURenderPassEncoder {
         return this.fastFromAuthentic(authentic, TrackedGPURenderPassEncoder);
     }
@@ -47,34 +53,37 @@ export default class TrackedGPURenderPassEncoder extends TrackedBase<TrackedGPUR
         this.__initialSnapshot = deserializeObject(ds) as GPURenderPassEncoderSnapshot;
     }
     public async restore(profile: ReplayProfile, encoder: GPUCommandEncoder) {
-        const s = this.__initialSnapshot!;
-        this.__creator = await profile.getOrRestore(s.encoder, encoder);
+        // it's impossible to restore a RenderPassEncoder.
+        console.assert(false);
 
-        const colors = [];
-        for (const color of s.colorAttachments) {
-            const view = (await profile.getOrRestore(color.view, encoder)).__authentic!;
-            const resolveTarget = color.resolveTarget ? (await profile.getOrRestore(color.resolveTarget, encoder)).__authentic! : undefined;
-            colors.push({
-                ...color,
-                view,
-                resolveTarget
-            });
-        }
-        let depth = undefined;
-        if (s.depthStencilAttachment) {
-            depth = {
-                ...s.depthStencilAttachment,
-                view: (await profile.getOrRestore(s.depthStencilAttachment.view, encoder)).__authentic!
-            };
-        }
+        // const s = this.__initialSnapshot!;
+        // this.__creator = await profile.getOrRestore(s.encoder, encoder);
 
-        this.__authentic = this.__creator.__authentic!.beginRenderPass({
-            ...s,
-            colorAttachments: colors,
-            depthStencilAttachment: depth,
-            occlusionQuerySet: undefined,
-            timestampWrites: undefined
-        });
+        // const colors = [];
+        // for (const color of s.colorAttachments) {
+        //     const view = (await profile.getOrRestore(color.view, encoder)).__authentic!;
+        //     const resolveTarget = color.resolveTarget ? (await profile.getOrRestore(color.resolveTarget, encoder)).__authentic! : undefined;
+        //     colors.push({
+        //         ...color,
+        //         view,
+        //         resolveTarget
+        //     });
+        // }
+        // let depth = undefined;
+        // if (s.depthStencilAttachment) {
+        //     depth = {
+        //         ...s.depthStencilAttachment,
+        //         view: (await profile.getOrRestore(s.depthStencilAttachment.view, encoder)).__authentic!
+        //     };
+        // }
+
+        // this.__authentic = this.__creator.__authentic!.beginRenderPass({
+        //     ...s,
+        //     colorAttachments: colors,
+        //     depthStencilAttachment: depth,
+        //     occlusionQuerySet: undefined,
+        //     timestampWrites: undefined
+        // });
     }
     public takeSnapshotBeforeSubmit(encoder: GPUCommandEncoder, profile?: ReplayProfile | undefined): void {
         let encoder_id: UniversalResourceId;
@@ -121,5 +130,12 @@ export default class TrackedGPURenderPassEncoder extends TrackedBase<TrackedGPUR
             deps.push(desc.depthStencilAttachment.view as wgi_GPUTextureView);
         }
         return deps;
+    }
+
+    public override deleteSnapshot(): void {
+        this.__snapshot = undefined;
+        this.__runtime = {
+            vbs: {}
+        };
     }
 }

@@ -10,6 +10,8 @@ import RcdBase, { RecordKind } from "../../record/rcd";
 import RcdDebugRes from "../../record/rcdDebugRes";
 import RcdCreateView from "../../record/texture/rcdCreateView";
 import RcdBeginRenderPass from "../../record/encoder/rcdBeginRenderPass";
+import RcdEnd from "../../record/pass/RcdEnd";
+import RcdSetPipeline from "../../record/pass/RcdSetPipeline";
 
 export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> } = {
     [RecordKind.DebugRes]: RcdDebugRes,
@@ -30,6 +32,11 @@ export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> }
     [RecordKind.Submit]: RcdSubmit,
     
     // texture
-    [RecordKind.CreateView]: RcdCreateView
+    [RecordKind.CreateView]: RcdCreateView,
+    
+    // pass
+    [RecordKind.End]: RcdEnd,
+    [RecordKind.SetPipeline]: RcdSetPipeline,
+    
 
 }
