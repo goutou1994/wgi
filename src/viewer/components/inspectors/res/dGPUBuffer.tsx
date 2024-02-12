@@ -2,6 +2,7 @@ import React from "react";
 import TrackedGPUBuffer from "../../../../tracked/GPUBuffer";
 import ResLink from "../../common/ResLink";
 import type { ResDetailContent } from "./ResDetail";
+import BufferView from "../../bufferViewer/BufferViewer";
 
 function usageToLabel(usage: GPUBufferUsageFlags): string {
     const names = [];
@@ -37,7 +38,7 @@ export default function dGPUBuffer(buffer: TrackedGPUBuffer): ResDetailContent |
         ],
         customs: [{
             title: "Preview",
-            content: <p>{new Uint8Array(snapshot.content).toString()}</p>,
+            content: <BufferView buffer={new Uint8Array(snapshot.content)}/>
         }],
         refLink: "https://developer.mozilla.org/en-US/docs/Web/API/GPUBuffer"
     };

@@ -12,6 +12,7 @@ import dDebugRes from "./dDebugRes";
 import dEnd from "./dEnd";
 import dFinish from "./dFinish";
 import dSetPipeline from "./dSetPipeline";
+import dSetVertexBuffer from "./dSetVertexBuffer";
 import dSubmit from "./dSubmit";
 
 export const RcdDetailMap: {[kind in RecordKind]?: (rcd: RcdBase<any, any, any>) => RcdDetailContent } = {
@@ -38,5 +39,6 @@ export const RcdDetailMap: {[kind in RecordKind]?: (rcd: RcdBase<any, any, any>)
     // pass
     [RecordKind.End]: dEnd,
     [RecordKind.SetPipeline]: dSetPipeline,
+    [RecordKind.SetVertexBuffer]: dSetVertexBuffer,
 
 };

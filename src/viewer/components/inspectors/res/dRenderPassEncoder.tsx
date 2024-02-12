@@ -114,12 +114,12 @@ export default function dGPURenderPassEncoder(pass: TrackedGPURenderPassEncoder)
                     {
                         key: "pipeline",
                         label: "Pipeline",
-                        children: pass.__runtime!.pipeline ? <ResLink id={pass.__runtime!.pipeline.__id} /> : "unset"
+                        children: pass.__runtime!.pipeline ? <ResLink id={pass.__runtime!.pipeline.__id} /> : "-"
                     },
                     {
                         key: "vbs",
                         label: "Vertex Buffers",
-                        children: Object.keys(pass.__runtime!.vbs).length > 0 ? <div style={{ padding: "6px 9px", display: "flex", flexWrap: "wrap" }}>
+                        children: Object.keys(pass.__runtime!.vbs).length > 0 ? <div className="inner-no-margin" style={{ padding: "6px 9px", display: "flex", flexWrap: "wrap" }}>
                             {Object.keys(pass.__runtime!.vbs).map(key => {
                                 const vb = pass.__runtime!.vbs[Number(key)];
                                 return <Card size="small" title={"Vertex Buffer@" + key} className="description-cards">
@@ -128,7 +128,7 @@ export default function dGPURenderPassEncoder(pass: TrackedGPURenderPassEncoder)
                                     <p>size: {vb.size}</p>
                                 </Card>;
                             })}
-                        </div> : "unset"
+                        </div> : "-"
                     }
                 ]} />
             }
