@@ -38,8 +38,8 @@ export default function BufferView(props: BufferViewProps) {
         Int16Value : currentOffset !== null && (currentOffset % 2 === 0) && (currentOffset + 1 < byteLength) ? new Int16Array(buffer.buffer)[currentOffset / 2] : "-",
         Uint32Value : currentOffset !== null && (currentOffset % 4 === 0) && (currentOffset + 3 < byteLength) ? new Uint32Array(buffer.buffer)[currentOffset / 4] : "-",
         Int32Value : currentOffset !== null && (currentOffset % 4 === 0) && (currentOffset + 3 < byteLength) ? new Int32Array(buffer.buffer)[currentOffset / 4] : "-",
-        Float32Value : currentOffset !== null && (currentOffset % 4 === 0) && (currentOffset + 3 < byteLength) ? new Float32Array(buffer.buffer)[currentOffset / 4] : "-",
-        Float64Value : currentOffset !== null && (currentOffset % 8 === 0) && (currentOffset + 7 < byteLength) ? new Float64Array(buffer.buffer)[currentOffset / 8] : "-",
+        Float32Value : currentOffset !== null && (currentOffset % 4 === 0) && (currentOffset + 3 < byteLength) ? new Float32Array(buffer.buffer)[currentOffset / 4].toPrecision(5) : "-",
+        // Float64Value : currentOffset !== null && (currentOffset % 8 === 0) && (currentOffset + 7 < byteLength) ? new Float64Array(buffer.buffer)[currentOffset / 8].toPrecision(5) : "-",
     };
 
     const handleClickDoubleHex = (byteOffset: number) => {

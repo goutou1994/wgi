@@ -45,7 +45,7 @@ fn fragmentMain() -> @location(0) vec4f {
         size: vertices.byteLength,
         usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
     });
-    // device.queue.writeBuffer(vertexBuffer, /*bufferOffset=*/0, vertices);
+    device.queue.writeBuffer(vertexBuffer, /*bufferOffset=*/0, vertices);
     const vertexBufferLayout = {
         arrayStride: 8,
         attributes: [{

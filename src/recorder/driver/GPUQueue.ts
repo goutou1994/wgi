@@ -2,6 +2,7 @@ import RcdSubmit from "../../record/queue/rcdSubmit";
 import TrackedGPUQueue from "../../tracked/GPUQueue";
 import TrackedBase from "../../tracked/tracked";
 import { globalRecorder } from "../recorder";
+import type wgi_GPUBuffer from "./GPUBuffer";
 import wgi_GPUCommandBuffer from "./GPUComandBuffer";
 import wgi_GPUDevice from "./GPUDevice";
 import type wgi_GPUTexture from "./GPUTexture";
@@ -33,8 +34,8 @@ export default class wgi_GPUQueue extends wgi_GPUBase implements GPUQueue {
     onSubmittedWorkDone(): Promise<undefined> {
         return this.next.onSubmittedWorkDone();
     }
-    writeBuffer(buffer: GPUBuffer, bufferOffset: number, data: BufferSource | SharedArrayBuffer, dataOffset?: number | undefined, size?: number | undefined): undefined {
-        throw new Error("Method not implemented.");
+    writeBuffer(buffer: wgi_GPUBuffer, bufferOffset: number, data: BufferSource | SharedArrayBuffer, dataOffset?: number | undefined, size?: number | undefined): undefined {
+        this.next.writeBuffer(buffer.next, bufferOffset, data, dataOffset, size); // TODO: record it
     }
     writeTexture(destination: GPUImageCopyTexture, data: BufferSource | SharedArrayBuffer, dataLayout: GPUImageDataLayout, size: GPUExtent3DStrict): undefined {
         throw new Error("Method not implemented.");
