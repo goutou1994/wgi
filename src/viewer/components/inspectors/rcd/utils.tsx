@@ -9,6 +9,7 @@ import dCreateShaderModule from "./dCreateShaderModule";
 import dCreateTexture from "./dCreateTexture";
 import dCreateView from "./dCreateView";
 import dDebugRes from "./dDebugRes";
+import dDraw from "./dDraw";
 import dEnd from "./dEnd";
 import dFinish from "./dFinish";
 import dSetPipeline from "./dSetPipeline";
@@ -40,5 +41,6 @@ export const RcdDetailMap: {[kind in RecordKind]?: (rcd: RcdBase<any, any, any>)
     [RecordKind.End]: dEnd,
     [RecordKind.SetPipeline]: dSetPipeline,
     [RecordKind.SetVertexBuffer]: dSetVertexBuffer,
+    [RecordKind.Draw]: dDraw,
 
 };

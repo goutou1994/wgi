@@ -1,0 +1,24 @@
+.body {
+    display: flex;
+    width: 100%;
+}
+
+.body > div:first-child {
+    width: 100%;
+}
+
+/* .body > div+div {
+    background-color: white;
+    width: 20%;
+    height: 100%;
+} */
+
+.card {
+    border-radius: 10px;
+    width: 50%;
+    background-color: white;
+    padding: 20px;
+    >div {
+        display: inline-block;
+    }
+}

@@ -28,6 +28,7 @@ const pixelSizeMap = {
     "rgba8snorm": 4,
     "rgba8uint": 4,
     "rgba8sint": 4,
+    "bgra8unorm": 4,
 };
 
 export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {

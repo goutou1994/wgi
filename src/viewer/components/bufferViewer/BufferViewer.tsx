@@ -55,14 +55,14 @@ export default function BufferView(props: BufferViewProps) {
 
     return <table className={styles.table}><tbody>
         {Array.from(Array(rows).keys()).map(row => {
-            return <tr className={styles.row}>
+            return <tr className={styles.row} key={row}>
                 <td className={styles.lineOffset}>
                     {startOffset + row * bytesPerRow}
                 </td>
                 <td className={styles.dividerCell} />
                 {Array.from(Array(columns).keys()).map(column => {
                     return <>
-                        <td className={styles.fourDoubleHex}>
+                        <td className={styles.fourDoubleHex} >
                             {[0, 1, 2, 3].map(hexIndex => {
                                 let byteOffset = startOffset + row * bytesPerRow + column * bytesPerCell + hexIndex * bytesPerDoubleHex;
                                 if (byteOffset >= byteLength) {
@@ -80,13 +80,13 @@ export default function BufferView(props: BufferViewProps) {
                                 }
                             })}
                         </td>
-                        <td className={styles.dividerCell} />
+                        <td className={styles.dividerCell} key={"divcol" + column} />
                     </>
                 })}
                 {
                     row === 0 ? <td rowSpan={rows} className={styles.rightColumn}>
                        {
-                        Object.entries(valueDisplays).map(([key, value]) => <p>
+                        Object.entries(valueDisplays).map(([key, value]) => <p key={key}>
                             <span>{key}:</span> {value}
                         </p>) 
                        }
@@ -100,7 +100,7 @@ export default function BufferView(props: BufferViewProps) {
                 <Input size="small" onPressEnter={handleChangeLine}></Input>
             </td>
             <td colSpan={columns * 2 + 2} className={styles.bottomInfo}>
-                Total rows: {totalRows}, Bytes per page: {bytesInSight}
+                Total bytes: {buffer.byteLength}, Total rows: {totalRows}, Bytes per page: {bytesInSight}
             </td>
         </tr>
     </tbody></table>

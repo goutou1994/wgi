@@ -1,7 +1,7 @@
 import ReplayProfile from "../../replay/profile";
 import { createGlobalState } from "../utils/globalState";
 import { logError, logSuccess, logWarning } from "../utils/message";
-import { RecordKind } from "../../record/rcd";
+import RcdBase, { RecordKind } from "../../record/rcd";
 import { currentTab } from "./inspector";
 
 export let globalProfile: ReplayProfile | null = null;
@@ -28,10 +28,7 @@ async function loadCapture(file: File) {
     }
 
     const rcds = profile.getRcds();
-    rcdEntries.set(rcds.map((rcd, index) => ({
-        label: RecordKind[rcd.__kind],
-        id: index
-    })));
+    rcdEntries.set([...rcds]);
 
     // reader.releaseLock();
     loading.set(false);
@@ -42,22 +39,32 @@ interface RcdEntry {
     label: string;
 };
 
-export type RcdEntries = Array<RcdEntry>;
-const rcdInitial: RcdEntries = [];
+// export type RcdEntries = Array<RcdEntry>;
+const rcdInitial: Array<RcdBase<any, any, any>> = [];
 const rcdEntries = createGlobalState(rcdInitial);
 const currentRcdId = createGlobalState<number | null>(null);
+const selectedRcdId = createGlobalState<number | null>(null);
 
-export async function selectRcd(id: number) {
+export function selectRcd(id: number) {
+    if (selectedRcdId.get() === id) return;
+    selectedRcdId.set(id);
+    currentTab.set("rcd");
+}
+
+export const rcdPlayed = new Set<number>();
+export async function playRcd(id: number) {
     if (currentRcdId.get() === id) return;
     if (!globalProfile) {
         logError("No replay profile available.");
         return;
     }
     replaying.set(true);
-    await globalProfile.replayTo(id);
+    const played = await globalProfile.replayTo(id);
+    rcdPlayed.clear();
+    played.forEach(id => rcdPlayed.add(id));
     replaying.set(false);
     currentRcdId.set(id);
-    currentTab.set("rcd");
+    // currentTab.set("rcd");
 }
 
 const loading = createGlobalState(false);
@@ -71,6 +78,7 @@ export {
     rcdEntries,
     replaying,
     currentRcdId,
+    selectedRcdId,
     count,
 
     // functions

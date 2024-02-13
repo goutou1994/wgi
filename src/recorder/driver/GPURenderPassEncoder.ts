@@ -1,3 +1,4 @@
+import RcdDraw from "../../record/pass/RcdDraw";
 import RcdEnd from "../../record/pass/RcdEnd";
 import RcdSetPipeline from "../../record/pass/RcdSetPipeline";
 import RcdSetVertexBuffer from "../../record/pass/RcdSetVertexBuffer";
@@ -77,8 +78,11 @@ export default class wgi_GPURenderPassEncoder extends wgi_GPUBase implements GPU
             () => this.next.setVertexBuffer(slot, buffer ? buffer.next : null, offset, size)
         );
     }
-    draw(vertexCount: number, instanceCount?: number | undefined, firstVertex?: number | undefined, firstInstance?: number | undefined): undefined {
-        throw new Error("Method not implemented.");
+    draw(...args: [vertexCount: number, instanceCount?: number | undefined, firstVertex?: number | undefined, firstInstance?: number | undefined]): undefined {
+        globalRecorder.processRcd(
+            RcdDraw, this, args,
+            () => this.next.draw(...args)
+        );
     }
     drawIndexed(indexCount: number, instanceCount?: number | undefined, firstIndex?: number | undefined, baseVertex?: number | undefined, firstInstance?: number | undefined): undefined {
         throw new Error("Method not implemented.");

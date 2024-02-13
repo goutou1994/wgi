@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Collapse, CollapseProps, Descriptions, DescriptionsProps, List } from "antd";
-import { LinkOutlined } from "@ant-design/icons";
+import { AreaChartOutlined, LinkOutlined, ProfileOutlined } from "@ant-design/icons";
 
 import styles from "./RcdDetail.module.css";
-import { currentRcdId, globalProfile } from "../../../model/global";
+import { currentRcdId, globalProfile, selectedRcdId } from "../../../model/global";
 import useGlobalState from "../../../utils/globalState";
 import { RcdDetailMap } from "./utils";
 import InitialState from "./InitialState";
@@ -27,10 +27,13 @@ export interface RcdDetailContent {
     }>;
     return?: React.JSX.Element | string;
     refLink?: string;
+    customDetail?: React.JSX.Element;
 }
 
 export default function RcdDetail() {
-    const [rcdId] = useGlobalState(currentRcdId);
+    const [_] = useGlobalState(currentRcdId);
+    const [rcdId] = useGlobalState(selectedRcdId);
+    const [useCustom, setUseCustom] = useState(false)
 
     if (rcdId === null) {
         return <p>No record selected.</p>
@@ -47,6 +50,37 @@ export default function RcdDetail() {
     }
 
     const content: RcdDetailContent = dCtor(rcd);
+    if (!content.customDetail && useCustom) {
+        setUseCustom(false);
+    }
+
+    const handleClickRefLink = () => {
+        window.open(content.refLink);
+    };
+    const handleClickCustom = () => {
+        setUseCustom(!useCustom);
+    }
+    const header = <p>
+        Inspector: {useCustom ? "Record Detail" : "Record Brief"}
+        {content.customDetail ? (useCustom ?
+            <ProfileOutlined
+                title="See Detail"
+                style={{ cursor: "pointer" }}
+                onClick={handleClickCustom} /> :
+            <AreaChartOutlined
+                title="See Brief"
+                style={{ cursor: "pointer" }}
+                onClick={handleClickCustom}
+            />) : undefined}
+    </p>
+
+    if (content.customDetail && useCustom) {
+        return <>
+            {header}
+            {content.customDetail}
+        </>;
+    }
+
     const collapseItems: CollapseProps["items"] = content.arguments.map((arg, argIndex) => {
         let children: any;
         if (arg.type === ArgumentType.Value) {
@@ -56,11 +90,11 @@ export default function RcdDetail() {
                 <JsonView.String render={({ children, ...reset }, { type, value, keyName }) => {
                     const isResource = /^\$wgiResource_[0-9]+$/i.test(value as string);
                     if (type === 'type' && isResource) {
-                        return <span style={{marginRight: "3px", color: "#8888ff"}}>res</span>
+                        return <span style={{ marginRight: "3px", color: "#8888ff" }}>res</span>
                     }
                     if (type === 'value' && isResource) {
                         const id = Number((value as string).substring(13));
-                        return <ResLink id={id}/>
+                        return <ResLink id={id} />
                     }
                 }} />
             </JsonView>;
@@ -88,16 +122,11 @@ export default function RcdDetail() {
         });
     }
 
-    const handleClickRefLink = () => {
-        window.open(content.refLink);
-    };
-
     return <>
-        <p>Inspector: Record</p>
+        {header}
         <h1>
             {content.title}
             {content.refLink && <LinkOutlined className={styles.refLink} onClick={handleClickRefLink} />}
-
         </h1>
         <Collapse items={collapseItems} defaultActiveKey={['arg0']}></Collapse>
     </>;

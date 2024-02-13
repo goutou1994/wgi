@@ -27,6 +27,7 @@ export enum RecordKind {
 
     // queue
     Submit = 201,
+    WriteBuffer = 202,
 
     // texture
     CreateView = 301,
@@ -35,6 +36,7 @@ export enum RecordKind {
     End = 401,
     SetPipeline = 402,
     SetVertexBuffer = 403,
+    Draw = 404,
 }
 
 export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = void> {

@@ -1,5 +1,5 @@
 import inject, { testStartCapture } from "../wgi.mjs"
-// inject();
+inject();
 
 const vertices = new Float32Array([
     //   X,    Y,
@@ -80,7 +80,6 @@ fn fragmentMain() -> @location(0) vec4f {
             }]
         }
     });
-    console.log(cellPipeline);
 
 
     function loop(time) {

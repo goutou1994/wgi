@@ -111,9 +111,13 @@ export class DataStream {
         return ret;
     }
 
-    public writeChunk(chunk: ArrayBuffer) {
+    public writeChunk(chunk: BufferSource) {
         this.testSufficient(chunk.byteLength, 1);
-        new Uint8Array(this.buffer, this.head).set(new Uint8Array(chunk));
+        // @ts-ignore
+        const buffer: ArrayBuffer = chunk.buffer ?? chunk;
+        // @ts-ignore
+        const byteOffset: number = chunk.offset ?? 0; 
+        new Uint8Array(this.buffer, this.head).set(new Uint8Array(buffer, byteOffset));
         this.head += chunk.byteLength;
     }
     

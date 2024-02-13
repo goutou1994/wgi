@@ -1,23 +1,43 @@
 import React, { useEffect, useRef } from "react";
 import TrackedGPUTexture from "../../../tracked/GPUTexture";
-import { globalProfile } from "../../model/global";
+import { currentRcdId, globalProfile } from "../../model/global";
 import vs from "./shaders/quad.wgsl";
 import fs from "./shaders/frag.wgsl";
 
 import styles from "./Thumbnail.module.css";
+import useGlobalState from "../../utils/globalState";
 
 interface ThumbnailProps {
     texture: UniversalResourceId;
-    width: number;
-    height: number;
+    width?: number;
+    height?: number;
 }
 
 export default function Thumbnail(props: ThumbnailProps) {
+    const [rcdId] = useGlobalState(currentRcdId); //  do not delete this
+
     const texture = globalProfile!.get(props.texture) as TrackedGPUTexture;
+
+    let width = props.width;
+    let height = props.height;
+    if (texture && texture.__authentic) {
+        if (width === undefined && height !== undefined) {
+            width = height * texture.__authentic!.width / texture.__authentic!.height;
+        } else if (width !== undefined && height === undefined) {
+            height = width * texture.__authentic!.height / texture.__authentic!.width;
+        } else if (width === undefined && height === undefined) {
+            height = 200;
+            width = height * texture.__authentic!.width / texture.__authentic!.height;
+        }
+    } else {
+        width = width ?? 200;
+        height = height ?? 200;
+    }
+
     if (!texture || !texture.__authentic || !texture.__snapshot) {
         return <div className={styles.notAvailable} style={{
-            width: props.width,
-            height: props.width
+            width: width!,
+            height: width!
         }}>
             Texture not available.
         </div>;
@@ -30,8 +50,8 @@ export default function Thumbnail(props: ThumbnailProps) {
         const canvas = thumbnailRef.current!;
 
         canvas.id = `Thumbnail_${texture.__id}`;
-        canvas.width = props.width;
-        canvas.height = props.height;
+        canvas.width = width!;
+        canvas.height = height!;
         const device = globalProfile!.device!;
         const context = canvas.getContext("webgpu")!;
         const canvasFormat = navigator.gpu.getPreferredCanvasFormat();

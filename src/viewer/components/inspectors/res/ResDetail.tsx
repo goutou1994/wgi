@@ -81,7 +81,6 @@ export default function ResDetail({ id }: ResDetailProps) {
         <h1>
             {content.title ?? `${brandMap[tracked.__kind]}#${tracked.label}`}
             {content.refLink && <LinkOutlined className={styles.refLink} onClick={handleClickRefLink} />}
-           
         </h1>
         <Collapse items={collapseItems} defaultActiveKey={['attributes']}></Collapse>
     </div>;

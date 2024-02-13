@@ -133,7 +133,8 @@ export default class ReplayProfile {
     }
 
     private currentRcdId: number | null = null;
-    public async replayTo(rcdId: number) {
+    public async replayTo(rcdId: number): Promise<Array<number>> {
+        const rcdPlayed: Array<number> = [];
         rcdId = Math.min(rcdId, this.rcds.length);
 
         // restore to initial state if necessary
@@ -150,6 +151,7 @@ export default class ReplayProfile {
         for (let i = 0; i <= rcdId; i++) {
             const rcd = this.rcds[i];
             rcd.play();
+            rcdPlayed.push(i);
         }
 
         // find GPUDevice
@@ -163,7 +165,7 @@ export default class ReplayProfile {
 
         if (!trackedDevice) {
             this.logWarn?.("No GPUDevice found, cannot take snapshots.");
-            return;
+            return rcdPlayed;
         }
 
         // create an encoder for snapshot
@@ -187,7 +189,7 @@ export default class ReplayProfile {
                 p.push(gpuDone.then(() => tracked.takeSnapshotAfterSubmit()));
             }
         }
-        return Promise.all(p);
+        return Promise.all(p).then(() => rcdPlayed);
     }
 
     public get<T = TrackedBase<any>>(resId: UniversalResourceId): T {
