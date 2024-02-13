@@ -23,7 +23,7 @@ interface GPURenderPipelineSnapshotBlend {
     dstFactor: GPUBlendFactor;
 }
 
-interface GPURenderPipelineSnapshot {
+export interface GPURenderPipelineSnapshot {
     label: string;
     device: UniversalResourceId;
     layout: GPUAutoLayoutMode | UniversalResourceId;

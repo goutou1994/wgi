@@ -11,8 +11,9 @@ import TrackedGPUTexture from "../../../../tracked/GPUTexture";
 
 export default function dDraw(rcd: RcdDraw): RcdDetailContent {
     const pass = rcd.caller!;
+    const pipeline = rcd.caller!.__runtime?.pipeline!;
     let detailAvailable = true;
-    if (!pass.__snapshot) {
+    if (!pass.__snapshot || !pipeline || !pipeline.__snapshot) {
         detailAvailable = false;
     }
     
@@ -24,7 +25,11 @@ export default function dDraw(rcd: RcdDraw): RcdDetailContent {
         });
     
         const detailProps: DrawDetailProps["summary"] = {
-            colorAttachments: colors
+            colorAttachments: colors,
+            vbs: pipeline.__snapshot!.vbs.map((layout, layoutIndex) => ({
+                layout,
+                bound: pass.__runtime!.vbs[layoutIndex]
+            }))
         };
         customDetail = <DrawDetail summary={detailProps}/>;
     }

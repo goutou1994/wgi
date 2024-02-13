@@ -31,7 +31,7 @@ interface GPURenderPassEncoderSnapshot {
 /**
  * Used by replay.
  */
-interface GPURenderPassEncoderRuntime {
+export interface GPURenderPassEncoderRuntime {
     pipeline?: TrackedGPURenderPipeline;
     vbs: { [binding: number]: {
         buffer: TrackedGPUBuffer;
