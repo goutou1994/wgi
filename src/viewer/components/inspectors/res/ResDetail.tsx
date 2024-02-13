@@ -77,7 +77,7 @@ export default function ResDetail({ id }: ResDetailProps) {
     };
 
     return <div style={{overflowY: "scroll"}}>
-        <p>Inspector: Resource</p>
+        <div className="inspector-type">Inspector: Resource</div>
         <h1>
             {content.title ?? `${brandMap[tracked.__kind]}#${tracked.label}`}
             {content.refLink && <LinkOutlined className={styles.refLink} onClick={handleClickRefLink} />}

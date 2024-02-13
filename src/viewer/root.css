@@ -49,6 +49,10 @@ p {
     overflow-y: scroll;
 }
 
+.ant-tabs-content {
+    overflow: auto;
+}
+
 .inner-no-margin {
     margin: -16px -24px;
 }
@@ -69,4 +73,22 @@ p {
         border-top: solid 1px #eeeeee;
     }
 
+}
+
+canvas {
+    box-shadow: 0 0 10px #666666;
+}
+
+canvas:hover {
+    box-shadow: 0 0 10px #ffad00;
+}
+
+.inspector-type {
+    display: block;
+    position: absolute;
+    right: 20px;
+    top: 25px;
+    >button {
+        margin-left: 5px;
+    }
 }

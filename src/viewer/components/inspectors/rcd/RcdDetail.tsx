@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Collapse, CollapseProps, Descriptions, DescriptionsProps, List } from "antd";
+import { Collapse, CollapseProps, Descriptions, DescriptionsProps, List, Switch } from "antd";
 import { AreaChartOutlined, LinkOutlined, ProfileOutlined } from "@ant-design/icons";
 
 import styles from "./RcdDetail.module.css";
@@ -60,19 +60,16 @@ export default function RcdDetail() {
     const handleClickCustom = () => {
         setUseCustom(!useCustom);
     }
-    const header = <p>
+    const header = <div className="inspector-type">
         Inspector: {useCustom ? "Record Detail" : "Record Brief"}
-        {content.customDetail ? (useCustom ?
-            <ProfileOutlined
-                title="See Detail"
-                style={{ cursor: "pointer" }}
-                onClick={handleClickCustom} /> :
-            <AreaChartOutlined
-                title="See Brief"
-                style={{ cursor: "pointer" }}
-                onClick={handleClickCustom}
-            />) : undefined}
-    </p>
+        {content.customDetail ?
+        <Switch
+            // checkedChildren={<AreaChartOutlined />}
+            // unCheckedChildren={<ProfileOutlined />}
+            value={useCustom}
+            onChange={handleClickCustom}
+        /> : undefined}
+    </div>
 
     if (content.customDetail && useCustom) {
         return <>

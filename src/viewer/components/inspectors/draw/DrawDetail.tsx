@@ -20,16 +20,20 @@ export default function DrawDetail({summary}: DrawDetailProps) {
             <h2>
                 Attachments
             </h2>
-            <div className={styles.card}>
+            <div className={[styles.card, styles.attWrapper].join(' ')}>
                 <div>
-                    <Thumbnail texture={summary.colorAttachments[0].__id} width={300}/>
+                    {
+                        summary.colorAttachments.length > 0 ?
+                        <Thumbnail texture={summary.colorAttachments[0].__id} width={300}/> :
+                        <span>No Color Attachments</span>
+                    }
                 </div>
-                <div></div>
-                <div>
+                <div className={styles.attDivierVertical}></div>
+                <div className={styles.noAtt}>
                     {
                         summary.depthStencilAttachment ? 
                         <Thumbnail texture={summary.depthStencilAttachment.__id} width={300}/> :
-                        "No DepthStencil Attachment"
+                        <span>No DepthStencil Attachment</span>
                     }
                 </div>
             </div>

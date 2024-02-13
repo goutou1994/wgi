@@ -61,6 +61,7 @@ export async function playRcd(id: number) {
     replaying.set(true);
     const played = await globalProfile.replayTo(id);
     rcdPlayed.clear();
+    rcdPlayed.add(-1);
     played.forEach(id => rcdPlayed.add(id));
     replaying.set(false);
     currentRcdId.set(id);

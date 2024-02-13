@@ -4,8 +4,8 @@
 }
 
 .displayItem {
-    height: 50px;
-    line-height: 50px;
+    height: 40px;
+    line-height: 40px;
     background-color: white;
     position: relative;
     animation: normal;
@@ -42,9 +42,11 @@
 }
 
 .displayItemLabel {
-    text-align: center;
+    text-align: left;
     margin-left: 40px;
     vertical-align: middle;
+    font-size: small;
+    color: #0f0f0f;
 }
 
 .displayItemButtons {

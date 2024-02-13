@@ -15,10 +15,25 @@
 
 .card {
     border-radius: 10px;
-    width: 50%;
     background-color: white;
     padding: 20px;
-    >div {
-        display: inline-block;
-    }
+    
+}
+
+.attWrapper {
+    display: flex;
+    width: fit-content;
+}
+
+.attDivierVertical {
+    width: 2px;
+    margin: 10px 20px;
+    background-color: #d6d6d6;
+}
+
+.noAtt {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300;
 }
