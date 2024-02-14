@@ -37,6 +37,8 @@ export enum RecordKind {
     SetPipeline = 402,
     SetVertexBuffer = 403,
     Draw = 404,
+    DrawIndexed = 405,
+    SetIndexBuffer = 406,
 }
 
 export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = void> {

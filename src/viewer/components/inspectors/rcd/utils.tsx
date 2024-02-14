@@ -10,8 +10,10 @@ import dCreateTexture from "./dCreateTexture";
 import dCreateView from "./dCreateView";
 import dDebugRes from "./dDebugRes";
 import dDraw from "./dDraw";
+import dDrawIndexed from "./dDrawIndexed";
 import dEnd from "./dEnd";
 import dFinish from "./dFinish";
+import dSetIndexBuffer from "./dSetIndexBuffer";
 import dSetPipeline from "./dSetPipeline";
 import dSetVertexBuffer from "./dSetVertexBuffer";
 import dSubmit from "./dSubmit";
@@ -42,5 +44,7 @@ export const RcdDetailMap: {[kind in RecordKind]?: (rcd: RcdBase<any, any, any>)
     [RecordKind.SetPipeline]: dSetPipeline,
     [RecordKind.SetVertexBuffer]: dSetVertexBuffer,
     [RecordKind.Draw]: dDraw,
+    [RecordKind.SetIndexBuffer]: dSetIndexBuffer,
+    [RecordKind.DrawIndexed]: dDrawIndexed,
 
 };

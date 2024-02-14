@@ -129,7 +129,17 @@ export default function dGPURenderPassEncoder(pass: TrackedGPURenderPassEncoder)
                                 </Card>;
                             })}
                         </div> : "-"
-                    }
+                    },
+                    ...pass.__runtime!.ib ? [{
+                        key: "ib",
+                        label: "Index Buffer",
+                        children: <Card size="small" title={"Index Buffer"} className="description-cards">
+                            <p>buffer: <ResLink id={pass.__runtime!.ib.buffer.__id} /></p>
+                            <p>format: {pass.__runtime!.ib.format}</p>
+                            <p>offset: {pass.__runtime!.ib.offset}</p>
+                            <p>size: {pass.__runtime!.ib.size}</p>
+                        </Card>
+                    }] : []
                 ]} />
             }
         ],

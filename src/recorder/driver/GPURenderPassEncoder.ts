@@ -1,5 +1,7 @@
 import RcdDraw from "../../record/pass/RcdDraw";
+import RcdDrawIndexed from "../../record/pass/RcdDrawIndexed";
 import RcdEnd from "../../record/pass/RcdEnd";
+import RcdSetIndexBuffer from "../../record/pass/RcdSetIndexBuffer";
 import RcdSetPipeline from "../../record/pass/RcdSetPipeline";
 import RcdSetVertexBuffer from "../../record/pass/RcdSetVertexBuffer";
 import TrackedGPURenderPassEncoder from "../../tracked/GPURenderPassEncoder";
@@ -68,8 +70,12 @@ export default class wgi_GPURenderPassEncoder extends wgi_GPUBase implements GPU
             () => this.next.setPipeline(pipeline.next)
         );
     }
-    setIndexBuffer(buffer: GPUBuffer, indexFormat: GPUIndexFormat, offset?: number | undefined, size?: number | undefined): undefined {
-        throw new Error("Method not implemented.");
+    setIndexBuffer(buffer: wgi_GPUBuffer, indexFormat: GPUIndexFormat, offset?: number | undefined, size?: number | undefined): undefined {
+        globalRecorder.processRcd(
+            RcdSetIndexBuffer, this,
+            [buffer, indexFormat, offset, size],
+            () => this.next.setIndexBuffer(buffer.next, indexFormat, offset, size)
+        );
     }
     setVertexBuffer(slot: number, buffer: wgi_GPUBuffer | null, offset?: number | undefined, size?: number | undefined): undefined {
         globalRecorder.processRcd(
@@ -84,8 +90,11 @@ export default class wgi_GPURenderPassEncoder extends wgi_GPUBase implements GPU
             () => this.next.draw(...args)
         );
     }
-    drawIndexed(indexCount: number, instanceCount?: number | undefined, firstIndex?: number | undefined, baseVertex?: number | undefined, firstInstance?: number | undefined): undefined {
-        throw new Error("Method not implemented.");
+    drawIndexed(...args: [indexCount: number, instanceCount?: number | undefined, firstIndex?: number | undefined, baseVertex?: number | undefined, firstInstance?: number | undefined]): undefined {
+        globalRecorder.processRcd(
+            RcdDrawIndexed, this, args,
+            () => this.next.drawIndexed(...args)
+        );
     }
     drawIndirect(indirectBuffer: GPUBuffer, indirectOffset: number): undefined {
         throw new Error("Method not implemented.");

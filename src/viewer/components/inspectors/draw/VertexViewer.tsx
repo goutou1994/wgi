@@ -11,8 +11,13 @@ interface VertexFormatInfo {
 }
 
 interface VertexViewerProps {
-    info: DrawDetailProps["summary"]["vbs"][0],
+    vbInfo: DrawDetailProps["summary"]["vbs"][0],
+    ibInfo?: DrawDetailProps["summary"]["ib"],
     numIndices: number;
+    firstIndex?: number;
+    baseVertex?: number;
+    numInstance?: number;
+    firstInstance?: number;
 }
 
 const VertexFormatMap: { [type in GPUVertexFormat]?: VertexFormatInfo } = {
@@ -158,17 +163,17 @@ const VertexFormatMap: { [type in GPUVertexFormat]?: VertexFormatInfo } = {
         bytesPerComp: 4,
         viewCtor: Float32Array,
         numComps: 1
-    }, 
+    },
     "uint32": {
         bytesPerComp: 4,
         viewCtor: Uint32Array,
         numComps: 1
-    }, 
+    },
     "uint32x3": {
         bytesPerComp: 4,
         viewCtor: Uint32Array,
         numComps: 3
-    }, 
+    },
     "sint32x3": {
         bytesPerComp: 4,
         viewCtor: Int32Array,
@@ -178,16 +183,33 @@ const VertexFormatMap: { [type in GPUVertexFormat]?: VertexFormatInfo } = {
 
 type VertexReader = (index: number) => Array<string>;
 
-export default function VertexViewer({ info, numIndices }: VertexViewerProps) {
-    if (!info.bound) return <p>No Buffer Bound.</p>
+export default function VertexViewer(props: VertexViewerProps) {
+    if (!props.vbInfo.bound) return <p>No Buffer Bound.</p>
+
+    const vbInfo = props.vbInfo;
+    const ibInfo = props.ibInfo;
+    const numIndices = props.numIndices;
+    const firstIndex = props.firstIndex ?? 0;
+    const baseVertex = props.baseVertex ?? 0;
+    const numInstance = props.numInstance ?? 1;
+    const firstInstance = props.firstInstance ?? 0;
 
     const [page, setPage] = useState(1);
     const rowsPerPage = 10;
-    const startIndex = (page - 1) * rowsPerPage;
+    const startRow = (page - 1) * rowsPerPage;
 
-    const bound = info.bound!;
-    const layout = info.layout;
-    const numPages = Math.ceil(numIndices / rowsPerPage);
+    let ibView: Uint16Array | Uint32Array | undefined = undefined;
+    if (ibInfo) {
+        if (ibInfo.format === "uint16") {
+            ibView = new Uint16Array(ibInfo.buffer.__snapshot!.content, ibInfo.offset, ibInfo.size / 2);
+        } else {
+            ibView = new Uint32Array(ibInfo.buffer.__snapshot!.content, ibInfo.offset, ibInfo.size / 4);
+        }
+    }
+    const bound = vbInfo.bound!;
+    const layout = vbInfo.layout;
+    const count = layout.stepMode === "vertex" ? numIndices : numInstance;
+    const numPages = Math.ceil(count / rowsPerPage);
     const readers: Array<VertexReader | undefined> = [];
     for (const attr of layout.attributes) {
         const formatInfo = VertexFormatMap[attr.format];
@@ -199,10 +221,16 @@ export default function VertexViewer({ info, numIndices }: VertexViewerProps) {
             bound.buffer.__snapshot!.content,
             bound.offset, bound.size / formatInfo.bytesPerComp
         );
-        readers.push((vi: number) => {
+        readers.push((index: number) => {
             const values: Array<number> = [];
+            let vbIndex = 0;
+            if (layout.stepMode === "vertex") {
+                vbIndex = (ibInfo ? ibView![index + firstIndex] : index) + baseVertex;
+            } else {
+                vbIndex = index + firstInstance;
+            }
             for (let i = 0; i < formatInfo.numComps; i++) {
-                values.push(view[(bound.offset + attr.offset + layout.arrayStride * vi + i * formatInfo.bytesPerComp) / formatInfo.bytesPerComp]);
+                values.push(view[(bound.offset + attr.offset + layout.arrayStride * vbIndex + i * formatInfo.bytesPerComp) / formatInfo.bytesPerComp]);
                 if (formatInfo.normalized) {
                     values[length - 1] /= (1 << formatInfo.bytesPerComp) - 1;
                 }
@@ -215,14 +243,30 @@ export default function VertexViewer({ info, numIndices }: VertexViewerProps) {
         });
     }
 
-    const columns: Array<any> = [
-        {
+    let columns: Array<any> = [];
+    if (layout.stepMode === "vertex") {
+        columns.push({
             title: "Index",
             dataIndex: "index",
             fixed: 'left',
             width: 100
+        });
+        if (ibInfo) {
+            columns.push({
+                title: "Vertex Index",
+                dataIndex: "vbIndex",
+                fixed: "left",
+                width: 100
+            });
         }
-    ];
+    } else {
+        columns.push({
+            title: "Instance",
+            dataIndex: "index",
+            fixed: 'left',
+            width: 100
+        });
+    }
     layout.attributes.forEach((attr, attrIndex) => {
         columns.push({
             title: `Attrbitue@${attr.shaderLocation}: ${attr.format}`,
@@ -232,8 +276,17 @@ export default function VertexViewer({ info, numIndices }: VertexViewerProps) {
     })
 
     const data: Array<any> = [];
-    for (let i = startIndex; i < startIndex + rowsPerPage && i < numIndices; i++) {
-        const data_i: any = { index: i };
+    for (let i = startRow; i < startRow + rowsPerPage && i < count; i++) {
+        const data_i: any = { };
+        if (layout.stepMode === "vertex") {
+            data_i.index = i;
+            if (ibInfo) {
+                data_i.vbIndex = ibView![i + firstIndex];
+            }
+        } else {
+            data_i.instance = i;
+        }
+        
         for (let j = 0; j < layout.attributes.length; j++) {
             if (readers[j]) {
                 data_i[j.toString()] = readers[j]!(i);

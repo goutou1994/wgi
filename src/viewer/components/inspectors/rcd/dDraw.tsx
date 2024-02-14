@@ -9,33 +9,42 @@ import TrackedGPUTextureView from "../../../../tracked/GPUTextureView";
 import { globalProfile } from "../../../model/global";
 import TrackedGPUTexture from "../../../../tracked/GPUTexture";
 import TrackedGPUShaderModule from "../../../../tracked/GPUShaderModule";
+import TrackedGPURenderPassEncoder from "../../../../tracked/GPURenderPassEncoder";
+
+export function genDrawDetailProps(pass: TrackedGPURenderPassEncoder): Partial<DrawDetailProps["summary"]> | undefined {
+    const pipeline = pass.__runtime?.pipeline!;
+    if (!pass.__snapshot || !pipeline || !pipeline.__snapshot) {
+        return undefined;
+    }
+
+    const colors = pass.__snapshot!.colorAttachments.map(att => {
+        const view = globalProfile!.get<TrackedGPUTextureView>(att.resolveTarget ?? att.view);
+        return globalProfile!.get<TrackedGPUTexture>(view.__snapshot!.texture);
+    });
+
+    return {
+        colorAttachments: colors,
+        vbs: pipeline.__snapshot!.vbs.map((layout, layoutIndex) => ({
+            layout,
+            bound: pass.__runtime!.vbs[layoutIndex]
+        })),
+        vertexShader: globalProfile!.get<TrackedGPUShaderModule>(pipeline.__snapshot!.vsModule).__snapshot!.src,
+        fragmentShader: pipeline.__snapshot!.fsModule ? globalProfile!.get<TrackedGPUShaderModule>(pipeline.__snapshot!.fsModule).__snapshot!.src : undefined
+    };
+}
 
 export default function dDraw(rcd: RcdDraw): RcdDetailContent {
-    const pass = rcd.caller!;
-    const pipeline = rcd.caller!.__runtime?.pipeline!;
-    let detailAvailable = true;
-    if (!pass.__snapshot || !pipeline || !pipeline.__snapshot) {
-        detailAvailable = false;
-    }
-    
+    const drawDetailProps = genDrawDetailProps(rcd.caller!);
     let customDetail = undefined;
-    if (detailAvailable) {
-        const colors = pass.__snapshot!.colorAttachments.map(att => {
-            const view = globalProfile!.get<TrackedGPUTextureView>(att.resolveTarget ?? att.view);
-            return globalProfile!.get<TrackedGPUTexture>(view.__snapshot!.texture);
-        });
-    
-        const detailProps: DrawDetailProps["summary"] = {
+    if (drawDetailProps) {
+        Object.assign(drawDetailProps, {
             numIndices: rcd.args[0],
-            colorAttachments: colors,
-            vbs: pipeline.__snapshot!.vbs.map((layout, layoutIndex) => ({
-                layout,
-                bound: pass.__runtime!.vbs[layoutIndex]
-            })),
-            vertexShader: globalProfile!.get<TrackedGPUShaderModule>(pipeline.__snapshot!.vsModule).__snapshot!.src,
-            fragmentShader: pipeline.__snapshot!.fsModule ? globalProfile!.get<TrackedGPUShaderModule>(pipeline.__snapshot!.fsModule).__snapshot!.src : undefined
-        };
-        customDetail = <DrawDetail summary={detailProps}/>;
+            numInstance: rcd.args[1],
+            baseVertex: rcd.args[2],
+            firstInstance: rcd.args[3]
+        });
+        
+        customDetail = <DrawDetail summary={drawDetailProps as DrawDetailProps["summary"]} />;
     }
 
     return {

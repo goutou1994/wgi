@@ -14,12 +14,17 @@ import FragmentStageViewer from "./FragmentStageViewer";
 export interface DrawDetailProps {
     summary: {
         numIndices: number;
+        firstIndex?: number;
+        baseVertex?: number;
+        numInstance?: number;
+        firstInstance?: number;
         colorAttachments: Array<TrackedGPUTexture>;
         depthStencilAttachment?: TrackedGPUTexture;
         vbs: Array<{
             layout: GPURenderPipelineSnapshot["vbs"]["0"],
             bound?: GPURenderPassEncoderRuntime["vbs"]["0"]
-        }>
+        }>,
+        ib?: GPURenderPassEncoderRuntime['ib'];
         vertexShader: string;
         fragmentShader?: string;
     }
@@ -42,13 +47,21 @@ export default function DrawDetail({ summary }: DrawDetailProps) {
     if (drawerOpen) {
         if (!drawerInfo) {
         } else if (drawerInfo.type === DrawerType.Vertex) {
-            drawer = <VertexViewer info={summary.vbs[drawerInfo.slot ?? 0]} numIndices={summary.numIndices} />
+            drawer = <VertexViewer
+                vbInfo={summary.vbs[drawerInfo.slot ?? 0]}
+                ibInfo={summary.ib}
+                numIndices={summary.numIndices}
+                firstIndex={summary.firstIndex}
+                baseVertex={summary.baseVertex}
+                numInstance={summary.numIndices}
+                firstInstance={summary.firstInstance}
+            />;
             drawerTitle = "Vertex Viewer";
         } else if (drawerInfo.type === DrawerType.VS) {
-            drawer = <VertexStageViewer code={summary.vertexShader} />
+            drawer = <VertexStageViewer code={summary.vertexShader} />;
             drawerTitle = "Vertex Stage Viewer";
         } else if (drawerInfo.type === DrawerType.FS) {
-            drawer = <FragmentStageViewer code={summary.fragmentShader ?? "No frag stage."} />
+            drawer = <FragmentStageViewer code={summary.fragmentShader ?? "No frag stage."} />;
             drawerTitle = "Fragment Stage Viewer";
         }
     }

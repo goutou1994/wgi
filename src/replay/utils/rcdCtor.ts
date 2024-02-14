@@ -15,6 +15,8 @@ import RcdSetPipeline from "../../record/pass/RcdSetPipeline";
 import RcdSetVertexBuffer from "../../record/pass/RcdSetVertexBuffer";
 import RcdDraw from "../../record/pass/RcdDraw";
 import RcdWriteBuffer from "../../record/queue/writeBuffer";
+import RcdDrawIndexed from "../../record/pass/RcdDrawIndexed";
+import RcdSetIndexBuffer from "../../record/pass/RcdSetIndexBuffer";
 
 export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> } = {
     [RecordKind.DebugRes]: RcdDebugRes,
@@ -43,6 +45,8 @@ export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> }
     [RecordKind.SetPipeline]: RcdSetPipeline,
     [RecordKind.SetVertexBuffer]: RcdSetVertexBuffer,
     [RecordKind.Draw]: RcdDraw,
+    [RecordKind.DrawIndexed]: RcdDrawIndexed,
+    [RecordKind.SetIndexBuffer]: RcdSetIndexBuffer,
     
 
 }

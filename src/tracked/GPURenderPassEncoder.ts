@@ -38,6 +38,12 @@ export interface GPURenderPassEncoderRuntime {
         offset: number;
         size: number;
     } };
+    ib?: {
+        buffer: TrackedGPUBuffer;
+        format: GPUIndexFormat;
+        offset: number;
+        size: number;
+    };
 }
 
 export default class TrackedGPURenderPassEncoder extends TrackedBase<TrackedGPURenderPassEncoder> {
