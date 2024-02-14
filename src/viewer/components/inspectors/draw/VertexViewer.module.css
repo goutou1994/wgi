@@ -1,0 +1,10 @@
+.table {
+    th {
+        font-size: 15px;
+    }
+    td {
+        font-size: small;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+}

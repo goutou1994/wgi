@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import type { DrawDetailProps } from "./DrawDetail";
 import { Table, TableProps } from "antd";
 
+import styles from "./VertexViewer.module.css";
+
 interface VertexFormatInfo {
     bytesPerComp: number;
     viewCtor: new (ab: ArrayBuffer, byteOffset?: number, length?: number) => Uint8Array | Int8Array | Uint16Array | Int16Array | Uint32Array | Int32Array | Float32Array;
@@ -312,5 +314,6 @@ export default function VertexViewer(props: VertexViewerProps) {
         rowKey={row => row.index}
         pagination={pagination}
         onChange={handleTableChange}
+        className={styles.table}
     />
 }
