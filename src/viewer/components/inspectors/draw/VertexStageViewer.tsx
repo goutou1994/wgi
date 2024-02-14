@@ -1,4 +1,4 @@
-import TextArea from "antd/es/input/TextArea";
+import ReactCodeMirror from "@uiw/react-codemirror";
 import React from "react";
 
 interface VertexStageViewerProps {
@@ -6,8 +6,5 @@ interface VertexStageViewerProps {
 }
 
 export default function VertexStageViewer(props: VertexStageViewerProps) {
-    return <TextArea value={props.code} readOnly style={{
-        resize: "none",
-        height: "90%"
-    }}></TextArea>
+    return <ReactCodeMirror value={props.code} editable={false}></ReactCodeMirror>
 }

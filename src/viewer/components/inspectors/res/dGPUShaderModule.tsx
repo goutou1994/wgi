@@ -5,7 +5,7 @@ import { type ResDetailContent } from "./ResDetail";
 import { Table, TableProps, Tag } from "antd";
 import { ShaderMessageType } from "../../../../tracked/GPUShaderModule";
 import { CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
-import TextArea from "antd/es/input/TextArea";
+import ReactCodeMirror from "@uiw/react-codemirror";
 
 export default function dGPUShaderModule(sm: TrackedGPUShaderModule): ResDetailContent | undefined {
     if (!sm.__snapshot) return undefined;
@@ -72,7 +72,7 @@ export default function dGPUShaderModule(sm: TrackedGPUShaderModule): ResDetailC
             }] : [],
             {
                 title: "Source",
-                content: <TextArea value={snapshot.src} autoSize={{minRows: 3, maxRows: 30}} readOnly></TextArea>
+                content: <ReactCodeMirror value={snapshot.src} editable={false} ></ReactCodeMirror>
             }
         ],
         refLink: "https://developer.mozilla.org/en-US/docs/Web/API/GPUShaderModule"
