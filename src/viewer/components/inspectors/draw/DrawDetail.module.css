@@ -17,10 +17,6 @@
     border-radius: 10px;
     background-color: white;
     padding: 20px;
-    
-}
-
-.attWrapper {
     display: flex;
     width: fit-content;
 }
@@ -38,8 +34,7 @@
     width: 300;
 }
 
-.vbCard {
-    width: 200px;
+.itemCard {
     border-radius: 10px;
     background-color: rgb(97, 63, 235);
     padding: 20px;
@@ -52,7 +47,11 @@
     overflow: hidden;
 }
 
-.vbCardPopout {
+.itemCard+.itemCard {
+    margin-left: 40px;
+}
+
+.itemCardPopout {
     position: absolute;
     transform: translateX(-100%);
     background-color: rgba(255, 255, 255, 0.9);
@@ -67,10 +66,12 @@
     left: 0;
     color: #613feb;
     font-weight: bold;
+    padding: 0 20px;
+    box-sizing: border-box;
 }
 
-.vbCard:hover {
-    .vbCardPopout {
+.itemCard:hover {
+    .itemCardPopout {
         transform: translateX(0);
     }
 }

@@ -225,7 +225,7 @@ export default function VertexViewer({ info, numIndices }: VertexViewerProps) {
     ];
     layout.attributes.forEach((attr, attrIndex) => {
         columns.push({
-            title: "Attrbitue@" + attr.shaderLocation,
+            title: `Attrbitue@${attr.shaderLocation}: ${attr.format}`,
             dataIndex: attrIndex.toString(),
             render: (values: Array<string>) => values.join(" | ")
         });

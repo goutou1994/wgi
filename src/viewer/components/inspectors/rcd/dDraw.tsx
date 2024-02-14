@@ -8,6 +8,7 @@ import DrawDetail from "../draw/DrawDetail";
 import TrackedGPUTextureView from "../../../../tracked/GPUTextureView";
 import { globalProfile } from "../../../model/global";
 import TrackedGPUTexture from "../../../../tracked/GPUTexture";
+import TrackedGPUShaderModule from "../../../../tracked/GPUShaderModule";
 
 export default function dDraw(rcd: RcdDraw): RcdDetailContent {
     const pass = rcd.caller!;
@@ -30,7 +31,9 @@ export default function dDraw(rcd: RcdDraw): RcdDetailContent {
             vbs: pipeline.__snapshot!.vbs.map((layout, layoutIndex) => ({
                 layout,
                 bound: pass.__runtime!.vbs[layoutIndex]
-            }))
+            })),
+            vertexShader: globalProfile!.get<TrackedGPUShaderModule>(pipeline.__snapshot!.vsModule).__snapshot!.src,
+            fragmentShader: pipeline.__snapshot!.fsModule ? globalProfile!.get<TrackedGPUShaderModule>(pipeline.__snapshot!.fsModule).__snapshot!.src : undefined
         };
         customDetail = <DrawDetail summary={detailProps}/>;
     }
