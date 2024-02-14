@@ -96,6 +96,13 @@ export default function DrawDetail({ summary }: DrawDetailProps) {
             </h2>
             <div className={[styles.card, styles.vbWrapper].join(' ')}>
                 {
+                    summary.ib ? <div className={styles.itemCard} style={{ width: "200px", cursor: "default" }} >
+                        <h3>Index Buffer</h3>
+                        <p>Number of Indices: {summary.numIndices}</p>
+                        <p>Index Format: {summary.ib!.format}</p>
+                    </div> : undefined
+                }
+                {
                     summary.vbs.map((vb, vbIndex) => {
                         return <div className={styles.itemCard} key={vbIndex} style={{ width: "200px" }} onClick={() => handleDrawerOpen({ type: DrawerType.Vertex, slot: vbIndex })}>
                             <h3>Slot#{vbIndex}</h3>
@@ -116,14 +123,14 @@ export default function DrawDetail({ summary }: DrawDetailProps) {
                 Pipeline Stages
             </h2>
             <div className={[styles.card, styles.vbWrapper].join(' ')}>
-                <div className={styles.itemCard} style={{width: "150px"}} onClick={() => handleDrawerOpen({ type: DrawerType.VS })}>
+                <div className={styles.itemCard} style={{ width: "150px" }} onClick={() => handleDrawerOpen({ type: DrawerType.VS })}>
                     <h3>Vertex Stage</h3>
                     <div className={styles.itemCardPopout}>
                         Open in Vertex Stage Viewer
                     </div>
                 </div>
                 {
-                    summary.fragmentShader ? <div className={styles.itemCard} style={{width: "150px"}} onClick={() => handleDrawerOpen({ type: DrawerType.FS })}>
+                    summary.fragmentShader ? <div className={styles.itemCard} style={{ width: "150px" }} onClick={() => handleDrawerOpen({ type: DrawerType.FS })}>
                         <h3>Fragment Stage</h3>
                         <div className={styles.itemCardPopout}>
                             Open in Fragment Stage Viewer

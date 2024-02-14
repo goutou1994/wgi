@@ -46,4 +46,11 @@ export default class RcdSetIndexBuffer extends RcdBase<TrackedGPURenderPassEncod
             pass
         );
     }
+
+    public transformArgs(args: any, transformer: (obj: any) => any) {
+        return [
+            transformer(args[0]),
+            args[1], args[2], args[3]
+        ];
+    }
 }

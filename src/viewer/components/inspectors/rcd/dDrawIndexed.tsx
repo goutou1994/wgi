@@ -15,14 +15,15 @@ export default function dDrawIndexed(rcd: RcdDrawIndexed): RcdDetailContent {
             numInstance: rcd.args[1],
             firstIndex: rcd.args[2],
             baseVertex: rcd.args[3],
-            firstInstance: rcd.args[4]
+            firstInstance: rcd.args[4],
+            ib: rcd.caller!.__runtime!.ib
         });
         
         customDetail = <DrawDetail summary={drawDetailProps as DrawDetailProps["summary"]} />;
     }
 
     return {
-        title: <span>GPURenderPassEncoder.draw</span>,
+        title: <span>GPURenderPassEncoder.drawIndexed</span>,
         caller: <ResLink id={rcd.caller!.__id} />,
         arguments: [
             {
