@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import styles from "./DrawDetail.module.css";
 import Thumbnail from "../../imageViewer/Thumbnail";
@@ -6,9 +6,12 @@ import type TrackedGPUTexture from "../../../../tracked/GPUTexture";
 import type { GPURenderPipelineSnapshot } from "../../../../tracked/GPURenderPipeline";
 import type { GPURenderPassEncoderRuntime } from "../../../../tracked/GPURenderPassEncoder";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { Drawer } from "antd";
+import VertexViewer from "./VertexViewer";
 
 export interface DrawDetailProps {
     summary: {
+        numIndices: number;
         colorAttachments: Array<TrackedGPUTexture>;
         depthStencilAttachment?: TrackedGPUTexture;
         vbs: Array<{
@@ -18,7 +21,16 @@ export interface DrawDetailProps {
     }
 };
 
-export default function DrawDetail({summary}: DrawDetailProps) {
+export default function DrawDetail({ summary }: DrawDetailProps) {
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const handleDrawerOpen = () => { setDrawerOpen(true); }
+    const handleDrawerClose = () => { setDrawerOpen(false); }
+
+    let drawer: React.JSX.Element | undefined = undefined;
+    if (drawerOpen && summary.vbs.length > 0) {
+        drawer = <VertexViewer info={summary.vbs[0]} numIndices={summary.numIndices}/>
+    }
+
     return <div className={styles.body}>
         <div>
             <h1>
@@ -31,16 +43,16 @@ export default function DrawDetail({summary}: DrawDetailProps) {
                 <div>
                     {
                         summary.colorAttachments.length > 0 ?
-                        <Thumbnail texture={summary.colorAttachments[0].__id} width={300}/> :
-                        <span>No Color Attachments</span>
+                            <Thumbnail texture={summary.colorAttachments[0].__id} width={300} /> :
+                            <span>No Color Attachments</span>
                     }
                 </div>
                 <div className={styles.attDivierVertical}></div>
                 <div className={styles.noAtt}>
                     {
-                        summary.depthStencilAttachment ? 
-                        <Thumbnail texture={summary.depthStencilAttachment.__id} width={300}/> :
-                        <span>No DepthStencil Attachment</span>
+                        summary.depthStencilAttachment ?
+                            <Thumbnail texture={summary.depthStencilAttachment.__id} width={300} /> :
+                            <span>No DepthStencil Attachment</span>
                     }
                 </div>
             </div>
@@ -49,14 +61,14 @@ export default function DrawDetail({summary}: DrawDetailProps) {
             </h2>
             <div className={[styles.card, styles.vbWrapper].join(' ')}>
                 {
-                    summary.vbs.map((vb,vbIndex) => {
-                        return <div className={styles.vbCard} key={vbIndex}>
+                    summary.vbs.map((vb, vbIndex) => {
+                        return <div className={styles.vbCard} key={vbIndex} onClick={handleDrawerOpen}>
                             <h3>Slot#{vbIndex}</h3>
                             <p>Number of Attributes: {vb.layout.attributes.length}</p>
                             <p>Step Mode: {vb.layout.stepMode}</p>
                             {
-                                vb.bound ? <p>Buffer Bound: buffer#{vb.bound.buffer.__id}</p> :
-                                <p>No Buffer Bound<ExclamationCircleOutlined /></p>
+                                vb.bound ? <p>Buffer Bound: buffer#{vb.bound.buffer.label}</p> :
+                                    <p>No Buffer Bound<ExclamationCircleOutlined /></p>
                             }
                             <div className={styles.vbCardPopout}>
                                 Open in Vertex Viewer
@@ -66,5 +78,15 @@ export default function DrawDetail({summary}: DrawDetailProps) {
                 }
             </div>
         </div>
+        <Drawer
+            title="Vertex Viewer"
+            placement="bottom"
+            closable={true}
+            onClose={handleDrawerClose}
+            open={drawerOpen}
+            height="90%"
+        >
+            {drawer}
+        </Drawer>
     </div>
 }

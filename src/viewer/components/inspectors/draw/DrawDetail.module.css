@@ -55,8 +55,7 @@
 .vbCardPopout {
     position: absolute;
     transform: translateX(-100%);
-    border-radius: 10px;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.9);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -67,8 +66,7 @@
     top: 0;
     left: 0;
     color: #613feb;
-    border: solid 1px #613feb;
-    box-sizing: border-box;
+    font-weight: bold;
 }
 
 .vbCard:hover {

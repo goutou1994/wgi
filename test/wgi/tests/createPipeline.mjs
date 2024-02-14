@@ -50,7 +50,7 @@ fn fragmentMain(@location(0) uv: vec2<f32>) -> @location(0) vec4<f32> {
     });
 
     const vertexBufferLayout = {
-        arrayStride: 8,
+        arrayStride: 9,
         attributes: [{
             format: "float32x2",
             offset: 0,

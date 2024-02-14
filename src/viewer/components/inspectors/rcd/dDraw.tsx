@@ -25,6 +25,7 @@ export default function dDraw(rcd: RcdDraw): RcdDetailContent {
         });
     
         const detailProps: DrawDetailProps["summary"] = {
+            numIndices: rcd.args[0],
             colorAttachments: colors,
             vbs: pipeline.__snapshot!.vbs.map((layout, layoutIndex) => ({
                 layout,
