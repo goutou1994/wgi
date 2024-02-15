@@ -19,6 +19,8 @@ export enum RecordKind {
     CreateTexture = 4,
     CreateShaderModule = 5,
     CreateRenderPipeline = 6,
+    CreateBindGroupLayout = 7,
+    CreateBindGroup = 8,
 
     // encoder
     CopyBufferToBuffer = 101,
@@ -39,6 +41,9 @@ export enum RecordKind {
     Draw = 404,
     DrawIndexed = 405,
     SetIndexBuffer = 406,
+
+    // pipeline
+    GetBindGroupLayout = 501,
 }
 
 export default abstract class RcdBase<Caller, Args extends Array<any>, Ret = void> {

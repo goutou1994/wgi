@@ -17,6 +17,9 @@ import RcdDraw from "../../record/pass/RcdDraw";
 import RcdWriteBuffer from "../../record/queue/writeBuffer";
 import RcdDrawIndexed from "../../record/pass/RcdDrawIndexed";
 import RcdSetIndexBuffer from "../../record/pass/RcdSetIndexBuffer";
+import RcdCreateBindGroupLayout from "../../record/device/rcdCreateBindGroupLayout";
+import RcdCreateBindGroup from "../../record/device/rcdCreateBindGroup";
+import RcdGetBindGroupLayout from "../../record/pipeline/RcdGetBindGroupLayout";
 
 export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> } = {
     [RecordKind.DebugRes]: RcdDebugRes,
@@ -27,6 +30,8 @@ export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> }
     [RecordKind.CreateTexture]: RcdCreateTexture,
     [RecordKind.CreateShaderModule]: RcdCreateShaderModule,
     [RecordKind.CreateRenderPipeline]: RcdCreateRenderPipeline,
+    [RecordKind.CreateBindGroupLayout]: RcdCreateBindGroupLayout,
+    [RecordKind.CreateBindGroup]: RcdCreateBindGroup,
 
     // encoder
     [RecordKind.CopyBufferToBuffer]: RcdCopyBufferToBuffer,
@@ -48,5 +53,8 @@ export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> }
     [RecordKind.DrawIndexed]: RcdDrawIndexed,
     [RecordKind.SetIndexBuffer]: RcdSetIndexBuffer,
     
+    // pipeline
+    [RecordKind.GetBindGroupLayout]: RcdGetBindGroupLayout,
+
 
 }

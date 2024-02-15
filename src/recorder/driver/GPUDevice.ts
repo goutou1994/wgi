@@ -1,3 +1,5 @@
+import RcdCreateBindGroup from "../../record/device/rcdCreateBindGroup";
+import RcdCreateBindGroupLayout from "../../record/device/rcdCreateBindGroupLayout";
 import RcdCreateBuffer from "../../record/device/rcdCreateBuffer";
 import RcdCreateCommandEncoder from "../../record/device/rcdCreateCommandEncoder";
 import RcdCreateRenderPipeline from "../../record/device/rcdCreateRenderPipeline";
@@ -8,6 +10,8 @@ import TrackedGPUDevice from "../../tracked/GPUDevice";
 import TrackedBase from "../../tracked/tracked";
 import { createGlobalRecorder, globalRecorder } from "../recorder";
 import wgi_GPUAdapter from "./GPUAdapter";
+import wgi_GPUBindGroup from "./GPUBindGroup";
+import wgi_GPUBindGroupLayout from "./GPUBindGroupLayout";
 import wgi_GPUBuffer from "./GPUBuffer";
 import wgi_GPUCommandEncoder from "./GPUCommandEncoder";
 import wgi_GPUQueue from "./GPUQueue";
@@ -93,13 +97,34 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         throw new Error("Method not implemented.");
     }
     createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout {
-        throw new Error("Method not implemented.");
+        return globalRecorder.processRcd(
+            RcdCreateBindGroupLayout,
+            this,
+            [descriptor],
+            () => new wgi_GPUBindGroupLayout(
+                this.next.createBindGroupLayout(descriptor),
+                this,
+                descriptor
+            )
+        );
     }
     createPipelineLayout(descriptor: GPUPipelineLayoutDescriptor): GPUPipelineLayout {
         throw new Error("Method not implemented.");
     }
     createBindGroup(descriptor: GPUBindGroupDescriptor): GPUBindGroup {
-        throw new Error("Method not implemented.");
+        return globalRecorder.processRcd(
+            RcdCreateBindGroup,
+            this,
+            [descriptor],
+            () => new wgi_GPUBindGroup(
+                this.next.createBindGroup(RcdCreateBindGroup.prototype.transformArgs(
+                    [descriptor],
+                    wgi => wgi.next
+                )[0]),
+                this,
+                descriptor
+            )
+        );
     }
     createShaderModule(descriptor: GPUShaderModuleDescriptor): GPUShaderModule {
         return globalRecorder.processRcd(

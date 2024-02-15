@@ -19,10 +19,15 @@ export default class wgi_GPUCanvasContext implements GPUCanvasContext {
         this._configuration = undefined;
         this.next.unconfigure();
     }
+    private wgiTexture?: wgi_GPUTexture;
     getCurrentTexture(): wgi_GPUTexture {
         if (this._configuration) {
-            const tex = this.next.getCurrentTexture();
-            return new wgi_GPUTexture(tex, this._configuration.device as wgi_GPUDevice, this.canvasId);
+            if (this.wgiTexture) {
+                return this.wgiTexture;
+            } else {
+                const tex = this.next.getCurrentTexture();
+                return new wgi_GPUTexture(tex, this._configuration.device as wgi_GPUDevice, this.canvasId);
+            }
         } else {
             this.next.getCurrentTexture();
             throw "wgi_error: CanvasContext not configured."
