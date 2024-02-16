@@ -86,14 +86,15 @@ export default class TrackedGPUBindGroup extends TrackedBase<TrackedGPUBindGroup
             device: this.__creator?.__id ?? (this.__authentic as wgi_GPUBindGroup).device.__id,
             layout: desc.layout.__id,
             entries: desc.entries.map((e: any) => {
-                if (e.buffer) {
+                if (e.resource.buffer) {
+                    const bufferSize = e.resource.buffer.size ?? e.resource.buffer.__authentic.size;
                     return {
                         binding: e.binding,
                         resourceType: "GPUBuffer",
                         resource: {
                             buffer: e.resource.buffer.__id,
-                            offset: e.resource.offset,
-                            size: e.resource.size
+                            offset: e.resource.offset ?? 0,
+                            size: e.resource.size ?? (bufferSize - (e.resource.offset ?? 0))
                         }
                     };
                 } else {

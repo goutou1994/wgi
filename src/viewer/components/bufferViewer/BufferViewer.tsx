@@ -33,7 +33,7 @@ export default function BufferView(props: BufferViewProps) {
     const [selectedViewDisplay, selecteViewDisplay] = useState<string | null>(null);
     const startOffset = startRow * bytesPerRow;
     const valueDisplays = {
-        byteOffset: currentOffset ?? "-",
+        ByteOffset: currentOffset ?? "-",
         Uint8Value: currentOffset !== null ? buffer[currentOffset] : "-",
         Int8Value: currentOffset !== null ? new Int8Array(buffer)[currentOffset] : "-",
         Uint16Value: currentOffset !== null && (currentOffset % 2 === 0) && (currentOffset + 1 < byteLength) ? new Uint16Array(buffer.buffer)[currentOffset / 2] : "-",
@@ -130,7 +130,7 @@ export default function BufferView(props: BufferViewProps) {
                         <div>
                             {Object.entries(valueDisplays).map(([key, value]) => <p key={key}>
                                 {
-                                    key === "byteOffset" ? <><span>{key}:</span> {value}</> :
+                                    key === "ByteOffset" ? <><span>{key}:</span> {value}</> :
                                         <><span
                                             className={styles.displayViewKey}
                                             style={{

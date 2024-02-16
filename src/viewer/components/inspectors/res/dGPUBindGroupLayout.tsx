@@ -41,7 +41,7 @@ export default function dGPUBindGroupLayout(layout: TrackedGPUBindGroupLayout): 
         ]
         ret.customs = [{
             title: "Entries",
-            content: <div style={{ padding: "6px 9px", display: "flex", flexWrap: "wrap" }}>
+            content: <div style={{ display: "flex", flexWrap: "wrap" }}>
                 {snapshot.entries.map((e: any) => {
                     let descText: React.JSX.Element | undefined;
                     if (e.type === "buffer") {
