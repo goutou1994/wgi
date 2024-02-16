@@ -155,6 +155,11 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
             return;
         }
 
+        if (texture.sampleCount > 1) {
+            // cannot copy from multisampled texture
+            return;
+        }
+
         const pixelSize = (pixelSizeMap as any)[texture.format] as number;
         if (!pixelSize) return; // unsupported format
 

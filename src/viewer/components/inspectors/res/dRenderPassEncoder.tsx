@@ -32,7 +32,7 @@ export default function dGPURenderPassEncoder(pass: TrackedGPURenderPassEncoder)
                             {
                                 key: "resolveTarget",
                                 label: "Resolve Target",
-                                children: att.resolveTarget ? <ResLink id={att.view} /> : "Not Specified"
+                                children: att.resolveTarget ? <ResLink id={att.resolveTarget} /> : "Not Specified"
                             },
                             {
                                 key: "loadOp",

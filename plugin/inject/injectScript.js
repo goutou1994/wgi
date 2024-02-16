@@ -893,6 +893,10 @@ class TrackedGPUTexture extends TrackedBase {
             // canvas texture doesn't contain usage COPY_SRC
             return;
         }
+        if (texture.sampleCount > 1) {
+            // cannot copy from multisampled texture
+            return;
+        }
         const pixelSize = pixelSizeMap[texture.format];
         if (!pixelSize)
             return; // unsupported format
@@ -2917,7 +2921,7 @@ class TrackedGPURenderPipeline extends TrackedBase {
         });
     }
     takeSnapshotBeforeSubmit(encoder, profile) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
         let desc;
         if (this.isReplayMode()) {
             if (this.__initialSnapshot) {
@@ -3020,16 +3024,19 @@ class TrackedGPURenderPipeline extends TrackedBase {
         else {
             Object.assign(s, defaultPrimive);
         }
-        const defaultMultisample = {
-            sampleCount: 1,
-            sampleMask: 0xFFFFFFFF,
-            alphaToCoverageEnabled: false
-        };
         if (desc.multisample) {
-            Object.assign(s, defaultMultisample, desc.multisample);
+            Object.assign(s, {
+                sampleCount: (_j = desc.multisample.count) !== null && _j !== void 0 ? _j : 1,
+                sampleMask: (_k = desc.multisample.mask) !== null && _k !== void 0 ? _k : 0xFFFFFFFF,
+                alphaToCoverageEnabled: (_l = desc.multisample.alphaToCoverageEnabled) !== null && _l !== void 0 ? _l : false
+            });
         }
         else {
-            Object.assign(s, defaultMultisample);
+            Object.assign(s, {
+                sampleCount: 1,
+                sampleMask: 0xFFFFFFFF,
+                alphaToCoverageEnabled: false
+            });
         }
         this.__snapshot = s;
     }

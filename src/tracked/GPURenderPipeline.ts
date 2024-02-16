@@ -31,10 +31,10 @@ export interface GPURenderPipelineSnapshot {
     // shaders
     vsModule: UniversalResourceId;
     vsEntryPoint?: string;
-    vsConstants?: {[key: string]: any};
+    vsConstants?: { [key: string]: any };
     fsModule?: UniversalResourceId;
     fsEntryPoint?: string;
-    fsConstants?: {[key: string]: any};
+    fsConstants?: { [key: string]: any };
 
     // vb
     vbs: Array<{
@@ -231,9 +231,9 @@ export default class TrackedGPURenderPipeline extends TrackedBase<TrackedGPURend
         };
         if (desc.depthStencil) {
             const ds = desc.depthStencil;
-            
+
             Object.assign(s, defaultDepthStencil, ds);
-            
+
             s.stencilBack = {
                 ...defaultStacilState,
                 ...(ds.stencilBack ?? {})
@@ -257,22 +257,24 @@ export default class TrackedGPURenderPipeline extends TrackedBase<TrackedGPURend
             Object.assign(s, defaultPrimive);
         }
 
-        const defaultMultisample: Partial<GPURenderPipelineSnapshot> = {
-            sampleCount: 1,
-            sampleMask: 0xFFFFFFFF,
-            alphaToCoverageEnabled: false
-        };
-
         if (desc.multisample) {
-            Object.assign(s, defaultMultisample, desc.multisample);
+            Object.assign(s, {
+                sampleCount: desc.multisample.count ?? 1,
+                sampleMask: desc.multisample.mask ?? 0xFFFFFFFF,
+                alphaToCoverageEnabled: desc.multisample.alphaToCoverageEnabled ?? false
+            });
         } else {
-            Object.assign(s, defaultMultisample);
+            Object.assign(s, {
+                sampleCount: 1,
+                sampleMask: 0xFFFFFFFF,
+                alphaToCoverageEnabled: false
+            });
         }
         this.__snapshot = s as GPURenderPipelineSnapshot;
     }
     public getDeps(): wgi_GPUBase[] {
         const authentic = this.__authentic! as wgi_GPURenderPipeline;
-        const deps = [ authentic.device, authentic.desc.vertex.module as wgi_GPUShaderModule ];
+        const deps = [authentic.device, authentic.desc.vertex.module as wgi_GPUShaderModule];
         if (authentic.desc.fragment) {
             deps.push(authentic.desc.fragment.module as wgi_GPUShaderModule)
         }
