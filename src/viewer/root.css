@@ -80,7 +80,7 @@ canvas {
 }
 
 canvas:hover {
-    box-shadow: 0 0 10px #ffad00;
+    box-shadow: 0 0 10px #3f8eff;
 }
 
 .inspector-type {
