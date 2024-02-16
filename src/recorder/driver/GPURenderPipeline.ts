@@ -23,7 +23,7 @@ export default class wgi_GPURenderPipeline extends wgi_GPUBase implements GPURen
         if (this.bindGroupLayout) {
             return this.bindGroupLayout;
         } else {
-            return globalRecorder.processRcd(
+            this.bindGroupLayout = globalRecorder.processRcd(
                 RcdGetBindGroupLayout,
                 this,
                 [index],
@@ -33,6 +33,7 @@ export default class wgi_GPURenderPipeline extends wgi_GPUBase implements GPURen
                     index
                 )
             );
+            return this.bindGroupLayout!;
         }
     }
 }

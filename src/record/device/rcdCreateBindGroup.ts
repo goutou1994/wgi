@@ -64,6 +64,7 @@ export default class RcdCreateBindGroup extends RcdBase<TrackedGPUDevice, GPUBin
                 }
                 if (entry.resource && entry.resource.offset === undefined) delete entry.resource.offset;
                 if (entry.resource && entry.resource.size === undefined) delete entry.resource.size;
+                return entry;
             })
         }];
     }
