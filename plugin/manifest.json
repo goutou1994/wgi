@@ -1,0 +1,26 @@
+{
+    "manifest_version": 3,
+    "name": "WGI",
+    "description": "WebGPU Inspector",
+    "version": "0.1",
+    "action": {
+        "default_popup": "index.html"
+    },
+    "content_scripts": [
+        {
+            "all_frames": true,
+            "js": [
+                "inject/content.js"
+            ],
+            "matches": [
+                "https://webgpu.github.io/webgpu-samples/samples/*"
+            ],
+            "run_at": "document_start"
+        }
+    ],
+    "permissions": [ "http://*/*", "https://*/*" ],
+    "web_accessible_resources" : [{ 
+        "resources": ["/inject/injectScript.js", "/inject/capture.js"],
+        "matches": ["<all_urls>"]
+    }]
+}

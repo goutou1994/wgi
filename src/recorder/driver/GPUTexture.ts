@@ -43,6 +43,6 @@ export default class wgi_GPUTexture extends wgi_GPUBase implements GPUTexture {
     get sampleCount(): number { return this.next.sampleCount; }
     get dimension(): GPUTextureDimension { return this.next.dimension; }
     get format(): GPUTextureFormat { return this.next.format; }
-    get usage(): number { return this.realUsage; }
+    get usage(): number { return this.realUsage === 0 ? this.next.usage : this.realUsage; }
     get label(): string { return this.next.label; }
 }

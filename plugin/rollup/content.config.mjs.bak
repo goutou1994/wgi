@@ -1,0 +1,14 @@
+import { string } from 'rollup-plugin-string';
+
+export default {
+    input: './inject/content.mjs',
+    output: {
+        format: 'es',
+        file: "./inject/content.js"
+    },
+    plugins: [
+        string({
+            include: "**/*.txt"
+        })
+    ]
+};

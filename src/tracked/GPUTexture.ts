@@ -150,6 +150,11 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
             texture = (this.__authentic! as wgi_GPUTexture).next;
         }
 
+        if (!this.isReplayMode() && (this.__authentic as wgi_GPUTexture).isCanvas) {
+            // canvas texture doesn't contain usage COPY_SRC
+            return;
+        }
+
         const pixelSize = (pixelSizeMap as any)[texture.format] as number;
         if (!pixelSize) return; // unsupported format
 
