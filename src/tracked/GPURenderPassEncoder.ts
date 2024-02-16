@@ -117,6 +117,9 @@ export default class TrackedGPURenderPassEncoder extends TrackedBase<TrackedGPUR
 
         for (const att of desc.colorAttachments) {
             att.clearValue = att.clearValue ?? [0, 0, 0, 0];
+            if (att.clearValue.r !== undefined) {
+                att.clearValue = [att.clearValue.r, att.clearValue.g, att.clearValue.b, att.clearValue.a];
+            }
         }
 
         this.__snapshot = {

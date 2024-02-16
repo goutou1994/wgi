@@ -5,7 +5,7 @@
   "scripts": {
     "build": "rollup -c --environment entry:main && cp ./output/wgi.mjs test/wgi/",
     "build-viewer": "rollup -c --environment entry:viewer && cp ./output/viewer.mjs test/viewer/",
-    "build-plugin": "rollup -c plugin/rollup.config.mjs",
+    "build-plugin": "npm run build && rollup -c plugin/rollup/inject.config.mjs",
     "test": "static-server ./test/wgi --port=9080",
     "test-viewer": "static-server ./test/viewer --port=8888"
   },

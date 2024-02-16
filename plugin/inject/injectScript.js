@@ -2172,6 +2172,9 @@ class TrackedGPURenderPassEncoder extends TrackedBase {
         desc = RcdBeginRenderPass.prototype.transformArgs([desc], (tracked) => tracked.__id)[0];
         for (const att of desc.colorAttachments) {
             att.clearValue = (_a = att.clearValue) !== null && _a !== void 0 ? _a : [0, 0, 0, 0];
+            if (att.clearValue.r !== undefined) {
+                att.clearValue = [att.clearValue.r, att.clearValue.g, att.clearValue.b, att.clearValue.a];
+            }
         }
         this.__snapshot = Object.assign(Object.assign({}, desc), { label: this.__authentic.label, encoder: encoder_id, maxDrawCount: (_b = desc.maxDrawCount) !== null && _b !== void 0 ? _b : 50000000 });
     }
@@ -3668,19 +3671,10 @@ function inject() {
     HTMLCanvasElement.prototype.getContext = getContext;
     console.log("Injected");
 }
-function testStartCapture() {
+function startCapture() {
     globalRecorder.capture();
 }
 
 console.log("wgi plugin injecting...");
 inject();
-window.testStartCapture = testStartCapture;
-
-// window.chrome.runtime.onMessage.addListener(function(message) {
-//     var action = message.action;
-//     console.log(message);
-    
-//     if (action === "wgi_capture") {
-//         testStartCapture();
-//     }
-// });
+window.startCapture = startCapture;

@@ -1,7 +1,7 @@
 export default {
-    input: './inject/inject.mjs',
+    input: 'plugin/inject/inject.mjs',
     output: {
         format: 'es',
-        file: "./inject/injectScript.js"
+        file: "plugin/inject/injectScript.js"
     }
 };

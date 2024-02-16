@@ -44,6 +44,6 @@ export default function inject() {
     console.log("Injected");
 }
 
-export function testStartCapture() {
+export function startCapture() {
     globalRecorder.capture();
 }

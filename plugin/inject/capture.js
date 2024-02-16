@@ -1,4 +1,4 @@
-if (window.testStartCapture) {
-    window.testStartCapture();
-    delete window.testStartCapture;
+if (window.startCapture) {
+    window.startCapture();
+    delete window.startCapture;
 }

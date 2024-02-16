@@ -94,31 +94,35 @@ export default function DrawDetail({ summary }: DrawDetailProps) {
             <h2>
                 Vertex Inputs
             </h2>
-            <div className={[styles.card, styles.vbWrapper].join(' ')}>
-                {
-                    summary.ib ? <div className={styles.itemCard} style={{ width: "200px", cursor: "default" }} >
-                        <h3>Index Buffer</h3>
-                        <p>Number of Indices: {summary.numIndices}</p>
-                        <p>Index Format: {summary.ib!.format}</p>
-                    </div> : undefined
-                }
-                {
-                    summary.vbs.map((vb, vbIndex) => {
-                        return <div className={styles.itemCard} key={vbIndex} style={{ width: "200px" }} onClick={() => handleDrawerOpen({ type: DrawerType.Vertex, slot: vbIndex })}>
-                            <h3>Slot#{vbIndex}</h3>
-                            <p>Number of Attributes: {vb.layout.attributes.length}</p>
-                            <p>Step Mode: {vb.layout.stepMode}</p>
-                            {
-                                vb.bound ? <p>Buffer Bound: buffer#{vb.bound.buffer.label}</p> :
-                                    <p>No Buffer Bound<ExclamationCircleOutlined /></p>
-                            }
-                            <div className={styles.itemCardPopout}>
-                                Open in Vertex Viewer
-                            </div>
-                        </div>
-                    })
-                }
-            </div>
+            {
+                summary.vbs.length > 0 ?
+                    <div className={[styles.card, styles.vbWrapper].join(' ')}>
+                        {
+                            summary.ib ? <div className={styles.itemCard} style={{ width: "200px", cursor: "default" }} >
+                                <h3>Index Buffer</h3>
+                                <p>Number of Indices: {summary.numIndices}</p>
+                                <p>Index Format: {summary.ib!.format}</p>
+                            </div> : undefined
+                        }
+                        {
+                            summary.vbs.map((vb, vbIndex) => {
+                                return <div className={styles.itemCard} key={vbIndex} style={{ width: "200px" }} onClick={() => handleDrawerOpen({ type: DrawerType.Vertex, slot: vbIndex })}>
+                                    <h3>Slot#{vbIndex}</h3>
+                                    <p>Number of Attributes: {vb.layout.attributes.length}</p>
+                                    <p>Step Mode: {vb.layout.stepMode}</p>
+                                    {
+                                        vb.bound ? <p>Buffer Bound: buffer#{vb.bound.buffer.label}</p> :
+                                            <p>No Buffer Bound<ExclamationCircleOutlined /></p>
+                                    }
+                                    <div className={styles.itemCardPopout}>
+                                        Open in Vertex Viewer
+                                    </div>
+                                </div>
+                            })
+                        }
+                    </div> : <p>No Vertex Inputs</p>
+            }
+
             <h2>
                 Pipeline Stages
             </h2>
