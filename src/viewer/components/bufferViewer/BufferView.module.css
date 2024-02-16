@@ -36,6 +36,8 @@
     width: 200px;
     background-color: #f6f6f6;
     padding: 0 40px;
+    vertical-align: top;
+    padding-top: 50px;
     p {
         /* font-size: small; */
         margin: 1px;
@@ -43,6 +45,37 @@
             font-size: small;
             color: #666666;
         }
+    }
+}
+
+.rightColumnDivider {
+    height: 2px;
+    background-color: #e7e7e7;
+    margin: 20px 0;
+}
+
+.displayViewKey:hover {
+    background-color: #e9bdff !important;
+}
+
+.valueDisplayTable {
+    border-collapse: collapse;
+    td {
+        width: 50px;
+        font-size: small;
+        border: 1px solid #d5d5d5;
+    }
+}
+
+.rowMajor {
+    tr:first-child {
+        background-color: #e9e9ff;
+    }
+}
+
+.colMajor {
+    td:first-child {
+        background-color: #e9e9ff;
     }
 }
 
