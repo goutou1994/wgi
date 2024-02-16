@@ -46,7 +46,7 @@ export default function RcdDetail() {
     const rcd = globalProfile!.getRcdAt(rcdId);
     const dCtor = RcdDetailMap[rcd.__kind];
     if (!dCtor) {
-        return <p>Unsupported record kind.</p>
+        return <p>No inspector available for this kind of record.</p>
     }
 
     const content: RcdDetailContent = dCtor(rcd);

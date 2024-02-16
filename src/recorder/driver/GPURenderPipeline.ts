@@ -18,12 +18,12 @@ export default class wgi_GPURenderPipeline extends wgi_GPUBase implements GPURen
 
     get label(): string { return this.next.label; }
 
-    private bindGroupLayout?: wgi_GPUBindGroupLayout;
+    private bindGroupLayouts: Array<wgi_GPUBindGroupLayout> = [];
     getBindGroupLayout(index: number): wgi_GPUBindGroupLayout {
-        if (this.bindGroupLayout) {
-            return this.bindGroupLayout;
+        if (this.bindGroupLayouts[index]) {
+            return this.bindGroupLayouts[index];
         } else {
-            this.bindGroupLayout = globalRecorder.processRcd(
+            this.bindGroupLayouts[index] = globalRecorder.processRcd(
                 RcdGetBindGroupLayout,
                 this,
                 [index],
@@ -33,7 +33,7 @@ export default class wgi_GPURenderPipeline extends wgi_GPUBase implements GPURen
                     index
                 )
             );
-            return this.bindGroupLayout!;
+            return this.bindGroupLayouts[index];
         }
     }
 }

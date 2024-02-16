@@ -24,15 +24,17 @@ export default function dGPUBindGroup(group: TrackedGPUBindGroup): ResDetailCont
                             <p>Offset: {e.resource.offset}</p>
                             <p>Size: {e.resource.size}</p>
                         </>;
-                    } else if (e.type === "texture") {
+                    } else if (e.resourceType === "GPUTextureView") {
                         descText = <>
                             <p>Texture: <ResLink id={e.resource}/></p>
                         </>;
-                    } else if (e.type === "sampler") {
+                    } else if (e.resourceType === "GPUSampler") {
+                        descText = <>
+                            <p>Sampler: <ResLink id={e.resource}/></p>
+                        </>;
+                    } else if (e.resourceType === "storageTexture") {
                         // TODO:
-                    } else if (e.type === "storageTexture") {
-                        // TODO:
-                    } else if (e.type === "externalTexture") {
+                    } else if (e.resourceType === "GPUExternalTexture") {
                         // nothing
                     }
                     return <Card key={e.binding} size="small" title={"Binding@" + e.binding} className="description-cards">

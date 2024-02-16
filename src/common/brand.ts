@@ -12,5 +12,6 @@ export enum brandMap {
     GPURenderPassEncoder = 10,
     GPUTextureView = 11,
     GPUBindGroupLayout = 12,
-    GPUBindGroup = 13
+    GPUBindGroup = 13,
+    GPUSampler = 14,
 };

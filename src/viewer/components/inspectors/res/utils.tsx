@@ -8,6 +8,7 @@ import dGPUBuffer from "./dGPUBuffer";
 import dGPUCommandEncoder from "./dGPUCommandEncoder";
 import dGPUDevice from "./dGPUDevice";
 import dGPURenderPipeline from "./dGPURenderPipeline";
+import dGPUSampler from "./dGPUSampler";
 import dGPUShaderModule from "./dGPUShaderModule";
 import dGPUTexture from "./dGPUTexture";
 import dGPUTextureView from "./dGPUTextureView";
@@ -25,4 +26,5 @@ export const ResDetailMap: {[kind in brandMap]?: (tracked: TrackedBase<any>) => 
     [brandMap.GPUTextureView]:      dGPUTextureView,
     [brandMap.GPUBindGroupLayout]:  dGPUBindGroupLayout,
     [brandMap.GPUBindGroup]:        dGPUBindGroup,
+    [brandMap.GPUSampler]:          dGPUSampler,
 };

@@ -7,6 +7,7 @@ import dCreateBindGroupLayout from "./dCreateBindGroupLayout";
 import dCreateBufferView from "./dCreateBuffer";
 import dCreateCommandEncoder from "./dCreateCommandEncoder";
 import dCreateRenderPipeline from "./dCreateRenderPipeline";
+import dCreateSampler from "./dCreateSampler";
 import dCreateShaderModule from "./dCreateShaderModule";
 import dCreateTexture from "./dCreateTexture";
 import dCreateView from "./dCreateView";
@@ -31,6 +32,7 @@ export const RcdDetailMap: {[kind in RecordKind]?: (rcd: RcdBase<any, any, any>)
     [RecordKind.CreateRenderPipeline]: dCreateRenderPipeline,
     [RecordKind.CreateBindGroupLayout]: dCreateBindGroupLayout,
     [RecordKind.CreateBindGroup]: dCreateBindGroup,
+    [RecordKind.CreateSampler]: dCreateSampler,
     
     // encoder
     [RecordKind.CopyBufferToBuffer]: dCopyBufferToBuffer,

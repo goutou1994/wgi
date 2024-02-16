@@ -3,6 +3,7 @@ import RcdCreateBindGroupLayout from "../../record/device/rcdCreateBindGroupLayo
 import RcdCreateBuffer from "../../record/device/rcdCreateBuffer";
 import RcdCreateCommandEncoder from "../../record/device/rcdCreateCommandEncoder";
 import RcdCreateRenderPipeline from "../../record/device/rcdCreateRenderPipeline";
+import RcdCreateSampler from "../../record/device/rcdCreateSampler";
 import RcdCreateShaderModule from "../../record/device/rcdCreateShaderModule";
 import RcdCreateTexture from "../../record/device/rcdCreateTexture";
 import RcdDebugRes from "../../record/rcdDebugRes";
@@ -16,6 +17,7 @@ import wgi_GPUBuffer from "./GPUBuffer";
 import wgi_GPUCommandEncoder from "./GPUCommandEncoder";
 import wgi_GPUQueue from "./GPUQueue";
 import wgi_GPURenderPipeline from "./GPURenderPipeline";
+import wgi_GPUSampler from "./GPUSampler";
 import wgi_GPUShaderModule from "./GPUShaderModule";
 import wgi_GPUTexture from "./GPUTexture";
 import wgi_GPUBase from "./gpubase";
@@ -91,7 +93,16 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         );
     }
     createSampler(descriptor?: GPUSamplerDescriptor | undefined): GPUSampler {
-        throw new Error("Method not implemented.");
+        return globalRecorder.processRcd(
+            RcdCreateSampler,
+            this,
+            [descriptor],
+            () => new wgi_GPUSampler(
+                this.next.createSampler(descriptor),
+                this,
+                descriptor
+            )
+        );
     }
     importExternalTexture(descriptor: GPUExternalTextureDescriptor): GPUExternalTexture {
         throw new Error("Method not implemented.");
