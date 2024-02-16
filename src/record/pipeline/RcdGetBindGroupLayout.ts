@@ -10,6 +10,7 @@ export default class RcdGetBindGroupLayout extends RcdBase<TrackedGPURenderPipel
         const pipeline = this.caller!.__authentic!.getBindGroupLayout(...this.args);
         this.ret!.__authentic = pipeline;
         this.ret!.__creator = this.caller!;
+        this.ret!.__creatorRcd = this;
         return this.ret!;
     }
     public serialize(ds: DataStream): void {

@@ -2,6 +2,8 @@ import RcdBase, { RecordKind } from "../../../../record/rcd";
 import { RcdDetailContent } from "./RcdDetail";
 import dBeginRenderPass from "./dBeginRenderPass";
 import dCopyBufferToBuffer from "./dCopyBufferToBuffer";
+import dCreateBindGroup from "./dCreateBindGroup";
+import dCreateBindGroupLayout from "./dCreateBindGroupLayout";
 import dCreateBufferView from "./dCreateBuffer";
 import dCreateCommandEncoder from "./dCreateCommandEncoder";
 import dCreateRenderPipeline from "./dCreateRenderPipeline";
@@ -27,6 +29,8 @@ export const RcdDetailMap: {[kind in RecordKind]?: (rcd: RcdBase<any, any, any>)
     [RecordKind.CreateTexture]: dCreateTexture,
     [RecordKind.CreateShaderModule]: dCreateShaderModule,
     [RecordKind.CreateRenderPipeline]: dCreateRenderPipeline,
+    [RecordKind.CreateBindGroupLayout]: dCreateBindGroupLayout,
+    [RecordKind.CreateBindGroup]: dCreateBindGroup,
     
     // encoder
     [RecordKind.CopyBufferToBuffer]: dCopyBufferToBuffer,

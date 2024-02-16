@@ -53,14 +53,18 @@ export default class RcdCreateBindGroup extends RcdBase<TrackedGPUDevice, GPUBin
     public transformArgs(args: any, transformer: (obj: any) => any): any {
         return [{
             layout: transformer(args[0].layout),
-            entries: args[0].entries.map((e: any) => ({
-                binding: e.binding,
-                resource: e.resource.buffer ? {
-                    buffer: transformer(e.resource.buffer),
-                    offset: e.resource.offset,
-                    size: e.resource.size
-                } : transformer(e.resource)
-            }))
+            entries: args[0].entries.map((e: any) => {
+                const entry = {
+                    binding: e.binding,
+                    resource: e.resource.buffer ? {
+                        buffer: transformer(e.resource.buffer),
+                        offset: e.resource.offset,
+                        size: e.resource.size
+                    } : transformer(e.resource)
+                }
+                if (entry.resource && entry.resource.offset === undefined) delete entry.resource.offset;
+                if (entry.resource && entry.resource.size === undefined) delete entry.resource.size;
+            })
         }];
     }
 }
