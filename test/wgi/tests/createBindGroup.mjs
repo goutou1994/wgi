@@ -97,7 +97,7 @@ fn fragmentMain(@location(0) uv: vec2<f32>) -> @location(0) vec4<f32> {
         label: "WeixinLogo",
         size: [imageBitmap.width, imageBitmap.height, 1],
         format: "rgba8unorm",
-        usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.TEXTURE_BINDING | | GPUTextureUsage.RENDER_ATTACHMENT
+        usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.RENDER_ATTACHMENT
     });
 
     device.queue.copyExternalImageToTexture(
