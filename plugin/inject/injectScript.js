@@ -868,7 +868,8 @@ class TrackedGPUTexture extends TrackedBase {
                 stagingBuffer.unmap();
                 encoder.copyBufferToTexture({
                     buffer: stagingBuffer,
-                    bytesPerRow: s.bytesPerRow
+                    bytesPerRow: s.bytesPerRow,
+                    rowsPerImage: s.height
                 }, {
                     texture: this.__authentic
                 }, {
@@ -913,7 +914,8 @@ class TrackedGPUTexture extends TrackedBase {
             texture: texture
         }, {
             buffer: stagingBuffer,
-            bytesPerRow: bytesPerRow
+            bytesPerRow: bytesPerRow,
+            rowsPerImage: texture.height,
         }, {
             width: texture.width,
             height: texture.height,
@@ -3733,7 +3735,6 @@ class wgi_GPUCanvasContext {
 }
 
 function inject() {
-    console.log("hello wgi!");
     // gpu
     Object.defineProperty(globalThis.navigator, "gpu", {
         value: new wgi_GPU(globalThis.navigator.gpu)
@@ -3771,7 +3772,7 @@ function inject() {
         }
     }
     HTMLCanvasElement.prototype.getContext = getContext;
-    console.log("Injected");
+    console.log("wgi injected!");
 }
 function startCapture() {
     globalRecorder.capture();

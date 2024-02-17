@@ -123,7 +123,8 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
             encoder.copyBufferToTexture(
                 {
                     buffer: stagingBuffer,
-                    bytesPerRow: s.bytesPerRow
+                    bytesPerRow: s.bytesPerRow,
+                    rowsPerImage: s.height
                 },
                 {
                     texture: this.__authentic
@@ -177,7 +178,8 @@ export default class TrackedGPUTexture extends TrackedBase<TrackedGPUTexture> {
             },
             {
                 buffer: stagingBuffer,
-                bytesPerRow: bytesPerRow
+                bytesPerRow: bytesPerRow,
+                rowsPerImage: texture.height,
             },
             {
                 width: texture.width,

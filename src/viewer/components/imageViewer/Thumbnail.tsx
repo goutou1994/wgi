@@ -102,7 +102,10 @@ export default function Thumbnail(props: ThumbnailProps) {
                 },
                 {
                     binding: 1,
-                    resource: texture.__authentic!.createView()
+                    resource: texture.__authentic!.createView({
+                        dimension: "2d",
+                        arrayLayerCount: 1
+                    })
                 }
             ]
         });

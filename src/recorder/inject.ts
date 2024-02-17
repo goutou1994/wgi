@@ -3,7 +3,6 @@ import wgi_GPUCanvasContext from "./driver/GPUCavansContext";
 import { globalRecorder } from "./recorder";
 
 export default function inject() {
-    console.log("hello wgi!");
     // gpu
     Object.defineProperty(globalThis.navigator, "gpu", {
         value: new wgi_GPU(globalThis.navigator.gpu)
@@ -41,7 +40,7 @@ export default function inject() {
     }
     HTMLCanvasElement.prototype.getContext = getContext as any;
     
-    console.log("Injected");
+    console.log("wgi injected!");
 }
 
 export function startCapture() {
