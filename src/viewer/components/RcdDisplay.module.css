@@ -3,6 +3,11 @@
     background: white;
 }
 
+.displayWrapper {
+    height: 100%;
+    overflow-y: scroll;
+}
+
 .displayItem {
     height: 40px;
     line-height: 40px;

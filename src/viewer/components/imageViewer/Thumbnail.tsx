@@ -104,7 +104,8 @@ export default function Thumbnail(props: ThumbnailProps) {
                     binding: 1,
                     resource: texture.__authentic!.createView({
                         dimension: "2d",
-                        arrayLayerCount: 1
+                        arrayLayerCount: 1,
+                        aspect: isDepthFormat(s.format) ? "depth-only" : "all"
                     })
                 }
             ]

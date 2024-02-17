@@ -8,8 +8,6 @@ import { BarsOutlined, CaretRightOutlined, GlobalOutlined, SignatureOutlined } f
 import { RecordKind } from "../../record/rcd";
 import { brandMap } from "../../common/brand";
 
-type MenuItems = Required<MenuProps>['items'];
-
 interface TimelineItem {
     label: string;
     rcdId: number;
@@ -88,5 +86,6 @@ export default function RcdDisplay() {
         {
             timelineItems.map(item => <RcdDisplayItem key={item.rcdId} desc={ item } /> )
         }
+        <div style={{height: "300px"}}></div>
     </div>
 }
