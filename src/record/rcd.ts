@@ -22,6 +22,7 @@ export enum RecordKind {
     CreateBindGroupLayout = 7,
     CreateBindGroup = 8,
     CreateSampler = 9,
+    CreatePipelineLayout = 10,
 
     // encoder
     CopyBufferToBuffer = 101,

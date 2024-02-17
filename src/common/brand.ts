@@ -14,4 +14,5 @@ export enum brandMap {
     GPUBindGroupLayout = 12,
     GPUBindGroup = 13,
     GPUSampler = 14,
+    GPUPipelineLayout = 15,
 };

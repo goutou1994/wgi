@@ -7,6 +7,7 @@ import wgi_GPUShaderModule from "../recorder/driver/GPUShaderModule";
 import wgi_GPUBase from "../recorder/driver/gpubase";
 import ReplayProfile from "../replay/profile";
 import TrackedGPUDevice from "./GPUDevice";
+import TrackedGPUPipelineLayout from "./GPUPipelineLayout";
 import TrackedGPUShaderModule from "./GPUShaderModule";
 import TrackedBase from "./tracked";
 
@@ -102,7 +103,7 @@ export default class TrackedGPURenderPipeline extends TrackedBase<TrackedGPURend
         this.__creator = await profile.getOrRestore(this.__initialSnapshot!.device, encoder) as TrackedGPUDevice;
         this.__authentic = this.__creator!.__authentic!.createRenderPipeline({
             label: s.label,
-            layout: "auto", // FIXME: use real layout
+            layout: s.layout === "auto" ? "auto" : (await profile.getOrRestore<TrackedGPUPipelineLayout>(s.layout, encoder)).__authentic!,
             vertex: {
                 module: (await profile.getOrRestore<TrackedGPUShaderModule>(s.vsModule, encoder)).__authentic!,
                 entryPoint: s.vsEntryPoint,
@@ -155,7 +156,7 @@ export default class TrackedGPURenderPipeline extends TrackedBase<TrackedGPURend
         const s: Partial<GPURenderPipelineSnapshot> = {
             label: this.__authentic!.label,
             device: this.__creator?.__id ?? (this.__authentic as wgi_GPURenderPipeline).device.__id,
-            layout: "auto", // FIXME: use real layout
+            layout: desc.layout === "auto" ? "auto" : (desc.layout as any).__id,
             vsModule: (desc.vertex.module as wgi_GPUShaderModule).__id,
             vsEntryPoint: desc.vertex.entryPoint,
             vsConstants: desc.vertex.constants

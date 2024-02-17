@@ -209,7 +209,7 @@ export default function dGPURenderPipeline(pipeline: TrackedGPURenderPipeline): 
         attributes: [
             {
                 key: "layout",
-                value: snapshot.layout
+                value: snapshot.layout === "auto" ? "auto" : <ResLink id={snapshot.layout} />
             }
         ],
         customs: [

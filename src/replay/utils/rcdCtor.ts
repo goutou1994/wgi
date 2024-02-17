@@ -23,6 +23,7 @@ import RcdGetBindGroupLayout from "../../record/pipeline/RcdGetBindGroupLayout";
 import RcdCreateSampler from "../../record/device/rcdCreateSampler";
 import RcdSetBindGroup from "../../record/pass/RcdSetBindGroup";
 import RcdCopyTextureToTexture from "../../record/encoder/rcdCopyTextureToTexture";
+import RcdCreatePipelineLayout from "../../record/device/rcdCreatePipelineLayout";
 
 export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> } = {
     [RecordKind.DebugRes]: RcdDebugRes,
@@ -36,6 +37,7 @@ export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> }
     [RecordKind.CreateBindGroupLayout]: RcdCreateBindGroupLayout,
     [RecordKind.CreateBindGroup]: RcdCreateBindGroup,
     [RecordKind.CreateSampler]: RcdCreateSampler,
+    [RecordKind.CreatePipelineLayout]: RcdCreatePipelineLayout,
 
     // encoder
     [RecordKind.CopyBufferToBuffer]: RcdCopyBufferToBuffer,

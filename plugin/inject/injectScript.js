@@ -47,6 +47,7 @@ var brandMap;
     brandMap[brandMap["GPUBindGroupLayout"] = 12] = "GPUBindGroupLayout";
     brandMap[brandMap["GPUBindGroup"] = 13] = "GPUBindGroup";
     brandMap[brandMap["GPUSampler"] = 14] = "GPUSampler";
+    brandMap[brandMap["GPUPipelineLayout"] = 15] = "GPUPipelineLayout";
 })(brandMap || (brandMap = {}));
 
 var token=/d{1,4}|D{3,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|W{1,2}|[LlopSZN]|"[^"]*"|'[^']*'/g;var timezone=/\b(?:[A-Z]{1,3}[A-Z][TC])(?:[-+]\d{4})?|((?:Australian )?(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time)\b/g;var timezoneClip=/[^-+\dA-Z]/g;function dateFormat(date,mask,utc,gmt){if(arguments.length===1&&typeof date==="string"&&!/\d/.test(date)){mask=date;date=undefined;}date=date||date===0?date:new Date;if(!(date instanceof Date)){date=new Date(date);}if(isNaN(date)){throw TypeError("Invalid date")}mask=String(masks[mask]||mask||masks["default"]);var maskSlice=mask.slice(0,4);if(maskSlice==="UTC:"||maskSlice==="GMT:"){mask=mask.slice(4);utc=true;if(maskSlice==="GMT:"){gmt=true;}}var _=function _(){return utc?"getUTC":"get"};var _d=function d(){return date[_()+"Date"]()};var D=function D(){return date[_()+"Day"]()};var _m=function m(){return date[_()+"Month"]()};var y=function y(){return date[_()+"FullYear"]()};var _H=function H(){return date[_()+"Hours"]()};var _M=function M(){return date[_()+"Minutes"]()};var _s=function s(){return date[_()+"Seconds"]()};var _L=function L(){return date[_()+"Milliseconds"]()};var _o=function o(){return utc?0:date.getTimezoneOffset()};var _W=function W(){return getWeek(date)};var _N=function N(){return getDayOfWeek(date)};var flags={d:function d(){return _d()},dd:function dd(){return pad(_d())},ddd:function ddd(){return i18n.dayNames[D()]},DDD:function DDD(){return getDayName({y:y(),m:_m(),d:_d(),_:_(),dayName:i18n.dayNames[D()],short:true})},dddd:function dddd(){return i18n.dayNames[D()+7]},DDDD:function DDDD(){return getDayName({y:y(),m:_m(),d:_d(),_:_(),dayName:i18n.dayNames[D()+7]})},m:function m(){return _m()+1},mm:function mm(){return pad(_m()+1)},mmm:function mmm(){return i18n.monthNames[_m()]},mmmm:function mmmm(){return i18n.monthNames[_m()+12]},yy:function yy(){return String(y()).slice(2)},yyyy:function yyyy(){return pad(y(),4)},h:function h(){return _H()%12||12},hh:function hh(){return pad(_H()%12||12)},H:function H(){return _H()},HH:function HH(){return pad(_H())},M:function M(){return _M()},MM:function MM(){return pad(_M())},s:function s(){return _s()},ss:function ss(){return pad(_s())},l:function l(){return pad(_L(),3)},L:function L(){return pad(Math.floor(_L()/10))},t:function t(){return _H()<12?i18n.timeNames[0]:i18n.timeNames[1]},tt:function tt(){return _H()<12?i18n.timeNames[2]:i18n.timeNames[3]},T:function T(){return _H()<12?i18n.timeNames[4]:i18n.timeNames[5]},TT:function TT(){return _H()<12?i18n.timeNames[6]:i18n.timeNames[7]},Z:function Z(){return gmt?"GMT":utc?"UTC":formatTimezone(date)},o:function o(){return (_o()>0?"-":"+")+pad(Math.floor(Math.abs(_o())/60)*100+Math.abs(_o())%60,4)},p:function p(){return (_o()>0?"-":"+")+pad(Math.floor(Math.abs(_o())/60),2)+":"+pad(Math.floor(Math.abs(_o())%60),2)},S:function S(){return ["th","st","nd","rd"][_d()%10>3?0:(_d()%100-_d()%10!=10)*_d()%10]},W:function W(){return _W()},WW:function WW(){return pad(_W())},N:function N(){return _N()}};return mask.replace(token,function(match){if(match in flags){return flags[match]()}return match.slice(1,match.length-1)})}var masks={default:"ddd mmm dd yyyy HH:MM:ss",shortDate:"m/d/yy",paddedShortDate:"mm/dd/yyyy",mediumDate:"mmm d, yyyy",longDate:"mmmm d, yyyy",fullDate:"dddd, mmmm d, yyyy",shortTime:"h:MM TT",mediumTime:"h:MM:ss TT",longTime:"h:MM:ss TT Z",isoDate:"yyyy-mm-dd",isoTime:"HH:MM:ss",isoDateTime:"yyyy-mm-dd'T'HH:MM:sso",isoUtcDateTime:"UTC:yyyy-mm-dd'T'HH:MM:ss'Z'",expiresHeaderFormat:"ddd, dd mmm yyyy HH:MM:ss Z"};var i18n={dayNames:["Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],monthNames:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","January","February","March","April","May","June","July","August","September","October","November","December"],timeNames:["a","p","am","pm","A","P","AM","PM"]};var pad=function pad(val){var len=arguments.length>1&&arguments[1]!==undefined?arguments[1]:2;return String(val).padStart(len,"0")};var getDayName=function getDayName(_ref){var y=_ref.y,m=_ref.m,d=_ref.d,_=_ref._,dayName=_ref.dayName,_ref$short=_ref["short"],_short=_ref$short===void 0?false:_ref$short;var today=new Date;var yesterday=new Date;yesterday.setDate(yesterday[_+"Date"]()-1);var tomorrow=new Date;tomorrow.setDate(tomorrow[_+"Date"]()+1);var today_d=function today_d(){return today[_+"Date"]()};var today_m=function today_m(){return today[_+"Month"]()};var today_y=function today_y(){return today[_+"FullYear"]()};var yesterday_d=function yesterday_d(){return yesterday[_+"Date"]()};var yesterday_m=function yesterday_m(){return yesterday[_+"Month"]()};var yesterday_y=function yesterday_y(){return yesterday[_+"FullYear"]()};var tomorrow_d=function tomorrow_d(){return tomorrow[_+"Date"]()};var tomorrow_m=function tomorrow_m(){return tomorrow[_+"Month"]()};var tomorrow_y=function tomorrow_y(){return tomorrow[_+"FullYear"]()};if(today_y()===y&&today_m()===m&&today_d()===d){return _short?"Tdy":"Today"}else if(yesterday_y()===y&&yesterday_m()===m&&yesterday_d()===d){return _short?"Ysd":"Yesterday"}else if(tomorrow_y()===y&&tomorrow_m()===m&&tomorrow_d()===d){return _short?"Tmw":"Tomorrow"}return dayName};var getWeek=function getWeek(date){var targetThursday=new Date(date.getFullYear(),date.getMonth(),date.getDate());targetThursday.setDate(targetThursday.getDate()-(targetThursday.getDay()+6)%7+3);var firstThursday=new Date(targetThursday.getFullYear(),0,4);firstThursday.setDate(firstThursday.getDate()-(firstThursday.getDay()+6)%7+3);var ds=targetThursday.getTimezoneOffset()-firstThursday.getTimezoneOffset();targetThursday.setHours(targetThursday.getHours()-ds);var weekDiff=(targetThursday-firstThursday)/(864e5*7);return 1+Math.floor(weekDiff)};var getDayOfWeek=function getDayOfWeek(date){var dow=date.getDay();if(dow===0){dow=7;}return dow};var formatTimezone=function formatTimezone(date){return (String(date).match(timezone)||[""]).pop().replace(timezoneClip,"").replace(/GMT\+0000/g,"UTC")};
@@ -434,6 +435,7 @@ var RecordKind;
     RecordKind[RecordKind["CreateBindGroupLayout"] = 7] = "CreateBindGroupLayout";
     RecordKind[RecordKind["CreateBindGroup"] = 8] = "CreateBindGroup";
     RecordKind[RecordKind["CreateSampler"] = 9] = "CreateSampler";
+    RecordKind[RecordKind["CreatePipelineLayout"] = 10] = "CreatePipelineLayout";
     // encoder
     RecordKind[RecordKind["CopyBufferToBuffer"] = 101] = "CopyBufferToBuffer";
     RecordKind[RecordKind["Finish"] = 102] = "Finish";
@@ -690,14 +692,45 @@ class RcdCreateCommandEncoder extends RcdBase {
     }
 }
 
+class RcdCreatePipelineLayout extends RcdBase {
+    constructor() {
+        super(...arguments);
+        this.__kind = RecordKind.CreatePipelineLayout;
+    }
+    play() {
+        const layout = this.caller.__authentic.createPipelineLayout(this.transformArgs(this.args, tracked => tracked.__authentic)[0]);
+        this.ret.__authentic = layout;
+        this.ret.__creator = this.caller;
+        this.ret.__creatorRcd = this;
+        return this.ret;
+    }
+    serialize(ds) {
+        ds.write(DataStream.Type.UInt32, this.caller.__id);
+        serializeObject(this.transformArgs(this.args, tracked => tracked.__id)[0]);
+        ds.write(DataStream.Type.UInt32, this.ret.__id);
+    }
+    deserialize(ds, profile) {
+        const device = profile.get(ds.read(DataStream.Type.UInt32));
+        const desc = deserializeObject(ds);
+        const ret = profile.get(ds.read(DataStream.Type.UInt32));
+        return new RcdCreatePipelineLayout(this.transformArgs([desc], id => profile.get(id)), device, ret);
+    }
+    transformArgs(args, transformer) {
+        return [{
+                label: args[0].label,
+                bindGroupLayouts: Array.from(args[0].bindGroupLayouts).map(layout => transformer(layout))
+            }];
+    }
+}
+
 class RcdCreateRenderPipeline extends RcdBase {
     constructor() {
         super(...arguments);
         this.__kind = RecordKind.CreateRenderPipeline;
     }
     play() {
-        const a = this.args[0];
-        const pipeline = this.caller.__authentic.createRenderPipeline(Object.assign(Object.assign({}, a), { vertex: Object.assign(Object.assign({}, a.vertex), { module: a.vertex.module.__authentic }), fragment: a.fragment ? Object.assign(Object.assign({}, a.fragment), { module: a.fragment.module.__authentic }) : undefined }));
+        this.args[0];
+        const pipeline = this.caller.__authentic.createRenderPipeline(this.transformArgs(this.args, tracked => tracked.__authentic)[0]);
         this.ret.__authentic = pipeline;
         this.ret.__creator = this.caller;
         this.ret.__creatorRcd = this;
@@ -705,23 +738,21 @@ class RcdCreateRenderPipeline extends RcdBase {
     }
     serialize(ds) {
         ds.write(DataStream.Type.UInt32, this.caller.__id);
-        const a = this.args[0];
-        const desc = Object.assign(Object.assign({}, a), { vertex: Object.assign(Object.assign({}, a.vertex), { module: a.vertex.module.__id }), fragment: a.fragment ? Object.assign(Object.assign({}, a.fragment), { module: a.fragment.module.__id }) : undefined });
-        serializeObject(ds, desc);
+        serializeObject(ds, this.transformArgs(this.args, tracked => tracked.__id)[0]);
         ds.write(DataStream.Type.UInt32, this.ret.__id);
     }
     deserialize(ds, profile) {
         const device = profile.get(ds.read(DataStream.Type.UInt32));
-        const desc = deserializeObject(ds);
-        desc.vertex.module = profile.get(desc.vertex.module);
-        if (desc.fragment) {
-            desc.fragment.module = profile.get(desc.fragment.module);
-        }
+        const rawDesc = deserializeObject(ds);
+        const desc = this.transformArgs([rawDesc], id => profile.get(id))[0];
         const ret = profile.get(ds.read(DataStream.Type.UInt32));
         return new RcdCreateRenderPipeline([desc], device, ret);
     }
     transformArgs(args, transformer) {
-        const desc = Object.assign(Object.assign({}, args[0]), { vertex: Object.assign(Object.assign({}, args[0].vertex), { module: transformer(args[0].vertex.module) }), fragment: args[0].fragment ? Object.assign(Object.assign({}, args[0].fragment), { module: transformer(args[0].fragment.module) }) : undefined });
+        const desc = Object.assign(Object.assign({}, args[0]), { layout: args[0].layout === "auto" ? "auto" : transformer(args[0].layout), vertex: Object.assign(Object.assign({}, args[0].vertex), { module: transformer(args[0].vertex.module) }), fragment: args[0].fragment ? Object.assign(Object.assign({}, args[0].fragment), { module: transformer(args[0].fragment.module) }) : undefined });
+        if (!desc.fragment) {
+            delete desc.fragment;
+        }
         return [desc];
     }
 }
@@ -782,6 +813,7 @@ const pixelSizeMap = {
     "rgba8uint": 4,
     "rgba8sint": 4,
     "bgra8unorm": 4,
+    "depth24plus": 4,
 };
 class TrackedGPUTexture extends TrackedBase {
     constructor() {
@@ -2790,6 +2822,20 @@ class wgi_GPUCommandEncoder extends wgi_GPUBase {
     }
 }
 
+class wgi_GPUPipelineLayout extends wgi_GPUBase {
+    getTrackedType() {
+        throw new Error("Method not implemented.");
+    }
+    constructor(next, device, desc) {
+        super();
+        this.next = next;
+        this.device = device;
+        this.desc = desc;
+        this.__brand = "GPUPipelineLayout";
+    }
+    get label() { return this.next.label; }
+}
+
 class RcdSubmit extends RcdBase {
     constructor() {
         super(...arguments);
@@ -2978,7 +3024,7 @@ class TrackedGPURenderPipeline extends TrackedBase {
             this.__creator = (yield profile.getOrRestore(this.__initialSnapshot.device, encoder));
             this.__authentic = this.__creator.__authentic.createRenderPipeline({
                 label: s.label,
-                layout: "auto", // FIXME: use real layout
+                layout: s.layout === "auto" ? "auto" : (yield profile.getOrRestore(s.layout, encoder)).__authentic,
                 vertex: {
                     module: (yield profile.getOrRestore(s.vsModule, encoder)).__authentic,
                     entryPoint: s.vsEntryPoint,
@@ -3035,7 +3081,7 @@ class TrackedGPURenderPipeline extends TrackedBase {
         const s = {
             label: this.__authentic.label,
             device: (_b = (_a = this.__creator) === null || _a === void 0 ? void 0 : _a.__id) !== null && _b !== void 0 ? _b : this.__authentic.device.__id,
-            layout: "auto", // FIXME: use real layout
+            layout: desc.layout === "auto" ? "auto" : desc.layout.__id,
             vsModule: desc.vertex.module.__id,
             vsEntryPoint: desc.vertex.entryPoint,
             vsConstants: desc.vertex.constants
@@ -3593,7 +3639,7 @@ class wgi_GPUDevice extends wgi_GPUBase {
         return globalRecorder.processRcd(RcdCreateBindGroupLayout, this, [descriptor], () => new wgi_GPUBindGroupLayout(this.next.createBindGroupLayout(descriptor), this, descriptor));
     }
     createPipelineLayout(descriptor) {
-        throw new Error("Method not implemented.");
+        return globalRecorder.processRcd(RcdCreatePipelineLayout, this, [descriptor], () => new wgi_GPUPipelineLayout(this.next.createPipelineLayout(RcdCreatePipelineLayout.prototype.transformArgs([descriptor], wgi => wgi.next)[0]), this, descriptor));
     }
     createBindGroup(descriptor) {
         return globalRecorder.processRcd(RcdCreateBindGroup, this, [descriptor], () => new wgi_GPUBindGroup(this.next.createBindGroup(RcdCreateBindGroup.prototype.transformArgs([descriptor], wgi => wgi.next)[0]), this, descriptor));
@@ -3606,8 +3652,7 @@ class wgi_GPUDevice extends wgi_GPUBase {
     }
     createRenderPipeline(descriptor) {
         return globalRecorder.processRcd(RcdCreateRenderPipeline, this, [descriptor], () => {
-            const descClone = Object.assign(Object.assign({}, descriptor), { vertex: Object.assign(Object.assign({}, descriptor.vertex), { module: descriptor.vertex.module.next }), fragment: descriptor.fragment ? Object.assign(Object.assign({}, descriptor.fragment), { module: descriptor.fragment.module.next }) : undefined });
-            return new wgi_GPURenderPipeline(this.next.createRenderPipeline(descClone), this, descriptor);
+            return new wgi_GPURenderPipeline(this.next.createRenderPipeline(RcdCreateRenderPipeline.prototype.transformArgs([descriptor], wgi => wgi.next)[0]), this, descriptor);
         });
     }
     createComputePipelineAsync(descriptor) {

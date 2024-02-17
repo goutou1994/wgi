@@ -2,6 +2,7 @@ import RcdCreateBindGroup from "../../record/device/rcdCreateBindGroup";
 import RcdCreateBindGroupLayout from "../../record/device/rcdCreateBindGroupLayout";
 import RcdCreateBuffer from "../../record/device/rcdCreateBuffer";
 import RcdCreateCommandEncoder from "../../record/device/rcdCreateCommandEncoder";
+import RcdCreatePipelineLayout from "../../record/device/rcdCreatePipelineLayout";
 import RcdCreateRenderPipeline from "../../record/device/rcdCreateRenderPipeline";
 import RcdCreateSampler from "../../record/device/rcdCreateSampler";
 import RcdCreateShaderModule from "../../record/device/rcdCreateShaderModule";
@@ -15,6 +16,7 @@ import wgi_GPUBindGroup from "./GPUBindGroup";
 import wgi_GPUBindGroupLayout from "./GPUBindGroupLayout";
 import wgi_GPUBuffer from "./GPUBuffer";
 import wgi_GPUCommandEncoder from "./GPUCommandEncoder";
+import wgi_GPUPipelineLayout from "./GPUPipelineLayout";
 import wgi_GPUQueue from "./GPUQueue";
 import wgi_GPURenderPipeline from "./GPURenderPipeline";
 import wgi_GPUSampler from "./GPUSampler";
@@ -120,7 +122,19 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         );
     }
     createPipelineLayout(descriptor: GPUPipelineLayoutDescriptor): GPUPipelineLayout {
-        throw new Error("Method not implemented.");
+        return globalRecorder.processRcd(
+            RcdCreatePipelineLayout,
+            this,
+            [descriptor],
+            () => new wgi_GPUPipelineLayout(
+                this.next.createPipelineLayout(RcdCreatePipelineLayout.prototype.transformArgs(
+                    [descriptor],
+                    wgi => wgi.next
+                )[0]),
+                this,
+                descriptor
+            )
+        );
     }
     createBindGroup(descriptor: GPUBindGroupDescriptor): GPUBindGroup {
         return globalRecorder.processRcd(
@@ -157,24 +171,14 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
             RcdCreateRenderPipeline,
             this,
             [descriptor],
-            () => {
-                const descClone = {
-                    ...descriptor,
-                    vertex: {
-                        ...descriptor.vertex,
-                        module: (descriptor.vertex.module as wgi_GPUShaderModule).next
-                    },
-                    fragment: descriptor.fragment ? {
-                        ...descriptor.fragment,
-                        module: (descriptor.fragment.module as wgi_GPUShaderModule).next
-                    } : undefined
-                }
-                return new wgi_GPURenderPipeline(
-                    this.next.createRenderPipeline(descClone),
-                    this,
-                    descriptor
-                )
-            }
+            () => new wgi_GPURenderPipeline(
+                this.next.createRenderPipeline(RcdCreateRenderPipeline.prototype.transformArgs(
+                    [descriptor],
+                    wgi => wgi.next
+                )[0]),
+                this,
+                descriptor
+            )
         );
     }
     createComputePipelineAsync(descriptor: GPUComputePipelineDescriptor): Promise<GPUComputePipeline> {

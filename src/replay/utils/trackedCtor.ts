@@ -7,6 +7,7 @@ import TrackedGPUBuffer from "../../tracked/GPUBuffer";
 import TrackedGPUCommandBuffer from "../../tracked/GPUCommandBuffer";
 import TrackedGPUCommandEncoder from "../../tracked/GPUCommandEncoder";
 import TrackedGPUDevice from "../../tracked/GPUDevice";
+import TrackedGPUPipelineLayout from "../../tracked/GPUPipelineLayout";
 import TrackedGPUQueue from "../../tracked/GPUQueue";
 import TrackedGPURenderPassEncoder from "../../tracked/GPURenderPassEncoder";
 import TrackedGPURenderPipeline from "../../tracked/GPURenderPipeline";
@@ -33,4 +34,5 @@ export const trackedCtorMap: {  [brand in brandMap]: new() => TrackedBase<any> }
     [brandMap.GPUBindGroupLayout]: TrackedGPUBindGroupLayout,
     [brandMap.GPUBindGroup]: TrackedGPUBindGroup,
     [brandMap.GPUSampler]: TrackedGPUSampler,
+    [brandMap.GPUPipelineLayout]: TrackedGPUPipelineLayout,
 };
