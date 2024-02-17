@@ -46,6 +46,9 @@ export enum RecordKind {
     DrawIndexed = 405,
     SetIndexBuffer = 406,
     SetBindGroup = 407,
+    SetViewport = 408,
+    SetScissorRect = 409,
+    SetStencilReference = 410,
 
     // pipeline
     GetBindGroupLayout = 501,

@@ -25,6 +25,9 @@ import RcdSetBindGroup from "../../record/pass/RcdSetBindGroup";
 import RcdCopyTextureToTexture from "../../record/encoder/rcdCopyTextureToTexture";
 import RcdCreatePipelineLayout from "../../record/device/rcdCreatePipelineLayout";
 import RcdWriteTexture from "../../record/queue/writeTexture";
+import RcdSetViewport from "../../record/pass/RcdSetViewport";
+import RcdSetScissorRect from "../../record/pass/RcdSetScissorRect";
+import RcdSetStencilReference from "../../record/pass/RcdSetStencilReference";
 
 export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> } = {
     [RecordKind.DebugRes]: RcdDebugRes,
@@ -62,6 +65,9 @@ export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> }
     [RecordKind.DrawIndexed]: RcdDrawIndexed,
     [RecordKind.SetIndexBuffer]: RcdSetIndexBuffer,
     [RecordKind.SetBindGroup]: RcdSetBindGroup,
+    [RecordKind.SetViewport]: RcdSetViewport,
+    [RecordKind.SetScissorRect]: RcdSetScissorRect,
+    [RecordKind.SetStencilReference]: RcdSetStencilReference,
     
     // pipeline
     [RecordKind.GetBindGroupLayout]: RcdGetBindGroupLayout,

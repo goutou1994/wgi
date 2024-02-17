@@ -4,7 +4,10 @@ import RcdEnd from "../../record/pass/RcdEnd";
 import RcdSetBindGroup from "../../record/pass/RcdSetBindGroup";
 import RcdSetIndexBuffer from "../../record/pass/RcdSetIndexBuffer";
 import RcdSetPipeline from "../../record/pass/RcdSetPipeline";
+import RcdSetScissorRect from "../../record/pass/RcdSetScissorRect";
+import RcdSetStencilReference from "../../record/pass/RcdSetStencilReference";
 import RcdSetVertexBuffer from "../../record/pass/RcdSetVertexBuffer";
+import RcdSetViewport from "../../record/pass/RcdSetViewport";
 import TrackedGPURenderPassEncoder from "../../tracked/GPURenderPassEncoder";
 import TrackedBase from "../../tracked/tracked";
 import { globalRecorder } from "../recorder";
@@ -24,17 +27,26 @@ export default class wgi_GPURenderPassEncoder extends wgi_GPUBase implements GPU
         super();
     }
 
-    setViewport(x: number, y: number, width: number, height: number, minDepth: number, maxDepth: number): undefined {
-        throw new Error("Method not implemented.");
+    setViewport(...args: [x: number, y: number, width: number, height: number, minDepth: number, maxDepth: number]): undefined {
+        globalRecorder.processRcd(
+            RcdSetViewport, this, args,
+            () => this.next.setViewport(...args)
+        );
     }
-    setScissorRect(x: number, y: number, width: number, height: number): undefined {
-        throw new Error("Method not implemented.");
+    setScissorRect(...args: [x: number, y: number, width: number, height: number]): undefined {
+        globalRecorder.processRcd(
+            RcdSetScissorRect, this, args,
+            () => this.next.setScissorRect(...args)
+        );
     }
     setBlendConstant(color: GPUColor): undefined {
         throw new Error("Method not implemented.");
     }
     setStencilReference(reference: number): undefined {
-        throw new Error("Method not implemented.");
+        globalRecorder.processRcd(
+            RcdSetStencilReference, this, [reference],
+            () => this.next.setStencilReference(reference)
+        );
     }
     beginOcclusionQuery(queryIndex: number): undefined {
         throw new Error("Method not implemented.");

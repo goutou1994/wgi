@@ -455,6 +455,9 @@ var RecordKind;
     RecordKind[RecordKind["DrawIndexed"] = 405] = "DrawIndexed";
     RecordKind[RecordKind["SetIndexBuffer"] = 406] = "SetIndexBuffer";
     RecordKind[RecordKind["SetBindGroup"] = 407] = "SetBindGroup";
+    RecordKind[RecordKind["SetViewport"] = 408] = "SetViewport";
+    RecordKind[RecordKind["SetScissorRect"] = 409] = "SetScissorRect";
+    RecordKind[RecordKind["SetStencilReference"] = 410] = "SetStencilReference";
     // pipeline
     RecordKind[RecordKind["GetBindGroupLayout"] = 501] = "GetBindGroupLayout";
 })(RecordKind || (RecordKind = {}));
@@ -2654,6 +2657,49 @@ class RcdSetPipeline extends RcdBase {
     }
 }
 
+class RcdSetScissorRect extends RcdBase {
+    constructor() {
+        super(...arguments);
+        this.__kind = RecordKind.SetScissorRect;
+    }
+    play() {
+        this.caller.__authentic.setScissorRect(...this.args);
+    }
+    serialize(ds) {
+        ds.write(DataStream.Type.UInt32, this.caller.__id);
+        for (let i = 0; i < 4; i++) {
+            ds.write(DataStream.Type.UInt32, this.args[i]);
+        }
+    }
+    deserialize(ds, profile) {
+        const pass = profile.get(ds.read(DataStream.Type.UInt32));
+        const args = [];
+        for (let i = 0; i < 4; i++) {
+            args.push(ds.read(DataStream.Type.UInt32));
+        }
+        return new RcdSetScissorRect(args, pass);
+    }
+}
+
+class RcdSetStencilReference extends RcdBase {
+    constructor() {
+        super(...arguments);
+        this.__kind = RecordKind.SetStencilReference;
+    }
+    play() {
+        this.caller.__authentic.setStencilReference(...this.args);
+    }
+    serialize(ds) {
+        ds.write(DataStream.Type.UInt32, this.caller.__id);
+        ds.write(DataStream.Type.UInt32, this.args[0]);
+    }
+    deserialize(ds, profile) {
+        const pass = profile.get(ds.read(DataStream.Type.UInt32));
+        const ref = ds.read(DataStream.Type.UInt32);
+        return new RcdSetStencilReference([ref], pass);
+    }
+}
+
 class RcdSetVertexBuffer extends RcdBase {
     constructor() {
         super(...arguments);
@@ -2695,6 +2741,36 @@ class RcdSetVertexBuffer extends RcdBase {
     }
 }
 
+class RcdSetViewport extends RcdBase {
+    constructor() {
+        super(...arguments);
+        this.__kind = RecordKind.SetViewport;
+    }
+    play() {
+        this.caller.__authentic.setViewport(...this.args);
+    }
+    serialize(ds) {
+        ds.write(DataStream.Type.UInt32, this.caller.__id);
+        for (let i = 0; i < 4; i++) {
+            ds.write(DataStream.Type.UInt32, this.args[i]);
+        }
+        for (let i = 4; i < 6; i++) {
+            ds.write(DataStream.Type.Float, this.args[i]);
+        }
+    }
+    deserialize(ds, profile) {
+        const pass = profile.get(ds.read(DataStream.Type.UInt32));
+        const args = [];
+        for (let i = 0; i < 4; i++) {
+            args.push(ds.read(DataStream.Type.UInt32));
+        }
+        for (let i = 4; i < 6; i++) {
+            args.push(ds.read(DataStream.Type.Float));
+        }
+        return new RcdSetViewport(args, pass);
+    }
+}
+
 class wgi_GPURenderPassEncoder extends wgi_GPUBase {
     getTrackedType() {
         return TrackedGPURenderPassEncoder;
@@ -2706,17 +2782,17 @@ class wgi_GPURenderPassEncoder extends wgi_GPUBase {
         this.desc = desc;
         this.__brand = "GPURenderPassEncoder";
     }
-    setViewport(x, y, width, height, minDepth, maxDepth) {
-        throw new Error("Method not implemented.");
+    setViewport(...args) {
+        globalRecorder.processRcd(RcdSetViewport, this, args, () => this.next.setViewport(...args));
     }
-    setScissorRect(x, y, width, height) {
-        throw new Error("Method not implemented.");
+    setScissorRect(...args) {
+        globalRecorder.processRcd(RcdSetScissorRect, this, args, () => this.next.setScissorRect(...args));
     }
     setBlendConstant(color) {
         throw new Error("Method not implemented.");
     }
     setStencilReference(reference) {
-        throw new Error("Method not implemented.");
+        globalRecorder.processRcd(RcdSetStencilReference, this, [reference], () => this.next.setStencilReference(reference));
     }
     beginOcclusionQuery(queryIndex) {
         throw new Error("Method not implemented.");
