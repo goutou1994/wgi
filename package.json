@@ -7,7 +7,7 @@
     "build-viewer": "rollup -c --environment entry:viewer && cp ./output/viewer.mjs test/viewer/",
     "build-plugin": "npm run build && rollup -c plugin/rollup/inject.config.mjs",
     "test": "static-server ./test/wgi --port=9080",
-    "test-viewer": "static-server ./test/viewer --port=8888"
+    "test-viewer": "static-server ./test/viewer --port=8188"
   },
   "author": "goutou1994",
   "license": "ISC",

@@ -1,5 +1,6 @@
 import RcdSubmit from "../../record/queue/rcdSubmit";
 import RcdWriteBuffer from "../../record/queue/writeBuffer";
+import RcdWriteTexture from "../../record/queue/writeTexture";
 import TrackedGPUQueue from "../../tracked/GPUQueue";
 import TrackedBase from "../../tracked/tracked";
 import { globalRecorder } from "../recorder";
@@ -42,8 +43,17 @@ export default class wgi_GPUQueue extends wgi_GPUBase implements GPUQueue {
             () => this.next.writeBuffer(args[0].next, args[1], args[2], args[3], args[4])
         );
     }
-    writeTexture(destination: GPUImageCopyTexture, data: BufferSource | SharedArrayBuffer, dataLayout: GPUImageDataLayout, size: GPUExtent3DStrict): undefined {
-        throw new Error("Method not implemented.");
+    writeTexture(...args: [destination: GPUImageCopyTexture, data: BufferSource | SharedArrayBuffer, dataLayout: GPUImageDataLayout, size: GPUExtent3DStrict]): undefined {
+        globalRecorder.processRcd(
+            RcdWriteTexture, this,
+            args,
+            () => this.next.writeTexture(
+                ...RcdWriteTexture.prototype.transformArgs(
+                    args,
+                    wgi => wgi.next
+                )
+            )
+        );
     }
     copyExternalImageToTexture(source: GPUImageCopyExternalImage, destination: GPUImageCopyTextureTagged, copySize: GPUExtent3DStrict): undefined {
         const dst: GPUImageCopyTextureTagged = {

@@ -301,7 +301,7 @@ export default function VertexViewer(props: VertexViewerProps) {
 
     const pagination = {
         current: page,
-        total: numPages
+        total: numIndices
     };
 
     const handleTableChange: TableProps['onChange'] = (pagination, filters, sorter) => {

@@ -13,7 +13,8 @@
                 "inject/content.js"
             ],
             "matches": [
-                "https://webgpu.github.io/webgpu-samples/samples/*"
+                "https://webgpu.github.io/webgpu-samples/samples/*",
+                "http://127.0.0.1:8888/"
             ],
             "run_at": "document_start"
         }

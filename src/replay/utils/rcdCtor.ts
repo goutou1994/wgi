@@ -24,6 +24,7 @@ import RcdCreateSampler from "../../record/device/rcdCreateSampler";
 import RcdSetBindGroup from "../../record/pass/RcdSetBindGroup";
 import RcdCopyTextureToTexture from "../../record/encoder/rcdCopyTextureToTexture";
 import RcdCreatePipelineLayout from "../../record/device/rcdCreatePipelineLayout";
+import RcdWriteTexture from "../../record/queue/writeTexture";
 
 export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> } = {
     [RecordKind.DebugRes]: RcdDebugRes,
@@ -48,6 +49,7 @@ export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> }
     // queue
     [RecordKind.Submit]: RcdSubmit,
     [RecordKind.WriteBuffer]: RcdWriteBuffer,
+    [RecordKind.WriteTexture]: RcdWriteTexture,
     
     // texture
     [RecordKind.CreateView]: RcdCreateView,

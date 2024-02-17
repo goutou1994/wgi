@@ -153,7 +153,7 @@ class DataStream {
         const buffer = (_a = chunk.buffer) !== null && _a !== void 0 ? _a : chunk;
         // @ts-ignore
         const byteOffset = (_b = chunk.offset) !== null && _b !== void 0 ? _b : 0;
-        new Uint8Array(this.buffer, this.head).set(new Uint8Array(buffer, byteOffset));
+        new Uint8Array(this.buffer, this.head).set(new Uint8Array(buffer, byteOffset, chunk.byteLength));
         this.head += chunk.byteLength;
     }
     align(alignment) {
@@ -444,6 +444,7 @@ var RecordKind;
     // queue
     RecordKind[RecordKind["Submit"] = 201] = "Submit";
     RecordKind[RecordKind["WriteBuffer"] = 202] = "WriteBuffer";
+    RecordKind[RecordKind["WriteTexture"] = 203] = "WriteTexture";
     // texture
     RecordKind[RecordKind["CreateView"] = 301] = "CreateView";
     // pass
@@ -2961,6 +2962,40 @@ class RcdWriteBuffer extends RcdBase {
     }
 }
 
+class RcdWriteTexture extends RcdBase {
+    constructor() {
+        super(...arguments);
+        this.__kind = RecordKind.WriteTexture;
+    }
+    play() {
+        this.caller.__authentic.writeTexture(...this.transformArgs(this.args, tracked => tracked.__authentic));
+    }
+    serialize(ds) {
+        const args = this.transformArgs(this.args, tracked => tracked.__id);
+        ds.write(DataStream.Type.UInt32, this.caller.__id);
+        serializeObject(ds, args[0]);
+        ds.write(DataStream.Type.UInt32, this.args[1].byteLength);
+        ds.writeChunk(this.args[1]);
+        serializeObject(ds, args[2]);
+        serializeObject(ds, args[3]);
+    }
+    deserialize(ds, profile) {
+        const queue = profile.get(ds.read(DataStream.Type.UInt32));
+        const dest = deserializeObject(ds);
+        const byteLength = ds.read(DataStream.Type.UInt32);
+        const buffer = ds.readChunk(byteLength);
+        const dataLayout = deserializeObject(ds);
+        const size = deserializeObject(ds);
+        return new RcdWriteTexture([dest, buffer, dataLayout, size], queue);
+    }
+    transformArgs(args, transformer) {
+        return [
+            Object.assign(Object.assign({}, args[0]), { texture: transformer(args[0].texture) }),
+            args[1], args[2], args[3]
+        ];
+    }
+}
+
 class TrackedGPUQueue extends TrackedBase {
     constructor() {
         super(...arguments);
@@ -3025,8 +3060,8 @@ class wgi_GPUQueue extends wgi_GPUBase {
     writeBuffer(...args) {
         globalRecorder.processRcd(RcdWriteBuffer, this, args, () => this.next.writeBuffer(args[0].next, args[1], args[2], args[3], args[4]));
     }
-    writeTexture(destination, data, dataLayout, size) {
-        throw new Error("Method not implemented.");
+    writeTexture(...args) {
+        globalRecorder.processRcd(RcdWriteTexture, this, args, () => this.next.writeTexture(...RcdWriteTexture.prototype.transformArgs(args, wgi => wgi.next)));
     }
     copyExternalImageToTexture(source, destination, copySize) {
         const dst = Object.assign(Object.assign({}, destination), { texture: destination.texture.next });

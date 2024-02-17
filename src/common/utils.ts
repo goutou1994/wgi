@@ -117,7 +117,7 @@ export class DataStream {
         const buffer: ArrayBuffer = chunk.buffer ?? chunk;
         // @ts-ignore
         const byteOffset: number = chunk.offset ?? 0; 
-        new Uint8Array(this.buffer, this.head).set(new Uint8Array(buffer, byteOffset));
+        new Uint8Array(this.buffer, this.head).set(new Uint8Array(buffer, byteOffset, chunk.byteLength));
         this.head += chunk.byteLength;
     }
     

@@ -33,6 +33,7 @@ export enum RecordKind {
     // queue
     Submit = 201,
     WriteBuffer = 202,
+    WriteTexture = 203,
 
     // texture
     CreateView = 301,
