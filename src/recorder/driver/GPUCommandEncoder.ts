@@ -1,5 +1,6 @@
 import RcdBeginRenderPass from "../../record/encoder/rcdBeginRenderPass";
 import RcdCopyBufferToBuffer from "../../record/encoder/rcdCopyBufferToBuffer";
+import RcdCopyTextureToTexture from "../../record/encoder/rcdCopyTextureToTexture";
 import RcdFinish from "../../record/encoder/rcdFinish";
 import TrackedGPUCommandEncoder from "../../tracked/GPUCommandEncoder";
 import TrackedBase from "../../tracked/tracked";
@@ -57,8 +58,15 @@ export default class wgi_GPUCommandEncoder extends wgi_GPUBase implements GPUCom
     copyTextureToBuffer(source: GPUImageCopyTexture, destination: GPUImageCopyBuffer, copySize: GPUExtent3DStrict): undefined {
         throw new Error("Method not implemented.");
     }
-    copyTextureToTexture(source: GPUImageCopyTexture, destination: GPUImageCopyTexture, copySize: GPUExtent3DStrict): undefined {
-        throw new Error("Method not implemented.");
+    copyTextureToTexture(...args: [source: GPUImageCopyTexture, destination: GPUImageCopyTexture, copySize: GPUExtent3DStrict]): undefined {
+        return globalRecorder.processRcd(
+            RcdCopyTextureToTexture,
+            this,
+            args,
+            () => this.next.copyTextureToTexture(
+                ...RcdCopyTextureToTexture.prototype.transformArgs(args, wgi => wgi.next)
+            )
+        );
     }
     clearBuffer(buffer: GPUBuffer, offset?: number | undefined, size?: number | undefined): undefined {
         throw new Error("Method not implemented.");

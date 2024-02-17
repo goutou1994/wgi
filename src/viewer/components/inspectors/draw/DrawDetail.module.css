@@ -16,7 +16,7 @@
 .infoWrapper {
     display: flex;
     flex-wrap: wrap;
-    gap: 50px;
+    gap: 70px;
 }
 
 .card {

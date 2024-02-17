@@ -27,6 +27,7 @@ export enum RecordKind {
     CopyBufferToBuffer = 101,
     Finish = 102,
     BeginRenderPass = 103,
+    CopyTextureToTexture = 104,
 
     // queue
     Submit = 201,

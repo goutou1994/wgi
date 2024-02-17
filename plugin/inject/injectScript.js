@@ -438,6 +438,7 @@ var RecordKind;
     RecordKind[RecordKind["CopyBufferToBuffer"] = 101] = "CopyBufferToBuffer";
     RecordKind[RecordKind["Finish"] = 102] = "Finish";
     RecordKind[RecordKind["BeginRenderPass"] = 103] = "BeginRenderPass";
+    RecordKind[RecordKind["CopyTextureToTexture"] = 104] = "CopyTextureToTexture";
     // queue
     RecordKind[RecordKind["Submit"] = 201] = "Submit";
     RecordKind[RecordKind["WriteBuffer"] = 202] = "WriteBuffer";
@@ -2286,6 +2287,39 @@ class RcdCopyBufferToBuffer extends RcdBase {
     }
 }
 
+class RcdCopyTextureToTexture extends RcdBase {
+    constructor() {
+        super(...arguments);
+        this.__kind = RecordKind.CopyTextureToTexture;
+    }
+    play() {
+        this.caller.__authentic.copyTextureToTexture(...this.transformArgs(this.args, tracked => tracked.__authentic));
+    }
+    serialize(ds) {
+        ds.write(DataStream.Type.UInt32, this.caller.__id);
+        const args = this.transformArgs(this.args, tracked => tracked.__id);
+        serializeObject(ds, args[0]);
+        serializeObject(ds, args[1]);
+        serializeObject(ds, args[2]);
+    }
+    deserialize(ds, profile) {
+        const encoder = profile.get(ds.read(DataStream.Type.UInt32));
+        const source = deserializeObject(ds);
+        const destination = deserializeObject(ds);
+        const copySize = deserializeObject(ds);
+        const rawArgs = [source, destination, copySize];
+        const args = this.transformArgs(rawArgs, id => profile.get(id));
+        return new RcdCopyTextureToTexture(args, encoder);
+    }
+    transformArgs(args, transformer) {
+        return [
+            Object.assign(Object.assign({}, args[0]), { texture: transformer(args[0].texture) }),
+            Object.assign(Object.assign({}, args[1]), { texture: transformer(args[1].texture) }),
+            args[2]
+        ];
+    }
+}
+
 class RcdFinish extends RcdBase {
     constructor() {
         super(...arguments);
@@ -2730,8 +2764,8 @@ class wgi_GPUCommandEncoder extends wgi_GPUBase {
     copyTextureToBuffer(source, destination, copySize) {
         throw new Error("Method not implemented.");
     }
-    copyTextureToTexture(source, destination, copySize) {
-        throw new Error("Method not implemented.");
+    copyTextureToTexture(...args) {
+        return globalRecorder.processRcd(RcdCopyTextureToTexture, this, args, () => this.next.copyTextureToTexture(...RcdCopyTextureToTexture.prototype.transformArgs(args, wgi => wgi.next)));
     }
     clearBuffer(buffer, offset, size) {
         throw new Error("Method not implemented.");
