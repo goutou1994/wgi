@@ -122,7 +122,7 @@ export default function dGPURenderPassEncoder(pass: TrackedGPURenderPassEncoder)
                         children: Object.keys(pass.__runtime!.vbs).length > 0 ? <div className="inner-no-margin" style={{ padding: "6px 9px", display: "flex", flexWrap: "wrap" }}>
                             {Object.keys(pass.__runtime!.vbs).map(key => {
                                 const vb = pass.__runtime!.vbs[Number(key)];
-                                return <Card size="small" title={"Vertex Buffer@" + key} className="description-cards">
+                                return <Card key={key} size="small" title={"Vertex Buffer@" + key} className="description-cards">
                                     <p>buffer: <ResLink id={vb.buffer.__id} /></p>
                                     <p>offset: {vb.offset}</p>
                                     <p>size: {vb.size}</p>
@@ -139,7 +139,20 @@ export default function dGPURenderPassEncoder(pass: TrackedGPURenderPassEncoder)
                             <p>offset: {pass.__runtime!.ib.offset}</p>
                             <p>size: {pass.__runtime!.ib.size}</p>
                         </Card>
-                    }] : []
+                    }] : [],
+                    {
+                        key: "bindGroups",
+                        label: "Bind Groups",
+                        children: Object.keys(pass.__runtime!.bindGroups).length > 0 ? <div className="inner-no-margin" style={{ padding: "6px 9px", display: "flex", flexWrap: "wrap" }}>
+                            {Object.keys(pass.__runtime!.bindGroups).map(key => {
+                                const bindGroup = pass.__runtime!.bindGroups[Number(key)];
+                                return <Card key={key} size="small" title={"Group@" + key} className="description-cards">
+                                    <p>Bind Group: <ResLink id={bindGroup.bindGroup.__id} /></p>
+                                    { bindGroup.dynamicOffsets ? <p>Dynamic Offsets: {`[${bindGroup.dynamicOffsets.join(", ")}]`}</p> : undefined }
+                                </Card>;
+                            })}
+                        </div> : "-"
+                    },
                 ]} />
             }
         ],

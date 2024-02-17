@@ -13,5 +13,5 @@ export default class wgi_GPUBindGroup extends wgi_GPUBase implements GPUBindGrou
         super();
     }
 
-    get label(): string { return this.label; }
+    get label(): string { return this.next.label; }
 }

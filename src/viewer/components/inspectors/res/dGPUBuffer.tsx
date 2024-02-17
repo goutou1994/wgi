@@ -38,7 +38,7 @@ export default function dGPUBuffer(buffer: TrackedGPUBuffer): ResDetailContent |
         ],
         customs: [{
             title: "Preview",
-            content: <BufferView buffer={new Uint8Array(snapshot.content)}/>
+            content: <BufferView buffer={new Uint8Array(snapshot.content)} maxRows={10}/>
         }],
         refLink: "https://developer.mozilla.org/en-US/docs/Web/API/GPUBuffer"
     };

@@ -230,7 +230,11 @@ export default class TrackedGPURenderPipeline extends TrackedBase<TrackedGPURend
             stencilWriteMask: 0xFFFFFFFF,
         };
         if (desc.depthStencil) {
-            const ds = desc.depthStencil;
+            const ds = {
+                ...desc.depthStencil,
+                format: undefined,
+                depthStencilFormat: desc.depthStencil.format
+            };
 
             Object.assign(s, defaultDepthStencil, ds);
 

@@ -450,6 +450,7 @@ var RecordKind;
     RecordKind[RecordKind["Draw"] = 404] = "Draw";
     RecordKind[RecordKind["DrawIndexed"] = 405] = "DrawIndexed";
     RecordKind[RecordKind["SetIndexBuffer"] = 406] = "SetIndexBuffer";
+    RecordKind[RecordKind["SetBindGroup"] = 407] = "SetBindGroup";
     // pipeline
     RecordKind[RecordKind["GetBindGroupLayout"] = 501] = "GetBindGroupLayout";
 })(RecordKind || (RecordKind = {}));
@@ -1942,7 +1943,7 @@ class wgi_GPUBindGroup extends wgi_GPUBase {
         this.desc = desc;
         this.__brand = "GPUBindGroup";
     }
-    get label() { return this.label; }
+    get label() { return this.next.label; }
 }
 
 class TrackedGPUBindGroupLayout extends TrackedBase {
@@ -2201,7 +2202,8 @@ class TrackedGPURenderPassEncoder extends TrackedBase {
     deleteSnapshot() {
         this.__snapshot = undefined;
         this.__runtime = {
-            vbs: {}
+            vbs: {},
+            bindGroups: {}
         };
     }
 }
@@ -2470,6 +2472,58 @@ class RcdEnd extends RcdBase {
     }
 }
 
+class RcdSetBindGroup extends RcdBase {
+    constructor() {
+        super(...arguments);
+        this.__kind = RecordKind.SetBindGroup;
+    }
+    play() {
+        this.caller.__authentic.setBindGroup(this.args[0], this.args[1] ? this.args[1].__authentic : null, this.args[2]);
+        if (this.args[1]) {
+            this.caller.__runtime.bindGroups[this.args[0]] = {
+                bindGroup: this.args[1],
+                dynamicOffsets: this.args[2]
+            };
+        }
+        else {
+            delete this.caller.__runtime.bindGroups[this.args[0]];
+        }
+    }
+    serialize(ds) {
+        ds.write(DataStream.Type.UInt32, this.caller.__id);
+        ds.write(DataStream.Type.UInt32, this.args[0]);
+        seralizeOptionalUint32(ds, this.args[1] ? this.args[1].__id : null);
+        if (!this.args[2]) {
+            ds.write(DataStream.Type.UInt32, this.args[0]);
+        }
+        else {
+            ds.write(DataStream.Type.UInt32, this.args[2].length);
+            for (const offset of this.args[2]) {
+                ds.write(DataStream.Type.UInt32, offset);
+            }
+        }
+    }
+    deserialize(ds, profile) {
+        const pass = profile.get(ds.read(DataStream.Type.UInt32));
+        const index = ds.read(DataStream.Type.UInt32);
+        const bindGroupId = deseralizeOptionalUint32(ds);
+        const bindGroup = bindGroupId !== undefined ? profile.get(bindGroupId) : null;
+        const offsets = [];
+        const offsetLength = ds.read(DataStream.Type.UInt32);
+        for (let i = 0; i < offsetLength; i++) {
+            offsets.push(ds.read(DataStream.Type.UInt32));
+        }
+        return new RcdSetBindGroup([index, bindGroup, offsets.length === 0 ? undefined : offsets], pass);
+    }
+    transformArgs(args, transformer) {
+        return [
+            args[0],
+            args[1] ? transformer(args[1]) : null,
+            args[2]
+        ];
+    }
+}
+
 class RcdSetIndexBuffer extends RcdBase {
     constructor() {
         super(...arguments);
@@ -2617,8 +2671,15 @@ class wgi_GPURenderPassEncoder extends wgi_GPUBase {
     insertDebugMarker(markerLabel) {
         throw new Error("Method not implemented.");
     }
-    setBindGroup(index, bindGroup, dynamicOffsetsData, dynamicOffsetsDataStart, dynamicOffsetsDataLength) {
-        throw new Error("Method not implemented.");
+    setBindGroup(index, bindGroup, dynamicOffsets, dynamicOffsetsDataStart, dynamicOffsetsDataLength) {
+        if (dynamicOffsets instanceof Uint32Array) {
+            const offsets = [];
+            for (let i = 0; i < dynamicOffsetsDataLength; i++) {
+                offsets.push(dynamicOffsets[i + dynamicOffsetsDataStart]);
+            }
+            dynamicOffsets = offsets;
+        }
+        globalRecorder.processRcd(RcdSetBindGroup, this, [index, bindGroup, dynamicOffsets ? Array.from(dynamicOffsets) : undefined], () => this.next.setBindGroup(index, bindGroup ? bindGroup.next : null, dynamicOffsets));
     }
     setPipeline(pipeline) {
         globalRecorder.processRcd(RcdSetPipeline, this, [pipeline], () => this.next.setPipeline(pipeline.next));
@@ -3005,7 +3066,7 @@ class TrackedGPURenderPipeline extends TrackedBase {
             stencilWriteMask: 0xFFFFFFFF,
         };
         if (desc.depthStencil) {
-            const ds = desc.depthStencil;
+            const ds = Object.assign(Object.assign({}, desc.depthStencil), { format: undefined, depthStencilFormat: desc.depthStencil.format });
             Object.assign(s, defaultDepthStencil, ds);
             s.stencilBack = Object.assign(Object.assign({}, defaultStacilState), ((_g = ds.stencilBack) !== null && _g !== void 0 ? _g : {}));
             s.stencilFront = Object.assign(Object.assign({}, defaultStacilState), ((_h = ds.stencilBack) !== null && _h !== void 0 ? _h : {}));

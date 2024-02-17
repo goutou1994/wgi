@@ -21,6 +21,7 @@ import RcdCreateBindGroupLayout from "../../record/device/rcdCreateBindGroupLayo
 import RcdCreateBindGroup from "../../record/device/rcdCreateBindGroup";
 import RcdGetBindGroupLayout from "../../record/pipeline/RcdGetBindGroupLayout";
 import RcdCreateSampler from "../../record/device/rcdCreateSampler";
+import RcdSetBindGroup from "../../record/pass/RcdSetBindGroup";
 
 export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> } = {
     [RecordKind.DebugRes]: RcdDebugRes,
@@ -54,6 +55,7 @@ export const rcdCtorMap: { [kind in RecordKind]: typeof RcdBase<any, any, any> }
     [RecordKind.Draw]: RcdDraw,
     [RecordKind.DrawIndexed]: RcdDrawIndexed,
     [RecordKind.SetIndexBuffer]: RcdSetIndexBuffer,
+    [RecordKind.SetBindGroup]: RcdSetBindGroup,
     
     // pipeline
     [RecordKind.GetBindGroupLayout]: RcdGetBindGroupLayout,

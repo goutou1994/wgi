@@ -1,12 +1,14 @@
 import RcdDraw from "../../record/pass/RcdDraw";
 import RcdDrawIndexed from "../../record/pass/RcdDrawIndexed";
 import RcdEnd from "../../record/pass/RcdEnd";
+import RcdSetBindGroup from "../../record/pass/RcdSetBindGroup";
 import RcdSetIndexBuffer from "../../record/pass/RcdSetIndexBuffer";
 import RcdSetPipeline from "../../record/pass/RcdSetPipeline";
 import RcdSetVertexBuffer from "../../record/pass/RcdSetVertexBuffer";
 import TrackedGPURenderPassEncoder from "../../tracked/GPURenderPassEncoder";
 import TrackedBase from "../../tracked/tracked";
 import { globalRecorder } from "../recorder";
+import wgi_GPUBindGroup from "./GPUBindGroup";
 import wgi_GPUBuffer from "./GPUBuffer";
 import wgi_GPUCommandEncoder from "./GPUCommandEncoder";
 import wgi_GPURenderPipeline from "./GPURenderPipeline";
@@ -59,10 +61,19 @@ export default class wgi_GPURenderPassEncoder extends wgi_GPUBase implements GPU
     insertDebugMarker(markerLabel: string): undefined {
         throw new Error("Method not implemented.");
     }
-    setBindGroup(index: number, bindGroup: GPUBindGroup | null, dynamicOffsets?: Iterable<number> | undefined): undefined;
-    setBindGroup(index: number, bindGroup: GPUBindGroup | null, dynamicOffsetsData: Uint32Array, dynamicOffsetsDataStart: number, dynamicOffsetsDataLength: number): undefined;
-    setBindGroup(index: unknown, bindGroup: unknown, dynamicOffsetsData?: unknown, dynamicOffsetsDataStart?: unknown, dynamicOffsetsDataLength?: unknown): undefined {
-        throw new Error("Method not implemented.");
+    setBindGroup(index: number, bindGroup: wgi_GPUBindGroup | null, dynamicOffsets?: Uint32Array | Iterable<number> | undefined, dynamicOffsetsDataStart?: number, dynamicOffsetsDataLength?: number): undefined {
+        if (dynamicOffsets instanceof Uint32Array) {
+            const offsets = [];
+            for (let i = 0; i < dynamicOffsetsDataLength!; i++) {
+                offsets.push(dynamicOffsets[i + dynamicOffsetsDataStart!]);
+            }
+            dynamicOffsets = offsets;
+        }
+        globalRecorder.processRcd(
+            RcdSetBindGroup, this,
+            [index, bindGroup, dynamicOffsets ? Array.from(dynamicOffsets) : undefined],
+            () => this.next.setBindGroup(index, bindGroup ? bindGroup.next : null, dynamicOffsets)
+        );
     }
     setPipeline(pipeline: wgi_GPURenderPipeline): undefined {
         globalRecorder.processRcd(

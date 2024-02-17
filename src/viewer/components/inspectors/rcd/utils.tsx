@@ -16,6 +16,7 @@ import dDraw from "./dDraw";
 import dDrawIndexed from "./dDrawIndexed";
 import dEnd from "./dEnd";
 import dFinish from "./dFinish";
+import dSetBindGroup from "./dSetBindGroup";
 import dSetIndexBuffer from "./dSetIndexBuffer";
 import dSetPipeline from "./dSetPipeline";
 import dSetVertexBuffer from "./dSetVertexBuffer";
@@ -52,5 +53,6 @@ export const RcdDetailMap: {[kind in RecordKind]?: (rcd: RcdBase<any, any, any>)
     [RecordKind.Draw]: dDraw,
     [RecordKind.SetIndexBuffer]: dSetIndexBuffer,
     [RecordKind.DrawIndexed]: dDrawIndexed,
+    [RecordKind.SetBindGroup]: dSetBindGroup,
 
 };

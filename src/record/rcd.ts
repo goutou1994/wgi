@@ -42,6 +42,7 @@ export enum RecordKind {
     Draw = 404,
     DrawIndexed = 405,
     SetIndexBuffer = 406,
+    SetBindGroup = 407,
 
     // pipeline
     GetBindGroupLayout = 501,

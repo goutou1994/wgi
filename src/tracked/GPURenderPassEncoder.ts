@@ -6,6 +6,7 @@ import type wgi_GPURenderPassEncoder from "../recorder/driver/GPURenderPassEncod
 import type wgi_GPUTextureView from "../recorder/driver/GPUTextureView";
 import wgi_GPUBase from "../recorder/driver/gpubase";
 import ReplayProfile from "../replay/profile";
+import TrackedGPUBindGroup from "./GPUBindGroup";
 import type TrackedGPUBuffer from "./GPUBuffer";
 import TrackedGPUCommandEncoder from "./GPUCommandEncoder";
 import TrackedGPURenderPipeline from "./GPURenderPipeline";
@@ -33,16 +34,24 @@ interface GPURenderPassEncoderSnapshot {
  */
 export interface GPURenderPassEncoderRuntime {
     pipeline?: TrackedGPURenderPipeline;
-    vbs: { [binding: number]: {
-        buffer: TrackedGPUBuffer;
-        offset: number;
-        size: number;
-    } };
+    vbs: {
+        [binding: number]: {
+            buffer: TrackedGPUBuffer;
+            offset: number;
+            size: number;
+        }
+    };
     ib?: {
         buffer: TrackedGPUBuffer;
         format: GPUIndexFormat;
         offset: number;
         size: number;
+    };
+    bindGroups: {
+        [index: number]: {
+            bindGroup: TrackedGPUBindGroup,
+            dynamicOffsets: Array<number> | undefined;
+        }
     };
 }
 
@@ -130,7 +139,7 @@ export default class TrackedGPURenderPassEncoder extends TrackedBase<TrackedGPUR
         };
     }
     public getDeps(): wgi_GPUBase[] {
-        const deps: wgi_GPUBase[] = [ (this.__authentic! as wgi_GPURenderPassEncoder).encoder ];
+        const deps: wgi_GPUBase[] = [(this.__authentic! as wgi_GPURenderPassEncoder).encoder];
         const desc = (this.__authentic! as wgi_GPURenderPassEncoder).desc;
         for (const color of desc.colorAttachments) {
             if (color) {
@@ -149,7 +158,8 @@ export default class TrackedGPURenderPassEncoder extends TrackedBase<TrackedGPUR
     public override deleteSnapshot(): void {
         this.__snapshot = undefined;
         this.__runtime = {
-            vbs: {}
+            vbs: {},
+            bindGroups: {}
         };
     }
 }
