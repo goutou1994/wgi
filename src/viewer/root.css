@@ -76,7 +76,7 @@ p {
 }
 
 canvas {
-    box-shadow: 0 0 10px #666666;
+    transition: box-shadow 0.2s;
 }
 
 canvas:hover {

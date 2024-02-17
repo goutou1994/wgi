@@ -7,6 +7,9 @@ import RcdBase, { RecordKind } from "../record/rcd";
 import TrackedGPUDevice from "../tracked/GPUDevice";
 import { brandMap } from "../common/brand";
 import { gunzipSync } from "fflate";
+import TrackedGPURenderPassEncoder from "../tracked/GPURenderPassEncoder";
+import type RcdSubmit from "../record/queue/rcdSubmit";
+import type TrackedGPUCommandBuffer from "../tracked/GPUCommandBuffer";
 
 type logger = (msg: string) => void;
 
@@ -153,6 +156,67 @@ export default class ReplayProfile {
             rcd.play();
             rcdPlayed.push(i);
         }
+
+        // check current rcd type,
+        // if unfinished pass or cb, continue playing until submit.
+        const lastRcd = this.rcds[rcdId];
+        let currentPass: TrackedBase<any> | undefined = undefined;
+        let currentEncoder: TrackedBase<any> | undefined = undefined;
+        let currentCb: TrackedGPUCommandBuffer | undefined = undefined;
+        if (rcdId !== -1) {
+            if (lastRcd.caller!.__kind === brandMap.GPURenderPassEncoder) {
+                currentPass = lastRcd.caller;
+                currentEncoder = (lastRcd.caller as TrackedGPURenderPassEncoder).__creator!;
+            } else if (lastRcd.caller!.__kind === brandMap.GPUCommandEncoder) {
+                currentEncoder = lastRcd.caller;
+            }
+        }
+
+        let currentRcd = rcdId + 1;
+        while (currentRcd < this.rcds.length && (currentEncoder || currentCb)) {
+            const rcd = this.rcds[currentRcd];
+            if (!rcd.caller!.__authentic) {
+                currentRcd += 1;
+                continue;
+            }
+            if (rcd.caller!.__kind === brandMap.GPURenderPassEncoder) {
+                if (rcd.caller !== currentPass) {
+                    rcd.play();rcdPlayed.push(currentRcd);
+                } else if (rcd.__kind === RecordKind.End) {
+                    rcd.play();rcdPlayed.push(currentRcd);
+                    currentPass = undefined; // pass ended
+                }
+            } else if (rcd.caller!.__kind === brandMap.GPUCommandEncoder) {
+                if (rcd.caller !== currentEncoder) {
+                    rcd.play();rcdPlayed.push(currentRcd);
+                } else if (rcd.__kind === RecordKind.Finish) {
+                    rcd.play();rcdPlayed.push(currentRcd);
+                    currentEncoder = undefined; // encoder finished
+                    currentCb = rcd.ret!;
+                }
+            } else if (rcd.caller!.__kind === brandMap.GPUQueue) {
+                if (rcd.__kind === RecordKind.Submit) {
+                    const submit = rcd as RcdSubmit;
+                    if (submit.args[0].includes(currentCb!)) {
+                        const cbs: Array<GPUCommandBuffer> = [];
+                        for (const cb of submit.args[0]) {
+                            cbs.push(cb.__authentic!);
+                            if (cb === currentCb) break;
+                        }
+                        submit.caller!.__authentic!.submit(cbs);
+                        rcdPlayed.push(currentRcd);
+                        currentCb = undefined;
+                    }
+                } else {
+                    rcd.play();rcdPlayed.push(currentRcd);
+                }
+            } else {
+                rcd.play();rcdPlayed.push(currentRcd);
+            }
+
+            currentRcd += 1;
+        }
+
 
         // find GPUDevice
         let trackedDevice: TrackedGPUDevice | undefined;
