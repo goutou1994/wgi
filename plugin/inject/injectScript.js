@@ -813,7 +813,7 @@ const pixelSizeMap = {
     "rgba8uint": 4,
     "rgba8sint": 4,
     "bgra8unorm": 4,
-    "depth24plus": 4,
+    // "depth24plus": 4, // depth24plus cannot be copied
 };
 class TrackedGPUTexture extends TrackedBase {
     constructor() {
@@ -2562,7 +2562,7 @@ class RcdSetBindGroup extends RcdBase {
         ds.write(DataStream.Type.UInt32, this.args[0]);
         seralizeOptionalUint32(ds, this.args[1] ? this.args[1].__id : null);
         if (!this.args[2]) {
-            ds.write(DataStream.Type.UInt32, this.args[0]);
+            ds.write(DataStream.Type.UInt32, 0);
         }
         else {
             ds.write(DataStream.Type.UInt32, this.args[2].length);
@@ -2822,9 +2822,65 @@ class wgi_GPUCommandEncoder extends wgi_GPUBase {
     }
 }
 
+class TrackedGPUPipelineLayout extends TrackedBase {
+    constructor() {
+        super(...arguments);
+        this.__kind = brandMap.GPUPipelineLayout;
+    }
+    fromAuthentic(authentic) {
+        return this.fastFromAuthentic(authentic, TrackedGPUPipelineLayout);
+    }
+    serialize(ds) {
+        serializeObject(ds, this.__snapshot);
+    }
+    deserialize(ds) {
+        this.__initialSnapshot = deserializeObject(ds);
+    }
+    restore(profile, encoder) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const s = this.__initialSnapshot;
+            this.__creator = (yield profile.getOrRestore(s.device, encoder));
+            const layouts = [];
+            for (const layoutId of s.bindGroupLayouts) {
+                layouts.push(yield profile.getOrRestore(layoutId, encoder));
+            }
+            this.__authentic = this.__creator.__authentic.createPipelineLayout({
+                label: s.label,
+                bindGroupLayouts: layouts.map(layout => layout.__authentic)
+            });
+        });
+    }
+    takeSnapshotBeforeSubmit(encoder, profile) {
+        var _a, _b;
+        if (this.isReplayMode() && this.__initialSnapshot) {
+            this.__snapshot = this.__initialSnapshot;
+            return;
+        }
+        let desc;
+        if (this.isReplayMode()) {
+            desc = this.__creatorRcd.args[0];
+        }
+        else {
+            desc = this.__authentic.desc;
+        }
+        this.__snapshot = {
+            label: this.__authentic.label,
+            device: (_b = (_a = this.__creator) === null || _a === void 0 ? void 0 : _a.__id) !== null && _b !== void 0 ? _b : this.__authentic.device.__id,
+            bindGroupLayouts: desc.bindGroupLayouts.map((layout) => layout.__id)
+        };
+    }
+    getDeps() {
+        const deps = [this.__authentic.device];
+        for (const layout of this.__authentic.desc.bindGroupLayouts) {
+            deps.push(layout);
+        }
+        return deps;
+    }
+}
+
 class wgi_GPUPipelineLayout extends wgi_GPUBase {
     getTrackedType() {
-        throw new Error("Method not implemented.");
+        return TrackedGPUPipelineLayout;
     }
     constructor(next, device, desc) {
         super();
@@ -3186,6 +3242,9 @@ class TrackedGPURenderPipeline extends TrackedBase {
     getDeps() {
         const authentic = this.__authentic;
         const deps = [authentic.device, authentic.desc.vertex.module];
+        if (authentic.desc.layout !== "auto") {
+            deps.push(authentic.desc.layout);
+        }
         if (authentic.desc.fragment) {
             deps.push(authentic.desc.fragment.module);
         }
@@ -3651,9 +3710,7 @@ class wgi_GPUDevice extends wgi_GPUBase {
         throw new Error("Method not implemented.");
     }
     createRenderPipeline(descriptor) {
-        return globalRecorder.processRcd(RcdCreateRenderPipeline, this, [descriptor], () => {
-            return new wgi_GPURenderPipeline(this.next.createRenderPipeline(RcdCreateRenderPipeline.prototype.transformArgs([descriptor], wgi => wgi.next)[0]), this, descriptor);
-        });
+        return globalRecorder.processRcd(RcdCreateRenderPipeline, this, [descriptor], () => new wgi_GPURenderPipeline(this.next.createRenderPipeline(RcdCreateRenderPipeline.prototype.transformArgs([descriptor], wgi => wgi.next)[0]), this, descriptor));
     }
     createComputePipelineAsync(descriptor) {
         throw new Error("Method not implemented.");

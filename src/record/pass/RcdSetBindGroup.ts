@@ -34,7 +34,7 @@ export default class RcdSetBindGroup extends RcdBase<TrackedGPURenderPassEncoder
         ds.write(DataStream.Type.UInt32, this.args[0]);
         seralizeOptionalUint32(ds, this.args[1] ? this.args[1].__id : null);
         if (!this.args[2]) {
-            ds.write(DataStream.Type.UInt32, this.args[0]);
+            ds.write(DataStream.Type.UInt32, 0);
         } else {
             ds.write(DataStream.Type.UInt32, this.args[2].length);
             for (const offset of this.args[2]) {

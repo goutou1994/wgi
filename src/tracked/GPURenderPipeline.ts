@@ -2,6 +2,7 @@ import { brandMap } from "../common/brand";
 import { deserializeObject, serializeObject } from "../common/serialize";
 import { DataStream } from "../common/utils";
 import RcdCreateRenderPipeline from "../record/device/rcdCreateRenderPipeline";
+import wgi_GPUPipelineLayout from "../recorder/driver/GPUPipelineLayout";
 import wgi_GPURenderPipeline from "../recorder/driver/GPURenderPipeline";
 import wgi_GPUShaderModule from "../recorder/driver/GPUShaderModule";
 import wgi_GPUBase from "../recorder/driver/gpubase";
@@ -279,7 +280,10 @@ export default class TrackedGPURenderPipeline extends TrackedBase<TrackedGPURend
     }
     public getDeps(): wgi_GPUBase[] {
         const authentic = this.__authentic! as wgi_GPURenderPipeline;
-        const deps = [authentic.device, authentic.desc.vertex.module as wgi_GPUShaderModule];
+        const deps: wgi_GPUBase[] = [authentic.device, authentic.desc.vertex.module as wgi_GPUShaderModule];
+        if (authentic.desc.layout !== "auto") {
+            deps.push(authentic.desc.layout as wgi_GPUPipelineLayout);
+        }
         if (authentic.desc.fragment) {
             deps.push(authentic.desc.fragment.module as wgi_GPUShaderModule)
         }
