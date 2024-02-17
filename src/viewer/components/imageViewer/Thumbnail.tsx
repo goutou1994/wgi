@@ -2,10 +2,12 @@ import React, { useEffect, useRef } from "react";
 import TrackedGPUTexture from "../../../tracked/GPUTexture";
 import { currentRcdId, globalProfile } from "../../model/global";
 import vs from "./shaders/quad.wgsl";
-import fs from "./shaders/frag.wgsl";
+import fs_f32 from "./shaders/frag_f32.wgsl";
+import fs_depth from "./shaders/frag_depth.wgsl";
 
 import styles from "./Thumbnail.module.css";
 import useGlobalState from "../../utils/globalState";
+import { isDepthFormat } from "../../../common/format";
 
 interface ThumbnailProps {
     texture: UniversalResourceId;
@@ -62,7 +64,9 @@ export default function Thumbnail(props: ThumbnailProps) {
         const canvasTexture = context.getCurrentTexture();
 
         const vsModule = device.createShaderModule({ code: vs });
-        const fsModule = device.createShaderModule({ code: fs });
+        const fsModule = device.createShaderModule({ 
+            code: isDepthFormat(s.format) ? fs_depth : fs_f32
+        });
 
         const bindGroupLayout = device.createBindGroupLayout({
             entries: [
@@ -75,7 +79,8 @@ export default function Thumbnail(props: ThumbnailProps) {
                     binding: 1,
                     visibility: GPUShaderStage.FRAGMENT,
                     texture: {
-                        viewDimension: s.dimension
+                        viewDimension: s.dimension,
+                        sampleType: isDepthFormat(s.format) ? "depth" : "float"
                     }
                 }
             ]

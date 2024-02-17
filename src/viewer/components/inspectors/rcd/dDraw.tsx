@@ -22,12 +22,20 @@ export function genDrawDetailProps(pass: TrackedGPURenderPassEncoder): Partial<D
         return globalProfile!.get<TrackedGPUTexture>(view.__snapshot!.texture);
     });
 
+    let depthStencilAttachment = undefined;
+    if (pass.__snapshot!.depthStencilAttachment) {
+        const view = globalProfile!.get<TrackedGPUTextureView>(pass.__snapshot!.depthStencilAttachment.view);
+        depthStencilAttachment = globalProfile!.get<TrackedGPUTexture>(view.__snapshot!.texture);
+    }
+
     return {
         colorAttachments: colors,
+        depthStencilAttachment,
         vbs: pipeline.__snapshot!.vbs.map((layout, layoutIndex) => ({
             layout,
             bound: pass.__runtime!.vbs[layoutIndex]
         })),
+        bindGroups: pass.__runtime!.bindGroups,
         vertexShader: globalProfile!.get<TrackedGPUShaderModule>(pipeline.__snapshot!.vsModule).__snapshot!.src,
         fragmentShader: pipeline.__snapshot!.fsModule ? globalProfile!.get<TrackedGPUShaderModule>(pipeline.__snapshot!.fsModule).__snapshot!.src : undefined
     };

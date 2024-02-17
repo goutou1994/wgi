@@ -13,6 +13,12 @@
     height: 100%;
 } */
 
+.infoWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+}
+
 .card {
     border-radius: 10px;
     background-color: white;

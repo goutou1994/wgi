@@ -10,6 +10,8 @@ import { Drawer } from "antd";
 import VertexViewer from "./VertexViewer";
 import VertexStageViewer from "./VertexStageViewer";
 import FragmentStageViewer from "./FragmentStageViewer";
+import ResLink from "../../common/ResLink";
+import { openResTab } from "../../../model/inspector";
 
 export interface DrawDetailProps {
     summary: {
@@ -27,6 +29,7 @@ export interface DrawDetailProps {
         ib?: GPURenderPassEncoderRuntime['ib'];
         vertexShader: string;
         fragmentShader?: string;
+        bindGroups: GPURenderPassEncoderRuntime["bindGroups"]
     }
 };
 
@@ -91,56 +94,81 @@ export default function DrawDetail({ summary }: DrawDetailProps) {
                     }
                 </div>
             </div>
-            <h2>
-                Vertex Inputs
-            </h2>
-            {
-                summary.vbs.length > 0 ?
-                    <div className={[styles.card, styles.vbWrapper].join(' ')}>
+            <div className={styles.infoWrapper}>
+                <div className={styles.infoItem}>
+                    <h2>
+                        Vertex Inputs
+                    </h2>
+                    {
+                        summary.vbs.length > 0 ?
+                            <div className={styles.card}>
+                                {
+                                    summary.ib ? <div className={styles.itemCard} style={{ width: "200px", cursor: "default" }} >
+                                        <h3>Index Buffer</h3>
+                                        <p>Number of Indices: {summary.numIndices}</p>
+                                        <p>Index Format: {summary.ib!.format}</p>
+                                    </div> : undefined
+                                }
+                                {
+                                    summary.vbs.map((vb, vbIndex) => {
+                                        return <div className={styles.itemCard} key={vbIndex} style={{ width: "200px" }} onClick={() => handleDrawerOpen({ type: DrawerType.Vertex, slot: vbIndex })}>
+                                            <h3>Slot#{vbIndex}</h3>
+                                            <p>Number of Attributes: {vb.layout.attributes.length}</p>
+                                            <p>Step Mode: {vb.layout.stepMode}</p>
+                                            {
+                                                vb.bound ? <p>Buffer Bound: buffer#{vb.bound.buffer.label}</p> :
+                                                    <p>No Buffer Bound<ExclamationCircleOutlined /></p>
+                                            }
+                                            <div className={styles.itemCardPopout}>
+                                                Open in Vertex Viewer
+                                            </div>
+                                        </div>
+                                    })
+                                }
+                            </div> : <p>No Vertex Inputs</p>
+                    }
+                </div>
+                <div className={styles.infoWrapper}>
+                    <div className={styles.infoItem}>
+                        <h2>
+                            Bind Groups
+                        </h2>
                         {
-                            summary.ib ? <div className={styles.itemCard} style={{ width: "200px", cursor: "default" }} >
-                                <h3>Index Buffer</h3>
-                                <p>Number of Indices: {summary.numIndices}</p>
-                                <p>Index Format: {summary.ib!.format}</p>
-                            </div> : undefined
-                        }
-                        {
-                            summary.vbs.map((vb, vbIndex) => {
-                                return <div className={styles.itemCard} key={vbIndex} style={{ width: "200px" }} onClick={() => handleDrawerOpen({ type: DrawerType.Vertex, slot: vbIndex })}>
-                                    <h3>Slot#{vbIndex}</h3>
-                                    <p>Number of Attributes: {vb.layout.attributes.length}</p>
-                                    <p>Step Mode: {vb.layout.stepMode}</p>
+                            Object.keys(summary.bindGroups).length > 0 ?
+                                <div className={styles.card}>
                                     {
-                                        vb.bound ? <p>Buffer Bound: buffer#{vb.bound.buffer.label}</p> :
-                                            <p>No Buffer Bound<ExclamationCircleOutlined /></p>
+                                        Object.entries(summary.bindGroups).map(([binding, info]) => {
+                                            return <div className={styles.itemCard} key={binding} style={{ width: "200px" }} onClick={() => openResTab(info.bindGroup.__id)}>
+                                                <h3>Group@{binding}</h3>
+                                                <p>Bind Group: GPUBindGroup#{info.bindGroup.label}</p>
+                                            </div>
+                                        })
                                     }
-                                    <div className={styles.itemCardPopout}>
-                                        Open in Vertex Viewer
-                                    </div>
-                                </div>
-                            })
+                                </div> : <p>No BindGroups</p>
                         }
-                    </div> : <p>No Vertex Inputs</p>
-            }
-
-            <h2>
-                Pipeline Stages
-            </h2>
-            <div className={[styles.card, styles.vbWrapper].join(' ')}>
-                <div className={styles.itemCard} style={{ width: "150px" }} onClick={() => handleDrawerOpen({ type: DrawerType.VS })}>
-                    <h3>Vertex Stage</h3>
-                    <div className={styles.itemCardPopout}>
-                        Open in Vertex Stage Viewer
                     </div>
                 </div>
-                {
-                    summary.fragmentShader ? <div className={styles.itemCard} style={{ width: "150px" }} onClick={() => handleDrawerOpen({ type: DrawerType.FS })}>
-                        <h3>Fragment Stage</h3>
-                        <div className={styles.itemCardPopout}>
-                            Open in Fragment Stage Viewer
+                <div className={styles.infoItem}>
+                    <h2>
+                        Pipeline Stages
+                    </h2>
+                    <div className={styles.card}>
+                        <div className={styles.itemCard} style={{ width: "130px" }} onClick={() => handleDrawerOpen({ type: DrawerType.VS })}>
+                            <h3>Vertex Stage</h3>
+                            <div className={styles.itemCardPopout}>
+                                Open in Vertex Stage Viewer
+                            </div>
                         </div>
-                    </div> : undefined
-                }
+                        {
+                            summary.fragmentShader ? <div className={styles.itemCard} style={{ width: "130px" }} onClick={() => handleDrawerOpen({ type: DrawerType.FS })}>
+                                <h3>Fragment Stage</h3>
+                                <div className={styles.itemCardPopout}>
+                                    Open in Fragment Stage Viewer
+                                </div>
+                            </div> : undefined
+                        }
+                    </div>
+                </div>
             </div>
         </div>
         <Drawer
