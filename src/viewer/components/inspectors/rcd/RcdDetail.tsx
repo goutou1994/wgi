@@ -31,7 +31,7 @@ export interface RcdDetailContent {
 }
 
 export default function RcdDetail() {
-    const [_] = useGlobalState(currentRcdId);
+    const [playedUpTo] = useGlobalState(currentRcdId);
     const [rcdId] = useGlobalState(selectedRcdId);
     const [useCustom, setUseCustom] = useState(false)
 
@@ -50,7 +50,8 @@ export default function RcdDetail() {
     }
 
     const content: RcdDetailContent = dCtor(rcd);
-    if (!content.customDetail && useCustom) {
+    const showCustomSwitch = !!content.customDetail && rcdId === playedUpTo;
+    if (!showCustomSwitch && useCustom) {
         setUseCustom(false);
     }
 
@@ -62,7 +63,7 @@ export default function RcdDetail() {
     }
     const header = <div className="inspector-type">
         Inspector: {useCustom ? "Record Detail" : "Record Brief"}
-        {content.customDetail ?
+        {showCustomSwitch ?
         <Switch
             // checkedChildren={<AreaChartOutlined />}
             // unCheckedChildren={<ProfileOutlined />}

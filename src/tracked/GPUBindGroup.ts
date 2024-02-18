@@ -11,7 +11,7 @@ import type TrackedGPUBuffer from "./GPUBuffer";
 import type TrackedGPUDevice from "./GPUDevice";
 import TrackedBase from "./tracked";
 
-interface GPUBindGroupSnapshot {
+export interface GPUBindGroupSnapshot {
     label: string;
     device: UniversalResourceId;
     layout: UniversalResourceId;

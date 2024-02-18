@@ -16,7 +16,11 @@
 .infoWrapper {
     display: flex;
     flex-wrap: wrap;
-    gap: 70px;
+    column-gap: 70px;
+}
+
+.infoItem {
+    max-width: 80%;
 }
 
 .card {
@@ -25,6 +29,8 @@
     padding: 20px;
     display: flex;
     width: fit-content;
+    flex-wrap: wrap;
+    gap: 30px;
 }
 
 .attDivierVertical {
@@ -53,8 +59,10 @@
     overflow: hidden;
 }
 
-.itemCard+.itemCard {
-    margin-left: 40px;
+.smallItemCard {
+    h4 {
+        margin: 0;
+    }
 }
 
 .itemCardPopout {

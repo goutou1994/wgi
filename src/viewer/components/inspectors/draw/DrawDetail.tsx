@@ -10,8 +10,8 @@ import { Drawer } from "antd";
 import VertexViewer from "./VertexViewer";
 import VertexStageViewer from "./VertexStageViewer";
 import FragmentStageViewer from "./FragmentStageViewer";
-import ResLink from "../../common/ResLink";
 import { openResTab } from "../../../model/inspector";
+import { extractResourceId, makeResourceText } from "../res/dGPUBindGroup";
 
 export interface DrawDetailProps {
     summary: {
@@ -97,6 +97,27 @@ export default function DrawDetail({ summary }: DrawDetailProps) {
             <div className={styles.infoWrapper}>
                 <div className={styles.infoItem}>
                     <h2>
+                        Pipeline Stages
+                    </h2>
+                    <div className={styles.card}>
+                        <div className={styles.itemCard} style={{ width: "130px" }} onClick={() => handleDrawerOpen({ type: DrawerType.VS })}>
+                            <h3>Vertex Stage</h3>
+                            <div className={styles.itemCardPopout}>
+                                Open in Vertex Stage Viewer
+                            </div>
+                        </div>
+                        {
+                            summary.fragmentShader ? <div className={styles.itemCard} style={{ width: "130px" }} onClick={() => handleDrawerOpen({ type: DrawerType.FS })}>
+                                <h3>Fragment Stage</h3>
+                                <div className={styles.itemCardPopout}>
+                                    Open in Fragment Stage Viewer
+                                </div>
+                            </div> : undefined
+                        }
+                    </div>
+                </div>
+                <div className={styles.infoItem}>
+                    <h2>
                         Vertex Inputs
                     </h2>
                     {
@@ -128,46 +149,25 @@ export default function DrawDetail({ summary }: DrawDetailProps) {
                             </div> : <p>No Vertex Inputs</p>
                     }
                 </div>
-                <div className={styles.infoWrapper}>
-                    <div className={styles.infoItem}>
-                        <h2>
-                            Bind Groups
-                        </h2>
-                        {
-                            Object.keys(summary.bindGroups).length > 0 ?
-                                <div className={styles.card}>
-                                    {
-                                        Object.entries(summary.bindGroups).map(([binding, info]) => {
-                                            return <div className={styles.itemCard} key={binding} style={{ width: "200px" }} onClick={() => openResTab(info.bindGroup.__id)}>
-                                                <h3>Group@{binding}</h3>
-                                                <p>Bind Group: GPUBindGroup#{info.bindGroup.label}</p>
-                                            </div>
-                                        })
-                                    }
-                                </div> : <p>No BindGroups</p>
-                        }
-                    </div>
-                </div>
                 <div className={styles.infoItem}>
                     <h2>
-                        Pipeline Stages
+                        Bind Group Resources
                     </h2>
-                    <div className={styles.card}>
-                        <div className={styles.itemCard} style={{ width: "130px" }} onClick={() => handleDrawerOpen({ type: DrawerType.VS })}>
-                            <h3>Vertex Stage</h3>
-                            <div className={styles.itemCardPopout}>
-                                Open in Vertex Stage Viewer
-                            </div>
-                        </div>
-                        {
-                            summary.fragmentShader ? <div className={styles.itemCard} style={{ width: "130px" }} onClick={() => handleDrawerOpen({ type: DrawerType.FS })}>
-                                <h3>Fragment Stage</h3>
-                                <div className={styles.itemCardPopout}>
-                                    Open in Fragment Stage Viewer
-                                </div>
-                            </div> : undefined
-                        }
-                    </div>
+                    {
+                        Object.keys(summary.bindGroups).length > 0 ?
+                            <div className={styles.card}>
+                                {
+                                    Object.entries(summary.bindGroups).map(([binding, info]) => {
+                                        return info.bindGroup.__snapshot!.entries.map(e => {
+                                            return <div className={[styles.itemCard, styles.smallItemCard].join(' ')} key={`g${binding}b${e.binding}`} onClick={() => openResTab(extractResourceId(e))}>
+                                                <h4>group@{binding}<br />binding@{e.binding}</h4>
+                                                {makeResourceText(e)}
+                                            </div>
+                                        })
+                                    })
+                                }
+                            </div> : <p>No Resource Bound</p>
+                    }
                 </div>
             </div>
         </div>

@@ -29,6 +29,7 @@ const pixelSizeMap = {
     "rgba8uint": 4,
     "rgba8sint": 4,
     "bgra8unorm": 4,
+    "rgba16float": 8
     // "depth24plus": 4, // depth24plus cannot be copied
 };
 
