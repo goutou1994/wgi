@@ -4,7 +4,7 @@ import useGlobalState from "../utils/globalState";
 import { Menu, MenuProps } from "antd";
 
 import styles from "./RcdDisplay.module.css";
-import { BarsOutlined, CaretRightOutlined, GlobalOutlined, SignatureOutlined } from "@ant-design/icons";
+import { BarsOutlined, CaretRightOutlined, FormOutlined, GlobalOutlined, PictureOutlined, SignatureOutlined } from "@ant-design/icons";
 import { RecordKind } from "../../record/rcd";
 import { brandMap } from "../../common/brand";
 
@@ -55,7 +55,9 @@ function RcdDisplayItem({ desc }: { desc: TimelineItem }) {
 const iconMap: { [key in brandMap]?: any } = {
     [brandMap.GPUDevice]: GlobalOutlined,
     [brandMap.GPUCommandEncoder]: BarsOutlined,
-    [brandMap.GPURenderPassEncoder]: SignatureOutlined
+    [brandMap.GPURenderPassEncoder]: SignatureOutlined,
+    [brandMap.GPUTexture]: PictureOutlined,
+    [brandMap.GPUQueue]: FormOutlined
 };
 
 export default function RcdDisplay() {

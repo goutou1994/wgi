@@ -29,7 +29,7 @@ p {
 .panel-resize {
     width: 5px;
     height: 100%;
-    background-color: rgb(206 226 255);
+    background-color: rgb(234 234 234);
 }
 
 .ant-tabs-content-holder {
