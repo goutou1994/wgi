@@ -28,9 +28,12 @@ function closeResTab(id: number) {
     resInspecting.set(tabs);
 }
 
+const showDetail = createGlobalState(false);
+
 export {
     resInspecting,
     currentTab,
+    showDetail,
 
     openResTab,
     closeResTab

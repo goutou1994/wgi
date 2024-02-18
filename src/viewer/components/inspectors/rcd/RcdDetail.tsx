@@ -33,7 +33,7 @@ export interface RcdDetailContent {
 export default function RcdDetail() {
     const [playedUpTo] = useGlobalState(currentRcdId);
     const [rcdId] = useGlobalState(selectedRcdId);
-    const [useCustom, setUseCustom] = useState(false)
+    const [useCustom, setUseCustom] = useState(true)
 
     if (rcdId === null) {
         return <p>No record selected.</p>
@@ -51,9 +51,7 @@ export default function RcdDetail() {
 
     const content: RcdDetailContent = dCtor(rcd);
     const showCustomSwitch = !!content.customDetail && rcdId === playedUpTo;
-    if (!showCustomSwitch && useCustom) {
-        setUseCustom(false);
-    }
+    const showCustom = showCustomSwitch && useCustom;
 
     const handleClickRefLink = () => {
         window.open(content.refLink);
@@ -62,7 +60,7 @@ export default function RcdDetail() {
         setUseCustom(!useCustom);
     }
     const header = <div className="inspector-type">
-        Inspector: {useCustom ? "Record Detail" : "Record Brief"}
+        Inspector: {showCustom ? "Record Detail" : "Record Brief"}
         {showCustomSwitch ?
         <Switch
             // checkedChildren={<AreaChartOutlined />}
@@ -72,7 +70,7 @@ export default function RcdDetail() {
         /> : undefined}
     </div>
 
-    if (content.customDetail && useCustom) {
+    if (content.customDetail && showCustom) {
         return <>
             {header}
             {content.customDetail}
