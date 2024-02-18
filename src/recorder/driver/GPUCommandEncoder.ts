@@ -1,3 +1,4 @@
+import { deepCloneDesc } from "../../common/utils";
 import RcdBeginRenderPass from "../../record/encoder/rcdBeginRenderPass";
 import RcdCopyBufferToBuffer from "../../record/encoder/rcdCopyBufferToBuffer";
 import RcdCopyTextureToTexture from "../../record/encoder/rcdCopyTextureToTexture";
@@ -22,6 +23,7 @@ export default class wgi_GPUCommandEncoder extends wgi_GPUBase implements GPUCom
     }
 
     beginRenderPass(descriptor: GPURenderPassDescriptor): GPURenderPassEncoder {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(
             RcdBeginRenderPass,
             this,
@@ -39,6 +41,7 @@ export default class wgi_GPUCommandEncoder extends wgi_GPUBase implements GPUCom
         throw new Error("Method not implemented.");
     }
     copyBufferToBuffer(...args: [source: wgi_GPUBuffer, sourceOffset: number, destination: wgi_GPUBuffer, destinationOffset: number, size: number]): undefined {
+        args = deepCloneDesc(args);
         return globalRecorder.processRcd(
             RcdCopyBufferToBuffer,
             this,
@@ -59,6 +62,7 @@ export default class wgi_GPUCommandEncoder extends wgi_GPUBase implements GPUCom
         throw new Error("Method not implemented.");
     }
     copyTextureToTexture(...args: [source: GPUImageCopyTexture, destination: GPUImageCopyTexture, copySize: GPUExtent3DStrict]): undefined {
+        args = deepCloneDesc(args);
         return globalRecorder.processRcd(
             RcdCopyTextureToTexture,
             this,

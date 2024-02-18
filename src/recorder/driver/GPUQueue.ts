@@ -1,3 +1,4 @@
+import { deepCloneDesc } from "../../common/utils";
 import RcdSubmit from "../../record/queue/rcdSubmit";
 import RcdWriteBuffer from "../../record/queue/writeBuffer";
 import RcdWriteTexture from "../../record/queue/writeTexture";
@@ -37,6 +38,7 @@ export default class wgi_GPUQueue extends wgi_GPUBase implements GPUQueue {
         return this.next.onSubmittedWorkDone();
     }
     writeBuffer(...args: [buffer: wgi_GPUBuffer, bufferOffset: number, data: BufferSource | SharedArrayBuffer, dataOffset?: number | undefined, size?: number | undefined]): undefined {
+        args = deepCloneDesc(args);
         globalRecorder.processRcd(
             RcdWriteBuffer, this,
             args,
@@ -44,6 +46,7 @@ export default class wgi_GPUQueue extends wgi_GPUBase implements GPUQueue {
         );
     }
     writeTexture(...args: [destination: GPUImageCopyTexture, data: BufferSource | SharedArrayBuffer, dataLayout: GPUImageDataLayout, size: GPUExtent3DStrict]): undefined {
+        args = deepCloneDesc(args);
         globalRecorder.processRcd(
             RcdWriteTexture, this,
             args,

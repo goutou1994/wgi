@@ -86,6 +86,6 @@ export default function RcdDisplay() {
         {
             timelineItems.map(item => <RcdDisplayItem key={item.rcdId} desc={ item } /> )
         }
-        <div style={{height: "300px"}}></div>
+        <div style={{height: "100px"}}></div>
     </div>
 }

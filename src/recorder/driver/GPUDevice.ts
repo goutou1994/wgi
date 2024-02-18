@@ -1,3 +1,4 @@
+import { deepCloneDesc } from "../../common/utils";
 import RcdCreateBindGroup from "../../record/device/rcdCreateBindGroup";
 import RcdCreateBindGroupLayout from "../../record/device/rcdCreateBindGroupLayout";
 import RcdCreateBuffer from "../../record/device/rcdCreateBuffer";
@@ -62,6 +63,7 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         );
     }
     createBuffer(descriptor: GPUBufferDescriptor): GPUBuffer {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(
             RcdCreateBuffer,
             this,
@@ -77,6 +79,7 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         );
     }
     createTexture(descriptor: GPUTextureDescriptor): GPUTexture {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(
             RcdCreateTexture,
             this,
@@ -95,6 +98,7 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         );
     }
     createSampler(descriptor?: GPUSamplerDescriptor | undefined): GPUSampler {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(
             RcdCreateSampler,
             this,
@@ -110,6 +114,7 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         throw new Error("Method not implemented.");
     }
     createBindGroupLayout(descriptor: GPUBindGroupLayoutDescriptor): GPUBindGroupLayout {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(
             RcdCreateBindGroupLayout,
             this,
@@ -152,6 +157,7 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         );
     }
     createShaderModule(descriptor: GPUShaderModuleDescriptor): GPUShaderModule {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(
             RcdCreateShaderModule,
             this,
@@ -167,6 +173,7 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         throw new Error("Method not implemented.");
     }
     createRenderPipeline(descriptor: GPURenderPipelineDescriptor): GPURenderPipeline {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(
             RcdCreateRenderPipeline,
             this,
@@ -188,6 +195,7 @@ export default class wgi_GPUDevice extends wgi_GPUBase implements GPUDevice {
         throw new Error("Method not implemented.");
     }
     createCommandEncoder(descriptor?: GPUObjectDescriptorBase | undefined): GPUCommandEncoder {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(
             RcdCreateCommandEncoder,
             this,

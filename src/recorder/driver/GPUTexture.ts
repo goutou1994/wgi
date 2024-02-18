@@ -1,3 +1,4 @@
+import { deepCloneDesc } from "../../common/utils";
 import RcdCreateView from "../../record/texture/rcdCreateView";
 import TrackedGPUTexture from "../../tracked/GPUTexture";
 import TrackedBase from "../../tracked/tracked";
@@ -22,6 +23,7 @@ export default class wgi_GPUTexture extends wgi_GPUBase implements GPUTexture {
     public realUsage: GPUTextureUsageFlags = 0;
 
     createView(descriptor?: GPUTextureViewDescriptor): GPUTextureView {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(
             RcdCreateView,
             this,

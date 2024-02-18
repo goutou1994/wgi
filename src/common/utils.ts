@@ -17,7 +17,7 @@ export class DataStream {
         this._size = buffer.byteLength;
         this.makeBufferViews();
     }
-    
+
     private makeBufferViews() {
         this.floatView = new Float32Array(this.buffer, this.byteOffset, Math.floor(this._size / DataStream.TypeSize[DataStream.Type.Float]));
         this.uint32View = new Uint32Array(this.buffer, this.byteOffset, Math.floor(this._size / DataStream.TypeSize[DataStream.Type.UInt32]));
@@ -116,11 +116,11 @@ export class DataStream {
         // @ts-ignore
         const buffer: ArrayBuffer = chunk.buffer ?? chunk;
         // @ts-ignore
-        const byteOffset: number = chunk.offset ?? 0; 
+        const byteOffset: number = chunk.offset ?? 0;
         new Uint8Array(this.buffer, this.head).set(new Uint8Array(buffer, byteOffset, chunk.byteLength));
         this.head += chunk.byteLength;
     }
-    
+
     public align(alignment: number): void {
         const misalign = this.testSufficient(0, alignment);
         if (misalign < 0) throw "[DataStream]align buffer out of bound.";
@@ -169,4 +169,35 @@ export function downloadBinaryFile(buffer: Uint8Array) {
     a.download = `wgi_${dateFormat(now, "yyyy_mm_dd_HH_MM_ss")}`;
     a.click();
     window.URL.revokeObjectURL(url);
+}
+
+export function deepCloneDesc(desc: any): any {
+    if (desc instanceof Array) {
+        const l = desc.length;
+        const arr = [];
+        for (let i = 0; i < l; i++) {
+            arr.push(deepCloneDesc(desc[i]));
+        }
+        return arr;
+    } else if (desc instanceof ArrayBuffer) {
+        return desc.slice(0);
+    } else if (ArrayBuffer.isView(desc)) {
+        const buffer = desc.buffer.slice(
+            desc.byteOffset,
+            desc.byteOffset + desc.byteLength
+        );
+        return new (desc.constructor as any)(buffer);
+    } else if (
+        typeof desc === "object" &&
+        desc.__kind === undefined &&
+        desc.__brand === undefined
+    ) {
+        const obj: any = {};
+        Object.entries(desc).forEach(([key, value]) => {
+            obj[key] = deepCloneDesc(value);
+        });
+        return obj;
+    } else {
+        return desc;
+    }
 }

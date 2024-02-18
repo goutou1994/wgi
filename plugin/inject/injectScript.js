@@ -203,6 +203,35 @@ function downloadBinaryFile(buffer) {
     a.click();
     window.URL.revokeObjectURL(url);
 }
+function deepCloneDesc(desc) {
+    if (desc instanceof Array) {
+        const l = desc.length;
+        const arr = [];
+        for (let i = 0; i < l; i++) {
+            arr.push(deepCloneDesc(desc[i]));
+        }
+        return arr;
+    }
+    else if (desc instanceof ArrayBuffer) {
+        return desc.slice(0);
+    }
+    else if (ArrayBuffer.isView(desc)) {
+        const buffer = desc.buffer.slice(desc.byteOffset, desc.byteOffset + desc.byteLength);
+        return new desc.constructor(buffer);
+    }
+    else if (typeof desc === "object" &&
+        desc.__kind === undefined &&
+        desc.__brand === undefined) {
+        const obj = {};
+        Object.entries(desc).forEach(([key, value]) => {
+            obj[key] = deepCloneDesc(value);
+        });
+        return obj;
+    }
+    else {
+        return desc;
+    }
+}
 
 const encoder = new TextEncoder();
 function serializeString(ds, str) {
@@ -2861,12 +2890,14 @@ class wgi_GPUCommandEncoder extends wgi_GPUBase {
         this.__brand = "GPUCommandEncoder";
     }
     beginRenderPass(descriptor) {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(RcdBeginRenderPass, this, [descriptor], () => new wgi_GPURenderPassEncoder(this.next.beginRenderPass(RcdBeginRenderPass.prototype.transformArgs([descriptor], (wgi) => wgi.next)[0]), this, descriptor));
     }
     beginComputePass(descriptor) {
         throw new Error("Method not implemented.");
     }
     copyBufferToBuffer(...args) {
+        args = deepCloneDesc(args);
         return globalRecorder.processRcd(RcdCopyBufferToBuffer, this, args, () => this.next.copyBufferToBuffer(args[0].next, args[1], args[2].next, args[3], args[4]));
     }
     copyBufferToTexture(source, destination, copySize) {
@@ -2876,6 +2907,7 @@ class wgi_GPUCommandEncoder extends wgi_GPUBase {
         throw new Error("Method not implemented.");
     }
     copyTextureToTexture(...args) {
+        args = deepCloneDesc(args);
         return globalRecorder.processRcd(RcdCopyTextureToTexture, this, args, () => this.next.copyTextureToTexture(...RcdCopyTextureToTexture.prototype.transformArgs(args, wgi => wgi.next)));
     }
     clearBuffer(buffer, offset, size) {
@@ -3134,9 +3166,11 @@ class wgi_GPUQueue extends wgi_GPUBase {
         return this.next.onSubmittedWorkDone();
     }
     writeBuffer(...args) {
+        args = deepCloneDesc(args);
         globalRecorder.processRcd(RcdWriteBuffer, this, args, () => this.next.writeBuffer(args[0].next, args[1], args[2], args[3], args[4]));
     }
     writeTexture(...args) {
+        args = deepCloneDesc(args);
         globalRecorder.processRcd(RcdWriteTexture, this, args, () => this.next.writeTexture(...RcdWriteTexture.prototype.transformArgs(args, wgi => wgi.next)));
     }
     copyExternalImageToTexture(source, destination, copySize) {
@@ -3742,6 +3776,7 @@ class wgi_GPUTexture extends wgi_GPUBase {
     }
     get isCanvas() { return this.canvasId !== undefined; }
     createView(descriptor) {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(RcdCreateView, this, [descriptor], () => new wgi_GPUTextureView(this.next.createView(descriptor), this, descriptor));
     }
     destroy() {
@@ -3790,9 +3825,11 @@ class wgi_GPUDevice extends wgi_GPUBase {
         return globalRecorder.processRcd(RcdDebugRes, undefined, [{ res }], () => { });
     }
     createBuffer(descriptor) {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(RcdCreateBuffer, this, [descriptor], () => new wgi_GPUBuffer(this.next.createBuffer(Object.assign(Object.assign({}, descriptor), { usage: descriptor.usage | GPUBufferUsage.COPY_SRC })), this, descriptor));
     }
     createTexture(descriptor) {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(RcdCreateTexture, this, [descriptor], () => {
             const tex = new wgi_GPUTexture(this.next.createTexture(Object.assign(Object.assign({}, descriptor), { usage: descriptor.usage | GPUTextureUsage.COPY_SRC })), this);
             tex.realUsage = descriptor.usage;
@@ -3800,12 +3837,14 @@ class wgi_GPUDevice extends wgi_GPUBase {
         });
     }
     createSampler(descriptor) {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(RcdCreateSampler, this, [descriptor], () => new wgi_GPUSampler(this.next.createSampler(descriptor), this, descriptor));
     }
     importExternalTexture(descriptor) {
         throw new Error("Method not implemented.");
     }
     createBindGroupLayout(descriptor) {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(RcdCreateBindGroupLayout, this, [descriptor], () => new wgi_GPUBindGroupLayout(this.next.createBindGroupLayout(descriptor), this, descriptor));
     }
     createPipelineLayout(descriptor) {
@@ -3815,12 +3854,14 @@ class wgi_GPUDevice extends wgi_GPUBase {
         return globalRecorder.processRcd(RcdCreateBindGroup, this, [descriptor], () => new wgi_GPUBindGroup(this.next.createBindGroup(RcdCreateBindGroup.prototype.transformArgs([descriptor], wgi => wgi.next)[0]), this, descriptor));
     }
     createShaderModule(descriptor) {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(RcdCreateShaderModule, this, [descriptor], () => new wgi_GPUShaderModule(this.next.createShaderModule(descriptor), this, descriptor));
     }
     createComputePipeline(descriptor) {
         throw new Error("Method not implemented.");
     }
     createRenderPipeline(descriptor) {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(RcdCreateRenderPipeline, this, [descriptor], () => new wgi_GPURenderPipeline(this.next.createRenderPipeline(RcdCreateRenderPipeline.prototype.transformArgs([descriptor], wgi => wgi.next)[0]), this, descriptor));
     }
     createComputePipelineAsync(descriptor) {
@@ -3830,6 +3871,7 @@ class wgi_GPUDevice extends wgi_GPUBase {
         throw new Error("Method not implemented.");
     }
     createCommandEncoder(descriptor) {
+        descriptor = deepCloneDesc(descriptor);
         return globalRecorder.processRcd(RcdCreateCommandEncoder, this, [descriptor], () => new wgi_GPUCommandEncoder(this.next.createCommandEncoder(descriptor), this, descriptor));
     }
     createRenderBundleEncoder(descriptor) {
