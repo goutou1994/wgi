@@ -1,7 +1,7 @@
 {
   "name": "wgi",
-  "version": "0.1.0",
-  "description": "WebGPU Inspector",
+  "version": "0.0.1",
+  "description": "WebGPU Insight",
   "scripts": {
     "build": "rollup -c --environment entry:main && cp ./output/wgi.mjs test/wgi/",
     "build-viewer": "rollup -c --environment entry:viewer && cp ./output/viewer.mjs test/viewer/",
