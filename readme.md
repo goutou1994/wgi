@@ -2,7 +2,7 @@
 WGI stands for "WebGPU Inspector/Insight/whatever", which aims to provide a powerful debugging tool for WebGPU development.  
 WGI uses a mechanism of recording/replaying to reconstruct every resource at any time point during capturing. Then trys to display them in a developer-friendly fashion.
 
-### Currently in progress.
+### Currently under development.
 
 Here's some preview:  
 <img src="./doc/preview_0.png" style="width: 60%">
@@ -17,7 +17,7 @@ Since the project is not quite finished yet, I'm not expecting a lot people tryi
 5. npm run build-viewer && npm run test-viewer
 6. open "localhost:8188", then drag&drop your capture file into the viewer.
 
-## TODO List
+## Pending Work
 - [ ] Complete the driver layer, which is currently lacking implementation of some major functions(ComputePass, ExternalTexture, RenderBundle, etc...);
 - [ ] Make a more useful plugin;
 - [ ] Heavy work on the viewer, including making it prettier, adding more information to the draw summay page, so on.
