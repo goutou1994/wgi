@@ -5,8 +5,8 @@ WGI uses a mechanism of recording/replaying to reconstruct every resource at any
 ### Currently under development.
 
 Here's some preview:  
-<img src="./doc/preview_0.png" style="width: 60%">
-<img src="./doc/preview_1.png" style="width: 60%">
+<img src="./doc/preview_0.png" style="width: 90%">
+<img src="./doc/preview_1.png" style="width: 90%">
 
 ## Build
 Since the project is not quite finished yet, I'm not expecting a lot people trying to build it. I'll describe it here in brief.  
