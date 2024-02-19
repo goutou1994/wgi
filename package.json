@@ -10,7 +10,7 @@
     "test-viewer": "static-server ./test/viewer --port=8188"
   },
   "author": "goutou1994",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
